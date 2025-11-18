@@ -652,6 +652,94 @@ function App() {
 
         <Separator className="my-4" />
 
+        {/* Button Component Showcase */}
+        <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
+          <div>
+            <h2 className="text-2xl font-semibold mb-1">Button Component</h2>
+            <p className="text-sm text-gray-600">Multiple variants and sizes</p>
+          </div>
+          
+          <Separator />
+
+          {/* Variants */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Variants</h3>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button variant="default">Default</Button>
+              <Button variant="destructive">Destructive</Button>
+              <Button variant="outline">Outline</Button>
+              <Button variant="secondary">Secondary</Button>
+              <Button variant="ghost">Ghost</Button>
+              <Button variant="link">Link</Button>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Sizes */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Sizes</h3>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button size="sm">Small</Button>
+              <Button size="default">Default</Button>
+              <Button size="lg">Large</Button>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Icon Buttons */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Icon Buttons</h3>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button variant="outline" size="icon">
+                <Plus className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon-sm">
+                <Plus className="h-3 w-3" />
+              </Button>
+              <Button variant="outline" size="icon-lg">
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* With Icons */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Buttons with Icons</h3>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Item
+              </Button>
+              <Button variant="outline">
+                <MoreHorizontal className="mr-2 h-4 w-4" />
+                More Options
+              </Button>
+              <Button variant="destructive">
+                Delete
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Disabled State */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Disabled State</h3>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button disabled>Default Disabled</Button>
+              <Button variant="outline" disabled>Outline Disabled</Button>
+              <Button variant="destructive" disabled>Destructive Disabled</Button>
+            </div>
+          </div>
+        </div>
+
+        <Separator className="my-4" />
+
         {/* DataTable Demo 1 - Full Featured */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">Inventory Management</h2>
