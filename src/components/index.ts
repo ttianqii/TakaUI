@@ -2,6 +2,7 @@
 export { Button } from './ui/button';
 export { Checkbox } from './ui/checkbox';
 export { Input } from './ui/input';
+export { Separator } from './ui/separator';
 export {
   Table,
   TableHeader,

@@ -5,6 +5,7 @@ import { ArrowUpDown, MoreHorizontal, Plus } from 'lucide-react'
 
 import { Button } from './components/ui/button'
 import { Checkbox } from './components/ui/checkbox'
+import { Separator } from './components/ui/separator'
 import { DataTable } from './components/DataTable'
 import {
   DropdownMenu,
@@ -571,19 +572,89 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Inventory Management System
+        {/* Header with Separator */}
+        <div className="text-center space-y-3">
+          <h1 className="text-4xl font-bold text-gray-900">
+            TakaUI Component Library
           </h1>
           <p className="text-gray-600">
-            Track your goods, quantities, and costs with ease
+            Beautiful, accessible React components
           </p>
+          <div className="flex justify-center pt-2">
+            <Separator className="w-48" />
+          </div>
         </div>
+
+        {/* Separator Demo Section */}
+        <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
+          <div>
+            <h2 className="text-2xl font-semibold mb-1">Separator Component</h2>
+            <p className="text-sm text-gray-600">A visual divider between content</p>
+          </div>
+          
+          <Separator />
+          
+          <div className="space-y-6">
+            {/* Horizontal */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-700">Horizontal (Default)</h3>
+              <div className="p-4 bg-gray-50 rounded space-y-2">
+                <p className="text-sm text-gray-600">Content above</p>
+                <Separator />
+                <p className="text-sm text-gray-600">Content below</p>
+              </div>
+            </div>
+
+            {/* Thick */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-700">Thick Separator</h3>
+              <Separator className="h-[3px] bg-gray-300" />
+            </div>
+
+            {/* Colors */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-700">Colored Variants</h3>
+              <div className="space-y-2">
+                <Separator className="bg-blue-500" />
+                <Separator className="bg-green-500" />
+                <Separator className="bg-red-500" />
+                <Separator className="bg-purple-500" />
+              </div>
+            </div>
+
+            {/* Vertical */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-700">Vertical Separator</h3>
+              <div className="flex items-center gap-4 h-16 bg-gray-50 rounded px-6">
+                <span className="text-sm font-medium">Item 1</span>
+                <Separator orientation="vertical" />
+                <span className="text-sm font-medium">Item 2</span>
+                <Separator orientation="vertical" />
+                <span className="text-sm font-medium">Item 3</span>
+              </div>
+            </div>
+
+            {/* Navigation Example */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-700">Navigation Menu Example</h3>
+              <div className="flex items-center gap-1 bg-gray-50 rounded p-2">
+                <Button variant="ghost" size="sm">Home</Button>
+                <Separator orientation="vertical" className="h-5" />
+                <Button variant="ghost" size="sm">Products</Button>
+                <Separator orientation="vertical" className="h-5" />
+                <Button variant="ghost" size="sm">About</Button>
+                <Separator orientation="vertical" className="h-5" />
+                <Button variant="ghost" size="sm">Contact</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Separator className="my-4" />
 
         {/* DataTable Demo 1 - Full Featured */}
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Inventory Table (Full Features)</h2>
+          <h2 className="text-xl font-semibold mb-4">Inventory Management</h2>
           <DataTable
             columns={columns}
             data={sampleData}
@@ -591,7 +662,7 @@ function App() {
           />
         </div>
 
-        {/* DataTable Demo 2 - Simple */}
+        <Separator />
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">Employee Table (Simple)</h2>
           <DataTable
