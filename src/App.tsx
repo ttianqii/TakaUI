@@ -948,6 +948,18 @@ function App() {
           />
         </div>
 
+        <Separator />
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4">Employee Table (Clean - No Separators)</h2>
+          <DataTable
+            columns={employeeColumns}
+            data={employeeData}
+            showSearch={false}
+            showPagination={false}
+            variant="clean"
+          />
+        </div>
+
         {/* DataTable Demo 3 - Dark Theme */}
         <div className="bg-gray-900 rounded-lg shadow-md p-6 border border-gray-700">
           <h2 className="text-xl font-semibold mb-4 text-white">Task Manager (Dark Theme)</h2>

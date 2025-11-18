@@ -37,6 +37,7 @@ interface DataTableProps<TData, TValue> {
   showSearch?: boolean
   pageSize?: number
   renderToolbar?: () => React.ReactNode
+  variant?: "default" | "clean"
 }
 
 export function DataTable<TData, TValue>({
@@ -49,6 +50,7 @@ export function DataTable<TData, TValue>({
   showSearch = true,
   pageSize = 10,
   renderToolbar,
+  variant = "default",
 }: DataTableProps<TData, TValue>) {
   "use no memo"
   
@@ -108,7 +110,7 @@ export function DataTable<TData, TValue>({
       {/* Table */}
       <div className="border border-gray-200 rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <Table>
+          <Table variant={variant}>
             <TableHeader className="bg-gray-50">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>

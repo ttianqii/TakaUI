@@ -4,18 +4,30 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+type TableVariant = "default" | "clean"
+
+const TableContext = React.createContext<{ variant: TableVariant }>({
+  variant: "default",
+})
+
+function Table({ 
+  className, 
+  variant = "default",
+  ...props 
+}: React.ComponentProps<"table"> & { variant?: TableVariant }) {
   return (
-    <div
-      data-slot="table-container"
-      className="relative w-full overflow-x-auto"
-    >
-      <table
-        data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
-        {...props}
-      />
-    </div>
+    <TableContext.Provider value={{ variant }}>
+      <div
+        data-slot="table-container"
+        className="relative w-full overflow-x-auto"
+      >
+        <table
+          data-slot="table"
+          className={cn("w-full caption-bottom text-sm", className)}
+          {...props}
+        />
+      </div>
+    </TableContext.Provider>
   )
 }
 
@@ -23,7 +35,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
+      className={cn("bg-gray-100 [&_tr]:border-b-0", className)}
       {...props}
     />
   )
@@ -53,11 +65,14 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
 }
 
 function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+  const { variant } = React.useContext(TableContext)
+  
   return (
     <tr
       data-slot="table-row"
       className={cn(
-        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b border-gray-200 transition-colors",
+        "hover:bg-gray-50 data-[state=selected]:bg-gray-50 transition-colors",
+        variant === "default" && "border-b border-gray-200 last:border-b-0",
         className
       )}
       {...props}
