@@ -29,5 +29,5 @@ export {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
-} from './DropdownMenu';
+} from './ui/dropdown-menu';
 export { DataTable } from './DataTable';
