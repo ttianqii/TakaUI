@@ -80,6 +80,24 @@ export function DatePicker({
   const [rangeEnd, setRangeEnd] = React.useState<Date | undefined>(dateRange?.to)
   const [hoverDate, setHoverDate] = React.useState<Date | undefined>()
 
+  // Sync range state with prop changes
+  React.useEffect(() => {
+    setRangeStart(dateRange?.from)
+    setRangeEnd(dateRange?.to)
+  }, [dateRange])
+
+  // Sync currentMonth with date prop and reset view when opening
+  React.useEffect(() => {
+    if (open) {
+      setView('calendar')
+      if (mode === 'single' && date) {
+        setCurrentMonth(date)
+      } else if (mode === 'range' && dateRange?.from) {
+        setCurrentMonth(dateRange.from)
+      }
+    }
+  }, [open, date, dateRange, mode])
+
   const handleSelect = (selectedDate: Date) => {
     if (mode === 'range') {
       if (!rangeStart || (rangeStart && rangeEnd)) {
@@ -395,7 +413,7 @@ export function DatePicker({
                   </div>
 
                   {/* Calendar grid */}
-                  <div className="grid grid-cols-7 gap-0.5">
+                  <div className="grid grid-cols-7">
                     {Array.from({ length: monthStart.getDay() }).map((_, index) => (
                       <div key={`empty-${index}`} className="h-10" />
                     ))}
@@ -409,7 +427,10 @@ export function DatePicker({
                       return (
                         <div 
                           key={day.toISOString()} 
-                          className="relative"
+                          className={cn(
+                            "relative",
+                            inRange && "bg-gray-100"
+                          )}
                           onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
                           onMouseLeave={() => setHoverDate(undefined)}
                         >
@@ -418,12 +439,12 @@ export function DatePicker({
                             size="sm"
                             disabled={isDisabled || disabled}
                             className={cn(
-                              "h-10 w-full p-0 text-sm relative rounded transition-all duration-200",
+                              "h-10 w-full p-0 text-sm relative transition-all duration-200",
                               !isCurrentMonth && "text-gray-300",
-                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && "text-gray-700 hover:bg-gray-50",
-                              isTodayDay && !isSelectedDay && "bg-gray-100 text-gray-900 font-medium border border-gray-200",
-                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm",
-                              inRange && !isSelectedDay && "bg-gray-100 text-gray-900",
+                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && "text-gray-700 hover:bg-gray-50 rounded",
+                              isTodayDay && !isSelectedDay && !inRange && "bg-gray-50 text-gray-900 font-medium border border-gray-200 rounded",
+                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 rounded",
+                              inRange && !isSelectedDay && "bg-transparent text-gray-900",
                               isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
                             )}
                             onClick={() => !isDisabled && handleSelect(day)}
@@ -451,7 +472,7 @@ export function DatePicker({
                   </div>
 
                   {/* Calendar grid */}
-                  <div className="grid grid-cols-7 gap-0.5">
+                  <div className="grid grid-cols-7">
                     {Array.from({ length: nextMonthStart.getDay() }).map((_, index) => (
                       <div key={`next-empty-${index}`} className="h-10" />
                     ))}
@@ -465,7 +486,10 @@ export function DatePicker({
                       return (
                         <div 
                           key={day.toISOString()} 
-                          className="relative"
+                          className={cn(
+                            "relative",
+                            inRange && "bg-gray-100"
+                          )}
                           onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
                           onMouseLeave={() => setHoverDate(undefined)}
                         >
@@ -474,12 +498,12 @@ export function DatePicker({
                             size="sm"
                             disabled={isDisabled || disabled}
                             className={cn(
-                              "h-10 w-full p-0 text-sm relative rounded transition-all duration-200",
+                              "h-10 w-full p-0 text-sm relative transition-all duration-200",
                               !isCurrentMonth && "text-gray-300",
-                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && "text-gray-700 hover:bg-gray-50",
-                              isTodayDay && !isSelectedDay && "bg-gray-100 text-gray-900 font-medium border border-gray-200",
-                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm",
-                              inRange && !isSelectedDay && "bg-gray-100 text-gray-900",
+                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && "text-gray-700 hover:bg-gray-50 rounded",
+                              isTodayDay && !isSelectedDay && !inRange && "bg-gray-50 text-gray-900 font-medium border border-gray-200 rounded",
+                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 rounded",
+                              inRange && !isSelectedDay && "bg-transparent text-gray-900",
                               isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
                             )}
                             onClick={() => !isDisabled && handleSelect(day)}

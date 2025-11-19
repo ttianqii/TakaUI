@@ -269,7 +269,14 @@ function App() {
   const [date6, setDate6] = useState<Date>()
   const [date7, setDate7] = useState<Date>()
   const [date8, setDate8] = useState<Date>()
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>()
+  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>(() => {
+    // Default to current month range
+    const today = new Date()
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+    return { from: firstDay, to: lastDay }
+  })
+  const [dateRange2, setDateRange2] = useState<{ from?: Date; to?: Date }>()
 
   // Schedule state - Classroom Example
   const [classScheduleEvents, setClassScheduleEvents] = useState<ScheduleEvent[]>([
@@ -1327,19 +1334,41 @@ function App() {
 
           {/* Date Range Picker */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-gray-700">Date Range Picker</h3>
+            <h3 className="text-sm font-semibold text-gray-700">Date Range Picker - 2 Months</h3>
             <div className="space-y-2">
-              <label className="text-xs text-gray-600">Select Date Range</label>
+              <label className="text-xs text-gray-600">Select Date Range (2 Months View)</label>
               <DatePicker
                 mode="range"
                 dateRange={dateRange}
-                onDateRangeChange={setDateRange}
+                onDateRangeChange={(range) => setDateRange(range || { from: undefined, to: undefined })}
                 numberOfMonths={2}
                 placeholder="Pick a date range"
               />
               {dateRange?.from && dateRange?.to && (
                 <p className="text-xs text-gray-600 mt-2">
                   Selected: {dateRange.from.toLocaleDateString()} - {dateRange.to.toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Date Range Picker - 1 Month */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Date Range Picker - 1 Month</h3>
+            <div className="space-y-2">
+              <label className="text-xs text-gray-600">Select Date Range (1 Month View)</label>
+              <DatePicker
+                mode="range"
+                dateRange={dateRange2}
+                onDateRangeChange={(range) => setDateRange2(range || { from: undefined, to: undefined })}
+                numberOfMonths={1}
+                placeholder="Pick a date range"
+              />
+              {dateRange2?.from && dateRange2?.to && (
+                <p className="text-xs text-gray-600 mt-2">
+                  Selected: {dateRange2.from.toLocaleDateString()} - {dateRange2.to.toLocaleDateString()}
                 </p>
               )}
             </div>
