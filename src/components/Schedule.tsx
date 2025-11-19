@@ -228,7 +228,7 @@ export function Schedule({
               <div className={`grid border-b border-gray-200`} style={{ gridTemplateColumns: `80px repeat(${daysOfWeek.length}, 1fr)` }}>
                 <div className="p-3 bg-gray-50 border-r border-gray-200">
                   <span className="text-xs font-medium text-gray-500">
-                    {showWeekNavigation ? `Week ${weekNavigatorUtils.getWeekNumber(currentWeekStart)}` : 'Time'}
+                    Time
                   </span>
                 </div>
                 {daysOfWeek.map((day, index) => {
