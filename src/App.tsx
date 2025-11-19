@@ -269,6 +269,7 @@ function App() {
   const [date6, setDate6] = useState<Date>()
   const [date7, setDate7] = useState<Date>()
   const [date8, setDate8] = useState<Date>()
+  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>()
 
   // Schedule state - Classroom Example
   const [classScheduleEvents, setClassScheduleEvents] = useState<ScheduleEvent[]>([
@@ -1319,6 +1320,28 @@ function App() {
                 placeholder="View 2 months"
                 align="center"
               />
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Date Range Picker */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Date Range Picker</h3>
+            <div className="space-y-2">
+              <label className="text-xs text-gray-600">Select Date Range</label>
+              <DatePicker
+                mode="range"
+                dateRange={dateRange}
+                onDateRangeChange={setDateRange}
+                numberOfMonths={2}
+                placeholder="Pick a date range"
+              />
+              {dateRange?.from && dateRange?.to && (
+                <p className="text-xs text-gray-600 mt-2">
+                  Selected: {dateRange.from.toLocaleDateString()} - {dateRange.to.toLocaleDateString()}
+                </p>
+              )}
             </div>
           </div>
         </div>

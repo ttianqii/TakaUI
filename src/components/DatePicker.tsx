@@ -78,6 +78,7 @@ export function DatePicker({
   const [view, setView] = React.useState<'calendar' | 'months' | 'years'>('calendar')
   const [rangeStart, setRangeStart] = React.useState<Date | undefined>(dateRange?.from)
   const [rangeEnd, setRangeEnd] = React.useState<Date | undefined>(dateRange?.to)
+  const [hoverDate, setHoverDate] = React.useState<Date | undefined>()
 
   const handleSelect = (selectedDate: Date) => {
     if (mode === 'range') {
@@ -141,8 +142,16 @@ export function DatePicker({
   }
 
   const isInRange = (day: Date) => {
-    if (!rangeStart || !rangeEnd) return false
-    return day >= rangeStart && day <= rangeEnd
+    if (rangeStart && rangeEnd) {
+      return day >= rangeStart && day <= rangeEnd
+    }
+    // Show hover preview when selecting range
+    if (rangeStart && !rangeEnd && hoverDate) {
+      const start = rangeStart < hoverDate ? rangeStart : hoverDate
+      const end = rangeStart < hoverDate ? hoverDate : rangeStart
+      return day >= start && day <= end
+    }
+    return false
   }
 
   const isRangeStart = (day: Date) => {
@@ -398,7 +407,12 @@ export function DatePicker({
                       const inRange = mode === 'range' && isInRange(day)
 
                       return (
-                        <div key={day.toISOString()} className="relative">
+                        <div 
+                          key={day.toISOString()} 
+                          className="relative"
+                          onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
+                          onMouseLeave={() => setHoverDate(undefined)}
+                        >
                           <Button
                             variant="ghost"
                             size="sm"
@@ -449,7 +463,12 @@ export function DatePicker({
                       const inRange = mode === 'range' && isInRange(day)
 
                       return (
-                        <div key={day.toISOString()} className="relative">
+                        <div 
+                          key={day.toISOString()} 
+                          className="relative"
+                          onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
+                          onMouseLeave={() => setHoverDate(undefined)}
+                        >
                           <Button
                             variant="ghost"
                             size="sm"
