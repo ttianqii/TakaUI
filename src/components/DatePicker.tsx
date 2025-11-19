@@ -157,7 +157,7 @@ export function DatePicker({
       <PopoverTrigger asChild>
         {triggerContent}
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 border-gray-200" align={align} side="bottom" sideOffset={4}>
+      <PopoverContent className="w-auto p-0 border-gray-200" align={align} sideOffset={4} avoidCollisions={true} collisionPadding={8}>
         <div className="bg-white rounded-lg">
           {/* Calendar Header */}
           <div className="border-b border-gray-100 px-6 py-4">
