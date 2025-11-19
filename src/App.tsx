@@ -10,6 +10,7 @@ import { Separator } from './components/ui/separator'
 import { DataTable } from './components/DataTable'
 import { DatePicker } from './components/DatePicker'
 import { Schedule, type ScheduleEvent, type CustomField } from './components/Schedule'
+import { Calendar as CalendarComponent, type CalendarEvent } from './components/Calendar'
 import { MapPin, Users as UsersIcon, Building } from 'lucide-react'
 import {
   DropdownMenu,
@@ -405,6 +406,50 @@ function App() {
       showInCard: true,
     },
   ]
+
+  // Calendar state
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([
+    {
+      id: "1",
+      date: new Date(),
+      title: "Team Meeting",
+      type: "meeting",
+      time: "10:00 AM",
+      location: "Conference Room A"
+    },
+    {
+      id: "2",
+      date: new Date(),
+      title: "Project Deadline",
+      type: "deadline",
+      time: "5:00 PM"
+    },
+    {
+      id: "3",
+      date: addDays(new Date(), 1),
+      title: "Client Presentation",
+      type: "meeting",
+      time: "2:00 PM",
+      location: "Board Room"
+    },
+    {
+      id: "4",
+      date: addDays(new Date(), 2),
+      title: "Workshop",
+      type: "class",
+      time: "9:00 AM - 12:00 PM",
+      location: "Training Center"
+    },
+    {
+      id: "5",
+      date: addDays(new Date(), 5),
+      title: "Doctor Appointment",
+      type: "appointment",
+      time: "3:30 PM",
+      location: "Medical Center"
+    }
+  ])
 
   // Define columns with TanStack Table
   const columns = useMemo<ColumnDef<GoodsItem>[]>(
@@ -1339,6 +1384,24 @@ function App() {
               setMeetingScheduleEvents(meetingScheduleEvents.filter(e => e.id !== eventId))
             }}
           />
+        </div>
+
+        <Separator className="my-4" />
+
+        {/* Calendar Component Showcase */}
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Calendar Component</h2>
+            <p className="text-gray-600">Interactive calendar with event management</p>
+          </div>
+
+          <div className="max-w-md mx-auto">
+            <CalendarComponent
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              events={calendarEvents}
+            />
+          </div>
         </div>
 
         <Separator className="my-4" />
