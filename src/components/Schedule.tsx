@@ -17,6 +17,9 @@ export interface ScheduleEvent {
   endTime: string
   color: string
   description?: string
+  // Recurrence options
+  recurrenceType?: 'none' | 'weekly' | 'monthly' | 'yearly'
+  specificDate?: string // For monthly/yearly recurrence
   // Flexible metadata - can be anything
   [key: string]: any
 }
@@ -87,6 +90,9 @@ export function Schedule({
     endTime: "",
     color: "bg-blue-500",
     description: "",
+    recurrenceType: "none",
+    specificDate: "",
+    scheduleMode: "day", // "day" or "date"
   })
 
   // Week navigation state - simplified to just track current week
@@ -104,6 +110,9 @@ export function Schedule({
         endTime: event.endTime,
         color: event.color,
         description: event.description || "",
+        recurrenceType: event.recurrenceType || "none",
+        specificDate: event.specificDate || "",
+        scheduleMode: event.specificDate ? "date" : "day",
       }
       // Add custom field values
       customFields.forEach(field => {
@@ -120,6 +129,9 @@ export function Schedule({
         endTime: "",
         color: "bg-blue-500",
         description: "",
+        recurrenceType: "none",
+        specificDate: "",
+        scheduleMode: "day",
       }
       // Initialize custom fields with default values
       customFields.forEach(field => {
@@ -296,6 +308,28 @@ export function Schedule({
         title={selectedEvent ? "Edit Event" : "Add New Event"}
       >
         <div className="space-y-4 p-6">
+          {/* Schedule Mode Selection */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Schedule Type</Label>
+            <Select
+              value={formData.scheduleMode}
+              onValueChange={(value) => setFormData({ ...formData, scheduleMode: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select schedule type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="day">By Day (Monday, Tuesday, etc.)</SelectItem>
+                <SelectItem value="date">By Date (Specific date)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-gray-500">
+              {formData.scheduleMode === "day"
+                ? "Schedule by day of the week (e.g., every Monday)"
+                : "Schedule by specific date (e.g., January 15, 2025)"}
+            </p>
+          </div>
+
           {/* Title Field */}
           <div className="space-y-2">
             <Label htmlFor="title">Title *</Label>
@@ -307,21 +341,33 @@ export function Schedule({
             />
           </div>
 
-          {/* Day and Time Fields */}
+          {/* Day/Date and Time Fields */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label>Day *</Label>
-              <Select value={formData.day} onValueChange={(value) => setFormData({ ...formData, day: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select day" />
-                </SelectTrigger>
-                <SelectContent>
-                  {daysOfWeek.map(day => (
-                    <SelectItem key={day} value={day}>{day}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {formData.scheduleMode === "day" ? (
+              <div className="space-y-2">
+                <Label>Day *</Label>
+                <Select value={formData.day} onValueChange={(value) => setFormData({ ...formData, day: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select day" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {daysOfWeek.map(day => (
+                      <SelectItem key={day} value={day}>{day}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="specificDate">Date *</Label>
+                <Input
+                  id="specificDate"
+                  type="date"
+                  value={formData.specificDate}
+                  onChange={(e) => setFormData({ ...formData, specificDate: e.target.value })}
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="startTime">Start Time *</Label>
               <Input
@@ -382,6 +428,33 @@ export function Schedule({
               ))}
             </div>
           )}
+
+          {/* Recurrence Checkbox */}
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="isRecurring"
+              checked={formData.recurrenceType !== "none"}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  // Enable recurrence based on schedule mode
+                  setFormData({
+                    ...formData,
+                    recurrenceType: formData.scheduleMode === "day" ? "weekly" : "monthly"
+                  })
+                } else {
+                  // Disable recurrence
+                  setFormData({ ...formData, recurrenceType: "none" })
+                }
+              }}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+            />
+            <Label htmlFor="isRecurring" className="text-sm font-medium text-gray-700 cursor-pointer">
+              {formData.scheduleMode === "day"
+                ? "Repeat every week on this day"
+                : "Repeat every month on this date"}
+            </Label>
+          </div>
 
           {/* Color Selection */}
           <div className="space-y-2">
