@@ -53,7 +53,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   showClockFace = false,
 }) => {
   const [view, setView] = useState<'time' | 'timezone'>('time');
-  const [is24Hour, setIs24Hour] = useState(format === '24h');
+  const is24Hour = format === '24h';
   const [hours, setHours] = useState<number>(time ? time.getHours() : 0);
   const [minutes, setMinutes] = useState<number>(time ? time.getMinutes() : 0);
   const [seconds, setSeconds] = useState<number>(time ? time.getSeconds() : 0);
@@ -254,72 +254,56 @@ export const TimePicker: React.FC<TimePickerProps> = ({
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         {view === 'time' ? (
-          <div className="p-4 space-y-4">
-            {/* Large Time Display */}
-            <div className="text-center space-y-2">
-              <div className="flex items-center justify-center gap-1">
-                <div className="text-6xl font-light tabular-nums">
-                  {displayHour.toString().padStart(2, '0')}
-                </div>
-                <div className="text-6xl font-light">:</div>
-                <div className="text-6xl font-light tabular-nums">
-                  {minutes.toString().padStart(2, '0')}
-                </div>
-                {showSeconds && (
-                  <>
-                    <div className="text-6xl font-light">:</div>
-                    <div className="text-6xl font-light tabular-nums">
-                      {seconds.toString().padStart(2, '0')}
-                    </div>
-                  </>
-                )}
-              </div>
-              
-              {/* 24 Hour Toggle */}
-              <div className="flex items-center justify-center gap-2 text-sm">
-                <button
-                  onClick={() => setIs24Hour(!is24Hour)}
-                  className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-gray-100 transition-colors"
-                >
-                  <div className={cn(
-                    "w-10 h-5 rounded-full transition-colors relative",
-                    is24Hour ? "bg-blue-500" : "bg-gray-300"
-                  )}>
-                    <div className={cn(
-                      "absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform",
-                      is24Hour ? "right-0.5" : "left-0.5"
-                    )} />
+          <div className="p-4 space-y-4 min-w-[280px]">
+            {/* Time Display with AM/PM buttons */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-center gap-4">
+                {/* Time Display */}
+                <div className="flex items-center gap-1">
+                  <div className="text-5xl font-medium tabular-nums">
+                    {displayHour.toString().padStart(2, '0')}
                   </div>
-                  <span className="text-gray-700">24 Hours</span>
-                </button>
+                  <div className="text-5xl font-medium">:</div>
+                  <div className="text-5xl font-medium tabular-nums">
+                    {minutes.toString().padStart(2, '0')}
+                  </div>
+                  {showSeconds && (
+                    <>
+                      <div className="text-5xl font-medium">:</div>
+                      <div className="text-5xl font-medium tabular-nums">
+                        {seconds.toString().padStart(2, '0')}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* AM/PM Buttons - Right Side */}
+                {!is24Hour && (
+                  <div className="flex flex-col gap-1">
+                    <Button
+                      size="sm"
+                      variant={period === 'AM' ? 'default' : 'outline'}
+                      onClick={() => handlePeriodToggle('AM')}
+                      className="h-10 w-14 text-sm font-medium"
+                    >
+                      AM
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={period === 'PM' ? 'default' : 'outline'}
+                      onClick={() => handlePeriodToggle('PM')}
+                      className="h-10 w-14 text-sm font-medium"
+                    >
+                      PM
+                    </Button>
+                  </div>
+                )}
               </div>
 
               {showTimezone && (
-                <div className="text-xs text-gray-500">{timezone}</div>
+                <div className="text-xs text-gray-500 text-center">{timezone}</div>
               )}
             </div>
-
-            {/* AM/PM Toggle for 12h format */}
-            {!is24Hour && (
-              <div className="flex justify-center gap-2">
-                <Button
-                  size="sm"
-                  variant={period === 'AM' ? 'default' : 'outline'}
-                  onClick={() => handlePeriodToggle('AM')}
-                  className="w-16"
-                >
-                  AM
-                </Button>
-                <Button
-                  size="sm"
-                  variant={period === 'PM' ? 'default' : 'outline'}
-                  onClick={() => handlePeriodToggle('PM')}
-                  className="w-16"
-                >
-                  PM
-                </Button>
-              </div>
-            )}
 
             {showClockFace ? (
               /* Clock Face View */
