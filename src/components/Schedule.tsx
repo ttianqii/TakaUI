@@ -185,10 +185,15 @@ export function Schedule({
   }
 
   const getEventHeight = (event: ScheduleEvent) => {
-    const start = parseInt(event.startTime.replace(":", ""))
-    const end = parseInt(event.endTime.replace(":", ""))
-    const duration = (end - start) / 100
-    return duration * slotHeight - 8 // slotHeight px per hour, minus padding
+    const [startHour, startMin] = event.startTime.split(':').map(Number)
+    const [endHour, endMin] = event.endTime.split(':').map(Number)
+    const startInMinutes = startHour * 60 + startMin
+    const endInMinutes = endHour * 60 + endMin
+    const durationInMinutes = endInMinutes - startInMinutes
+    const durationInHours = durationInMinutes / 60
+    // Use proportional padding based on slot height (roughly 10% of slot height)
+    const padding = Math.max(4, slotHeight * 0.1)
+    return durationInHours * slotHeight - padding
   }
 
   return (
