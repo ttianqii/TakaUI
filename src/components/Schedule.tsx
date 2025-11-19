@@ -326,10 +326,10 @@ export function Schedule({
 
                           {/* Current Time Indicator */}
                           {showCurrentTimeIndicator && isToday && isCurrentTimeSlot && (
-                            <div className="absolute left-0 right-0 flex items-center z-20" style={{ top: `${indicatorTop}px` }}>
-                              <div className="h-[3px] bg-red-500 absolute left-0 right-0" />
-                              <div className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-semibold whitespace-nowrap relative z-30">
-                                {now.getHours().toString().padStart(2, '0')}:{now.getMinutes().toString().padStart(2, '0')}
+                            <div className="absolute left-0 right-0 flex items-center z-20" style={{ top: `${indicatorTop - 8}px` }}>
+                              <div className="h-[3px] bg-red-500 absolute -left-14 right-0"></div>
+                              <div className="bg-red-500 text-white text-xs px-2 py-0.5 rounded font-bold whitespace-nowrap relative z-30 -ml-14">
+                                {now.getHours()}:{now.getMinutes().toString().padStart(2, '0')}
                               </div>
                             </div>
                           )}
