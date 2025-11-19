@@ -426,7 +426,7 @@ export function DatePicker({
                   </div>
 
                   {/* Calendar grid */}
-                  <div className="grid grid-cols-7 gap-1">
+                  <div className="grid grid-cols-7">
                     {Array.from({ length: monthStart.getDay() }).map((_, index) => (
                       <div key={`empty-${index}`} className="h-10" />
                     ))}
@@ -442,7 +442,7 @@ export function DatePicker({
                         <div 
                           key={day.toISOString()} 
                           className={cn(
-                            "relative",
+                            "relative p-0.5",
                             inRange && "bg-gray-100"
                           )}
                           onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
@@ -487,7 +487,7 @@ export function DatePicker({
                   </div>
 
                   {/* Calendar grid */}
-                  <div className="grid grid-cols-7 gap-1">
+                  <div className="grid grid-cols-7">
                     {Array.from({ length: nextMonthStart.getDay() }).map((_, index) => (
                       <div key={`next-empty-${index}`} className="h-10" />
                     ))}
@@ -503,7 +503,7 @@ export function DatePicker({
                         <div 
                           key={day.toISOString()} 
                           className={cn(
-                            "relative",
+                            "relative p-0.5",
                             inRange && "bg-gray-100"
                           )}
                           onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
