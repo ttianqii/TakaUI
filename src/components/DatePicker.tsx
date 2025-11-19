@@ -413,9 +413,9 @@ export function DatePicker({
             {view === 'calendar' && (
               <div className={cn("flex", numberOfMonths === 2 && "gap-6")}>
                 {/* Current Month */}
-                <div>
+                <div className="flex-1">
                   {/* Weekday headers */}
-                  <div className="grid grid-cols-7 gap-0.5 mb-1">
+                  <div className="grid grid-cols-7 gap-1 mb-2">
                     {dayNames.map((day, index) => (
                       <div key={index} className="h-8 flex items-center justify-center">
                         <span className="text-xs font-medium text-gray-400 uppercase">
@@ -426,7 +426,7 @@ export function DatePicker({
                   </div>
 
                   {/* Calendar grid */}
-                  <div className="grid grid-cols-7">
+                  <div className="grid grid-cols-7 gap-1">
                     {Array.from({ length: monthStart.getDay() }).map((_, index) => (
                       <div key={`empty-${index}`} className="h-10" />
                     ))}
@@ -474,9 +474,9 @@ export function DatePicker({
 
                 {/* Next Month */}
                 {numberOfMonths === 2 && (
-                <div>
+                <div className="flex-1">
                   {/* Weekday headers */}
-                  <div className="grid grid-cols-7 gap-0.5 mb-1">
+                  <div className="grid grid-cols-7 gap-1 mb-2">
                     {dayNames.map((day, index) => (
                       <div key={index} className="h-8 flex items-center justify-center">
                         <span className="text-xs font-medium text-gray-400 uppercase">
@@ -487,7 +487,7 @@ export function DatePicker({
                   </div>
 
                   {/* Calendar grid */}
-                  <div className="grid grid-cols-7">
+                  <div className="grid grid-cols-7 gap-1">
                     {Array.from({ length: nextMonthStart.getDay() }).map((_, index) => (
                       <div key={`next-empty-${index}`} className="h-10" />
                     ))}
