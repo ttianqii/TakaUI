@@ -5,6 +5,12 @@ import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
+export interface Holiday {
+  date: Date
+  name: string
+  country?: string
+}
+
 export interface DatePickerProps {
   /** The selected date */
   date?: Date
@@ -48,6 +54,8 @@ export interface DatePickerProps {
   customTrigger?: React.ReactNode
   /** Number of months to display (1 or 2) */
   numberOfMonths?: 1 | 2
+  /** Array of holidays to display */
+  holidays?: Holiday[]
 }
 
 export function DatePicker({
@@ -72,6 +80,7 @@ export function DatePicker({
   fullWidth = false,
   customTrigger,
   numberOfMonths = 1,
+  holidays = [],
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
   const [currentMonth, setCurrentMonth] = React.useState(date || new Date())
@@ -134,6 +143,10 @@ export function DatePicker({
     if (isDateDisabled?.(checkDate)) return true
 
     return false
+  }
+
+  const isHoliday = (checkDate: Date) => {
+    return holidays.some(h => isSameDay(h.date, checkDate))
   }
 
   const monthStart = startOfMonth(currentMonth)
@@ -244,7 +257,7 @@ export function DatePicker({
       <PopoverTrigger asChild>
         {triggerContent}
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 border-gray-200" align={align} sideOffset={4} avoidCollisions={true} collisionPadding={8}>
+      <PopoverContent className="w-auto p-0 border-gray-200" align={align} side="bottom" sideOffset={4} collisionPadding={8}>
         <div className="bg-white rounded-lg">
           {/* Calendar Header */}
           <div className="border-b border-gray-100 px-6 py-4">
@@ -423,6 +436,7 @@ export function DatePicker({
                       const isCurrentMonth = isSameMonth(day, currentMonth)
                       const isDisabled = isDateDisabledCheck(day)
                       const inRange = mode === 'range' && isInRange(day)
+                      const isHolidayDay = isHoliday(day)
 
                       return (
                         <div 
@@ -441,7 +455,8 @@ export function DatePicker({
                             className={cn(
                               "h-10 w-full p-0 text-sm relative transition-all duration-200",
                               !isCurrentMonth && "text-gray-300",
-                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && "text-gray-700 hover:bg-gray-50 rounded",
+                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && !isHolidayDay && "text-gray-700 hover:bg-gray-50 rounded",
+                              isHolidayDay && !isSelectedDay && "text-red-600 font-medium hover:bg-red-50 rounded",
                               isTodayDay && !isSelectedDay && !inRange && "bg-gray-50 text-gray-900 font-medium border border-gray-200 rounded",
                               isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 rounded",
                               inRange && !isSelectedDay && "bg-transparent text-gray-900",
@@ -482,6 +497,7 @@ export function DatePicker({
                       const isCurrentMonth = isSameMonth(day, nextMonthDate)
                       const isDisabled = isDateDisabledCheck(day)
                       const inRange = mode === 'range' && isInRange(day)
+                      const isHolidayDay = isHoliday(day)
 
                       return (
                         <div 
@@ -500,7 +516,8 @@ export function DatePicker({
                             className={cn(
                               "h-10 w-full p-0 text-sm relative transition-all duration-200",
                               !isCurrentMonth && "text-gray-300",
-                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && "text-gray-700 hover:bg-gray-50 rounded",
+                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && !isHolidayDay && "text-gray-700 hover:bg-gray-50 rounded",
+                              isHolidayDay && !isSelectedDay && "text-red-600 font-medium hover:bg-red-50 rounded",
                               isTodayDay && !isSelectedDay && !inRange && "bg-gray-50 text-gray-900 font-medium border border-gray-200 rounded",
                               isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 rounded",
                               inRange && !isSelectedDay && "bg-transparent text-gray-900",

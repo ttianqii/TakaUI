@@ -8,7 +8,7 @@ import { Button } from './components/ui/button'
 import { Checkbox } from './components/ui/checkbox'
 import { Separator } from './components/ui/separator'
 import { DataTable } from './components/DataTable'
-import { DatePicker } from './components/DatePicker'
+import { DatePicker, type Holiday } from './components/DatePicker'
 import { Schedule, type ScheduleEvent, type CustomField } from './components/Schedule'
 import { Calendar as CalendarComponent, type CalendarEvent } from './components/Calendar'
 import { MapPin, Users as UsersIcon, Building } from 'lucide-react'
@@ -28,6 +28,28 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from './components/ui/dropdown-menu'
+
+// Thai National Holidays 2025
+const thaiHolidays: Holiday[] = [
+  { date: new Date(2025, 0, 1), name: 'New Year\'s Day', country: 'TH' },
+  { date: new Date(2025, 1, 12), name: 'Makha Bucha Day', country: 'TH' },
+  { date: new Date(2025, 3, 6), name: 'Chakri Memorial Day', country: 'TH' },
+  { date: new Date(2025, 3, 13), name: 'Songkran Festival', country: 'TH' },
+  { date: new Date(2025, 3, 14), name: 'Songkran Festival', country: 'TH' },
+  { date: new Date(2025, 3, 15), name: 'Songkran Festival', country: 'TH' },
+  { date: new Date(2025, 4, 1), name: 'Labour Day', country: 'TH' },
+  { date: new Date(2025, 4, 5), name: 'Coronation Day', country: 'TH' },
+  { date: new Date(2025, 4, 11), name: 'Visakha Bucha Day', country: 'TH' },
+  { date: new Date(2025, 5, 3), name: 'Queen Suthida\'s Birthday', country: 'TH' },
+  { date: new Date(2025, 6, 28), name: 'King Vajiralongkorn\'s Birthday', country: 'TH' },
+  { date: new Date(2025, 6, 29), name: 'Asanha Bucha Day', country: 'TH' },
+  { date: new Date(2025, 7, 12), name: 'Queen Sirikit\'s Birthday', country: 'TH' },
+  { date: new Date(2025, 9, 13), name: 'King Bhumibol Memorial Day', country: 'TH' },
+  { date: new Date(2025, 9, 23), name: 'Chulalongkorn Day', country: 'TH' },
+  { date: new Date(2025, 11, 5), name: 'King Bhumibol\'s Birthday', country: 'TH' },
+  { date: new Date(2025, 11, 10), name: 'Constitution Day', country: 'TH' },
+  { date: new Date(2025, 11, 31), name: 'New Year\'s Eve', country: 'TH' },
+]
 
 // Sample data type for goods inventory
 type GoodsItem = {
@@ -1150,6 +1172,7 @@ function App() {
                   date={date1}
                   onDateChange={setDate1}
                   placeholder="Pick a date"
+                  holidays={thaiHolidays}
                 />
               </div>
 
@@ -1160,6 +1183,7 @@ function App() {
                   onDateChange={setDate2}
                   variant="default"
                   placeholder="Pick a date"
+                  holidays={thaiHolidays}
                 />
               </div>
 
@@ -1170,6 +1194,7 @@ function App() {
                   onDateChange={setDate3}
                   variant="ghost"
                   placeholder="Pick a date"
+                  holidays={thaiHolidays}
                 />
               </div>
             </div>
@@ -1292,12 +1317,12 @@ function App() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs text-gray-600">With Dropdown Navigation</label>
+                <label className="text-xs text-gray-600">With Month/Year Navigation</label>
                 <DatePicker
                   date={date3}
                   onDateChange={setDate3}
-                  captionLayout="dropdown"
-                  placeholder="Dropdown navigation"
+                  placeholder="Select a date"
+                  holidays={thaiHolidays}
                 />
               </div>
 
@@ -1334,7 +1359,7 @@ function App() {
 
           {/* Date Range Picker */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-gray-700">Date Range Picker - 2 Months</h3>
+            <h3 className="text-sm font-semibold text-gray-700">Date Range Picker - 2 Months (with Thai Holidays)</h3>
             <div className="space-y-2">
               <label className="text-xs text-gray-600">Select Date Range (2 Months View)</label>
               <DatePicker
@@ -1343,6 +1368,8 @@ function App() {
                 onDateRangeChange={(range) => setDateRange(range || { from: undefined, to: undefined })}
                 numberOfMonths={2}
                 placeholder="Pick a date range"
+                align="start"
+                holidays={thaiHolidays}
               />
               {dateRange?.from && dateRange?.to && (
                 <p className="text-xs text-gray-600 mt-2">
@@ -1356,7 +1383,7 @@ function App() {
 
           {/* Date Range Picker - 1 Month */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-gray-700">Date Range Picker - 1 Month</h3>
+            <h3 className="text-sm font-semibold text-gray-700">Date Range Picker - 1 Month (with Thai Holidays)</h3>
             <div className="space-y-2">
               <label className="text-xs text-gray-600">Select Date Range (1 Month View)</label>
               <DatePicker
@@ -1365,6 +1392,8 @@ function App() {
                 onDateRangeChange={(range) => setDateRange2(range || { from: undefined, to: undefined })}
                 numberOfMonths={1}
                 placeholder="Pick a date range"
+                align="start"
+                holidays={thaiHolidays}
               />
               {dateRange2?.from && dateRange2?.to && (
                 <p className="text-xs text-gray-600 mt-2">
@@ -1444,7 +1473,7 @@ function App() {
         <div className="space-y-4">
           <div>
             <h2 className="text-2xl font-bold mb-2">Calendar Component</h2>
-            <p className="text-gray-600">Interactive calendar with event management</p>
+            <p className="text-gray-600">Interactive calendar with event management and Thai holidays</p>
           </div>
 
           <div className="max-w-md mx-auto">
@@ -1452,6 +1481,7 @@ function App() {
               selected={selectedDate}
               onSelect={setSelectedDate}
               events={calendarEvents}
+              holidays={thaiHolidays}
             />
           </div>
         </div>

@@ -2,6 +2,7 @@ import * as React from "react"
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react"
 import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
+import type { Holiday } from "./DatePicker"
 
 export interface CalendarEvent {
   date: Date
@@ -16,6 +17,7 @@ export interface CalendarProps {
   selected?: Date
   onSelect?: (date: Date) => void
   events?: CalendarEvent[]
+  holidays?: Holiday[]
   className?: string
 }
 
@@ -90,6 +92,7 @@ export function Calendar({
   selected,
   onSelect,
   events = [],
+  holidays = [],
   className,
   ...props
 }: CalendarProps) {
@@ -144,8 +147,12 @@ export function Calendar({
     setView('calendar')
   }
 
-  const getEventsForDay = (date: Date) => {
-    return events.filter(event => isSameDay(event.date, date))
+  const getEventsForDay = (day: Date) => {
+    return events.filter(event => isSameDay(event.date, day))
+  }
+
+  const isHoliday = (checkDate: Date) => {
+    return holidays.some(h => isSameDay(h.date, checkDate))
   }
 
   // Month picker view
@@ -315,6 +322,7 @@ export function Calendar({
             const isSelectedDay = selected && isSameDay(day, selected)
             const isTodayDay = isToday(day)
             const isCurrentMonth = isSameMonth(day, currentMonth)
+            const isHolidayDay = isHoliday(day)
 
             return (
               <div key={day.toISOString()} className="relative">
@@ -324,7 +332,8 @@ export function Calendar({
                   className={cn(
                     "h-12 w-full p-0 text-sm relative rounded transition-all duration-200",
                     !isCurrentMonth && "text-gray-300",
-                    isCurrentMonth && !isSelectedDay && !isTodayDay && "text-gray-700 hover:bg-gray-50",
+                    isCurrentMonth && !isSelectedDay && !isTodayDay && !isHolidayDay && "text-gray-700 hover:bg-gray-50",
+                    isHolidayDay && !isSelectedDay && "text-red-600 font-medium hover:bg-red-50",
                     isTodayDay && !isSelectedDay && "bg-gray-100 text-gray-900 font-medium border border-gray-200",
                     isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm",
                   )}
