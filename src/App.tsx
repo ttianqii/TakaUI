@@ -1312,7 +1312,7 @@ function App() {
         <div className="space-y-4">
           <div>
             <h2 className="text-2xl font-bold mb-2">Schedule Component - Meeting Room Example</h2>
-            <p className="text-gray-600">Same component, different use case - customized for meeting management</p>
+            <p className="text-gray-600">Same component, different use case - customized for meeting management (Sunday-Saturday week)</p>
           </div>
 
           <Schedule
@@ -1320,6 +1320,8 @@ function App() {
             subtitle="Conference room bookings - customized for meeting management"
             events={meetingScheduleEvents}
             customFields={meetingFields}
+            daysOfWeek={["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]}
+            showWeekNavigation={true}
             onEventAdd={(event) => {
               const newEvent = { ...event, id: Date.now().toString() } as ScheduleEvent
               setMeetingScheduleEvents([...meetingScheduleEvents, newEvent])

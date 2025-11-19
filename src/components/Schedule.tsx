@@ -206,7 +206,7 @@ export function Schedule({
           <div className="overflow-x-auto">
             <div className="min-w-[800px]">
               {/* Header Row */}
-              <div className="grid grid-cols-[80px_repeat(5,1fr)] border-b border-gray-200">
+              <div className={`grid border-b border-gray-200`} style={{ gridTemplateColumns: `80px repeat(${daysOfWeek.length}, 1fr)` }}>
                 <div className="p-3 bg-gray-50 border-r border-gray-200">
                   <span className="text-xs font-medium text-gray-500">
                     {showWeekNavigation ? `Week ${weekNavigatorUtils.getWeekNumber(currentWeekStart)}` : 'Time'}
@@ -218,7 +218,7 @@ export function Schedule({
                   const isToday = dateForDay && dateForDay.getDate() === today.getDate() && dateForDay.getMonth() === today.getMonth() && dateForDay.getFullYear() === today.getFullYear()
 
                   return (
-                    <div key={day} className="p-3 text-center border-r border-gray-200 last:border-r-0 bg-gray-50 hover:bg-white/50 transition-colors">
+                    <div key={day} className="p-4 text-center border-r border-gray-200 last:border-r-0 bg-gray-50 hover:bg-white/50 transition-colors">
                       <div className={`font-semibold text-sm ${isToday ? 'text-blue-600' : 'text-gray-800'}`}>{day}</div>
                       {showWeekNavigation && dateForDay && (
                         <div className={`text-xs mt-1 font-medium ${isToday ? 'text-blue-600 font-bold' : 'text-gray-500'}`}>
@@ -232,7 +232,7 @@ export function Schedule({
 
               {/* Time Slots */}
               {timeSlots.map(time => (
-                <div key={time} className="grid grid-cols-[80px_repeat(5,1fr)] border-b border-gray-100 last:border-b-0">
+                <div key={time} className="grid border-b border-gray-100 last:border-b-0" style={{ gridTemplateColumns: `80px repeat(${daysOfWeek.length}, 1fr)` }}>
                   <div className="p-2 bg-gray-50/50 border-r border-gray-200">
                     <span className="text-xs text-gray-600">{time}</span>
                   </div>
