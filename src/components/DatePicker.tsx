@@ -188,7 +188,7 @@ export function DatePicker({
                     onClick={() => setView('months')}
                     className="h-9 px-3 font-semibold text-base hover:bg-gray-50"
                   >
-                    {formatDate(currentMonth, "MMMM yyyy")}
+                    {formatDate(currentMonth, "MMMM")}
                   </Button>
                   <span className="text-gray-400 text-sm">-</span>
                   <Button
