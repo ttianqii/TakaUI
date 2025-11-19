@@ -432,21 +432,21 @@ function App() {
                 </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => console.log('Edit:', item.id)}
-                  className="cursor-pointer"
                 >
                   Edit Item
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => console.log('Reorder:', item.id)}
-                  className="cursor-pointer"
                 >
                   Reorder Stock
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => console.log('Delete:', item.id)}
-                  className="cursor-pointer text-red-600 focus:text-red-600"
+                  variant="destructive"
                 >
                   Delete Item
                 </DropdownMenuItem>
