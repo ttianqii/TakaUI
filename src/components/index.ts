@@ -31,3 +31,10 @@ export {
   DropdownMenuRadioGroup,
 } from './ui/dropdown-menu';
 export { DataTable } from './DataTable';
+export { DatePicker, type DatePickerProps } from './DatePicker';
+export { Schedule, type ScheduleEvent, type ScheduleProps, type CustomField } from './Schedule';
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from './ui/popover';
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './ui/card';
+export { Label } from './ui/label';
+export { Modal } from './ui/modal';
+export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator } from './ui/select';

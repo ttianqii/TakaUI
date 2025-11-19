@@ -1,12 +1,16 @@
 import './index.css'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github } from 'lucide-react'
+import { ArrowUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart, Calendar } from 'lucide-react'
+import { addDays, subDays } from 'date-fns'
 
 import { Button } from './components/ui/button'
 import { Checkbox } from './components/ui/checkbox'
 import { Separator } from './components/ui/separator'
 import { DataTable } from './components/DataTable'
+import { DatePicker } from './components/DatePicker'
+import { Schedule, type ScheduleEvent, type CustomField } from './components/Schedule'
+import { MapPin, Users as UsersIcon, Building } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -255,6 +259,153 @@ const customerData: Customer[] = [
 ]
 
 function App() {
+  // DatePicker state
+  const [date1, setDate1] = useState<Date>()
+  const [date2, setDate2] = useState<Date>()
+  const [date3, setDate3] = useState<Date>()
+  const [date4, setDate4] = useState<Date>()
+  const [date5, setDate5] = useState<Date>()
+  const [date6, setDate6] = useState<Date>()
+  const [date7, setDate7] = useState<Date>()
+  const [date8, setDate8] = useState<Date>()
+
+  // Schedule state - Classroom Example
+  const [classScheduleEvents, setClassScheduleEvents] = useState<ScheduleEvent[]>([
+    {
+      id: "1",
+      title: "Mathematics",
+      day: "Monday",
+      startTime: "09:00",
+      endTime: "10:30",
+      classroom: "Room 101",
+      grade: "Grade 8",
+      students: 25,
+      color: "bg-blue-500",
+    },
+    {
+      id: "2",
+      title: "Physics Lab",
+      day: "Monday",
+      startTime: "11:00",
+      endTime: "12:30",
+      classroom: "Lab 2",
+      grade: "Grade 10",
+      students: 20,
+      color: "bg-green-500",
+    },
+    {
+      id: "3",
+      title: "English",
+      day: "Tuesday",
+      startTime: "08:00",
+      endTime: "09:30",
+      classroom: "Room 205",
+      grade: "Grade 9",
+      students: 28,
+      color: "bg-purple-500",
+    },
+  ])
+
+  // Schedule state - Meeting Room Example
+  const [meetingScheduleEvents, setMeetingScheduleEvents] = useState<ScheduleEvent[]>([
+    {
+      id: "1",
+      title: "Team Standup",
+      day: "Monday",
+      startTime: "09:00",
+      endTime: "09:30",
+      location: "Conference A",
+      organizer: "John Smith",
+      attendees: 8,
+      color: "bg-blue-500",
+    },
+    {
+      id: "2",
+      title: "Product Review",
+      day: "Monday",
+      startTime: "10:00",
+      endTime: "11:30",
+      location: "Board Room",
+      organizer: "Sarah Lee",
+      attendees: 12,
+      color: "bg-purple-500",
+    },
+    {
+      id: "3",
+      title: "Client Call",
+      day: "Wednesday",
+      startTime: "14:00",
+      endTime: "15:00",
+      location: "Zoom",
+      organizer: "Mike Chen",
+      attendees: 5,
+      color: "bg-orange-500",
+    },
+  ])
+
+  // Custom fields for classroom schedule
+  const classroomFields: CustomField[] = [
+    {
+      key: "classroom",
+      label: "Classroom",
+      type: "text",
+      placeholder: "e.g., Room 101",
+      icon: <MapPin className="h-3 w-3" />,
+      showInCard: true,
+      required: true,
+    },
+    {
+      key: "grade",
+      label: "Grade",
+      type: "select",
+      options: [
+        { label: "Grade 8", value: "Grade 8" },
+        { label: "Grade 9", value: "Grade 9" },
+        { label: "Grade 10", value: "Grade 10" },
+        { label: "Grade 11", value: "Grade 11" },
+        { label: "Grade 12", value: "Grade 12" },
+      ],
+      showInCard: false,
+    },
+    {
+      key: "students",
+      label: "Students",
+      type: "number",
+      placeholder: "Number of students",
+      icon: <UsersIcon className="h-3 w-3" />,
+      showInCard: true,
+    },
+  ]
+
+  // Custom fields for meeting schedule
+  const meetingFields: CustomField[] = [
+    {
+      key: "location",
+      label: "Location",
+      type: "text",
+      placeholder: "e.g., Conference Room A",
+      icon: <Building className="h-3 w-3" />,
+      showInCard: true,
+      required: true,
+    },
+    {
+      key: "organizer",
+      label: "Organizer",
+      type: "text",
+      placeholder: "Organizer name",
+      showInCard: false,
+      required: true,
+    },
+    {
+      key: "attendees",
+      label: "Attendees",
+      type: "number",
+      placeholder: "Number of attendees",
+      icon: <UsersIcon className="h-3 w-3" />,
+      showInCard: true,
+    },
+  ]
+
   // Define columns with TanStack Table
   const columns = useMemo<ColumnDef<GoodsItem>[]>(
     () => [
@@ -923,6 +1074,263 @@ function App() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
+
+        <Separator className="my-4" />
+
+        {/* DatePicker Component Showcase */}
+        <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
+          <div>
+            <h2 className="text-2xl font-semibold mb-1">DatePicker Component</h2>
+            <p className="text-sm text-gray-600">Minimal, rounded date picker with extensive customization</p>
+          </div>
+
+          <Separator />
+
+          {/* Basic Variants */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Basic Variants</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Default (Outline)</label>
+                <DatePicker
+                  date={date1}
+                  onDateChange={setDate1}
+                  placeholder="Pick a date"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Filled Variant</label>
+                <DatePicker
+                  date={date2}
+                  onDateChange={setDate2}
+                  variant="default"
+                  placeholder="Pick a date"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Ghost Variant</label>
+                <DatePicker
+                  date={date3}
+                  onDateChange={setDate3}
+                  variant="ghost"
+                  placeholder="Pick a date"
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Sizes */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Size Variants</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Small</label>
+                <DatePicker
+                  date={date1}
+                  onDateChange={setDate1}
+                  size="sm"
+                  placeholder="Small size"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Default</label>
+                <DatePicker
+                  date={date1}
+                  onDateChange={setDate1}
+                  size="default"
+                  placeholder="Default size"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Large</label>
+                <DatePicker
+                  date={date1}
+                  onDateChange={setDate1}
+                  size="lg"
+                  placeholder="Large size"
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Customization Options */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Customization Options</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Without Icon</label>
+                <DatePicker
+                  date={date4}
+                  onDateChange={setDate4}
+                  showIcon={false}
+                  placeholder="No icon"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Custom Icon</label>
+                <DatePicker
+                  date={date5}
+                  onDateChange={setDate5}
+                  icon={<Heart className="mr-2 h-4 w-4 text-red-500" />}
+                  placeholder="Custom icon"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Full Width</label>
+                <DatePicker
+                  date={date6}
+                  onDateChange={setDate6}
+                  fullWidth
+                  placeholder="Full width picker"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Custom Format (dd/MM/yyyy)</label>
+                <DatePicker
+                  date={date7}
+                  onDateChange={setDate7}
+                  dateFormat="dd/MM/yyyy"
+                  placeholder="DD/MM/YYYY"
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Advanced Features */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Advanced Features</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Date Range (Last 7 days to Next 7 days)</label>
+                <DatePicker
+                  date={date1}
+                  onDateChange={setDate1}
+                  minDate={subDays(new Date(), 7)}
+                  maxDate={addDays(new Date(), 7)}
+                  placeholder="Limited range"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Disabled Weekends</label>
+                <DatePicker
+                  date={date2}
+                  onDateChange={setDate2}
+                  isDateDisabled={(date) => {
+                    const day = date.getDay()
+                    return day === 0 || day === 6
+                  }}
+                  placeholder="Weekdays only"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">With Dropdown Navigation</label>
+                <DatePicker
+                  date={date3}
+                  onDateChange={setDate3}
+                  captionLayout="dropdown"
+                  placeholder="Dropdown navigation"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Disabled State</label>
+                <DatePicker
+                  date={date8}
+                  onDateChange={setDate8}
+                  disabled
+                  placeholder="Disabled picker"
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Multiple Months */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Multiple Months Display</h3>
+            <div className="space-y-2">
+              <label className="text-xs text-gray-600">Show 2 Months Side by Side</label>
+              <DatePicker
+                date={date4}
+                onDateChange={setDate4}
+                numberOfMonths={2}
+                placeholder="View 2 months"
+                align="center"
+              />
+            </div>
+          </div>
+        </div>
+
+        <Separator className="my-4" />
+
+        {/* Schedule Component Showcase - Classroom Example */}
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Schedule Component - Classroom Example</h2>
+            <p className="text-gray-600">Fully customizable schedule with custom fields for classroom management</p>
+          </div>
+
+          <Schedule
+            title="Class Schedule"
+            subtitle="Weekly teaching schedule - customized for classroom management"
+            events={classScheduleEvents}
+            customFields={classroomFields}
+            showWeekNavigation={true}
+            onEventAdd={(event) => {
+              const newEvent = { ...event, id: Date.now().toString() } as ScheduleEvent
+              setClassScheduleEvents([...classScheduleEvents, newEvent])
+            }}
+            onEventUpdate={(event) => {
+              setClassScheduleEvents(classScheduleEvents.map(e => e.id === event.id ? event : e))
+            }}
+            onEventDelete={(eventId) => {
+              setClassScheduleEvents(classScheduleEvents.filter(e => e.id !== eventId))
+            }}
+          />
+        </div>
+
+        <Separator className="my-4" />
+
+        {/* Schedule Component Showcase - Meeting Room Example */}
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Schedule Component - Meeting Room Example</h2>
+            <p className="text-gray-600">Same component, different use case - customized for meeting management</p>
+          </div>
+
+          <Schedule
+            title="Meeting Room Schedule"
+            subtitle="Conference room bookings - customized for meeting management"
+            events={meetingScheduleEvents}
+            customFields={meetingFields}
+            onEventAdd={(event) => {
+              const newEvent = { ...event, id: Date.now().toString() } as ScheduleEvent
+              setMeetingScheduleEvents([...meetingScheduleEvents, newEvent])
+            }}
+            onEventUpdate={(event) => {
+              setMeetingScheduleEvents(meetingScheduleEvents.map(e => e.id === event.id ? event : e))
+            }}
+            onEventDelete={(eventId) => {
+              setMeetingScheduleEvents(meetingScheduleEvents.filter(e => e.id !== eventId))
+            }}
+          />
         </div>
 
         <Separator className="my-4" />
