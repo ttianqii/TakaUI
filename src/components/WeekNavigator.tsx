@@ -55,7 +55,7 @@ export function WeekNavigator({
     const startDate = new Date(firstDay)
     startDate.setDate(firstDay.getDate() - ((firstDay.getDay() + 6) % 7))
     const weeks = []
-    let currentWeekStart = new Date(startDate)
+    const currentWeekStart = new Date(startDate)
     while (currentWeekStart <= lastDay || currentWeekStart.getMonth() === month) {
       const weekEnd = new Date(currentWeekStart)
       weekEnd.setDate(currentWeekStart.getDate() + 6)
