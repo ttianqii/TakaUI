@@ -556,6 +556,3 @@ export function Schedule({
     </>
   )
 }
-
-// Import useState at top
-const { useState } = React
