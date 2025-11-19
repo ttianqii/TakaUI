@@ -40,6 +40,8 @@ export interface DatePickerProps {
   fullWidth?: boolean
   /** Custom trigger element */
   customTrigger?: React.ReactNode
+  /** Number of months to display (1 or 2) */
+  numberOfMonths?: 1 | 2
 }
 
 export function DatePicker({
@@ -60,6 +62,7 @@ export function DatePicker({
   isDateDisabled,
   fullWidth = false,
   customTrigger,
+  numberOfMonths = 1,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
   const [currentMonth, setCurrentMonth] = React.useState(date || new Date())
@@ -90,6 +93,12 @@ export function DatePicker({
   const monthEnd = endOfMonth(currentMonth)
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd })
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+  // Next month data
+  const nextMonthDate = addMonths(currentMonth, 1)
+  const nextMonthStart = startOfMonth(nextMonthDate)
+  const nextMonthEnd = endOfMonth(nextMonthDate)
+  const nextMonthDays = eachDayOfInterval({ start: nextMonthStart, end: nextMonthEnd })
 
   const previousMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1))
@@ -171,14 +180,36 @@ export function DatePicker({
                 <ChevronLeft className="h-4 w-4" />
               </Button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setView('months')}
-                className="h-9 px-4 font-semibold text-lg hover:bg-gray-50"
-              >
-                {formatDate(currentMonth, "MMMM yyyy")}
-              </Button>
+              {numberOfMonths === 2 ? (
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setView('months')}
+                    className="h-9 px-3 font-semibold text-base hover:bg-gray-50"
+                  >
+                    {formatDate(currentMonth, "MMMM yyyy")}
+                  </Button>
+                  <span className="text-gray-400 text-sm">-</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setView('months')}
+                    className="h-9 px-3 font-semibold text-base hover:bg-gray-50"
+                  >
+                    {formatDate(nextMonthDate, "MMMM yyyy")}
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setView('months')}
+                  className="h-9 px-4 font-semibold text-lg hover:bg-gray-50"
+                >
+                  {formatDate(currentMonth, "MMMM yyyy")}
+                </Button>
+              )}
 
               <Button
                 variant="outline"
@@ -289,52 +320,105 @@ export function DatePicker({
             )}
 
             {view === 'calendar' && (
-              <>
-            {/* Weekday headers */}
-            <div className="grid grid-cols-7 gap-0.5 mb-1">
-              {dayNames.map((day, index) => (
-                <div key={index} className="h-8 flex items-center justify-center">
-                  <span className="text-xs font-medium text-gray-400 uppercase">
-                    {day}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Calendar grid */}
-            <div className="grid grid-cols-7 gap-0.5">
-              {Array.from({ length: monthStart.getDay() }).map((_, index) => (
-                <div key={`empty-${index}`} className="h-10" />
-              ))}
-              {days.map((day) => {
-                const isSelectedDay = date && isSameDay(day, date)
-                const isTodayDay = isToday(day)
-                const isCurrentMonth = isSameMonth(day, currentMonth)
-                const isDisabled = isDateDisabledCheck(day)
-
-                return (
-                  <div key={day.toISOString()} className="relative">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      disabled={isDisabled || disabled}
-                      className={cn(
-                        "h-10 w-full p-0 text-sm relative rounded transition-all duration-200",
-                        !isCurrentMonth && "text-gray-300",
-                        isCurrentMonth && !isSelectedDay && !isTodayDay && "text-gray-700 hover:bg-gray-50",
-                        isTodayDay && !isSelectedDay && "bg-gray-100 text-gray-900 font-medium border border-gray-200",
-                        isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm",
-                        isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
-                      )}
-                      onClick={() => !isDisabled && handleSelect(day)}
-                    >
-                      {formatDate(day, "d")}
-                    </Button>
+              <div className={cn("flex", numberOfMonths === 2 && "gap-6")}>
+                {/* Current Month */}
+                <div>
+                  {/* Weekday headers */}
+                  <div className="grid grid-cols-7 gap-0.5 mb-1">
+                    {dayNames.map((day, index) => (
+                      <div key={index} className="h-8 flex items-center justify-center">
+                        <span className="text-xs font-medium text-gray-400 uppercase">
+                          {day}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                )
-              })}
-            </div>
-              </>
+
+                  {/* Calendar grid */}
+                  <div className="grid grid-cols-7 gap-0.5">
+                    {Array.from({ length: monthStart.getDay() }).map((_, index) => (
+                      <div key={`empty-${index}`} className="h-10" />
+                    ))}
+                    {days.map((day) => {
+                      const isSelectedDay = date && isSameDay(day, date)
+                      const isTodayDay = isToday(day)
+                      const isCurrentMonth = isSameMonth(day, currentMonth)
+                      const isDisabled = isDateDisabledCheck(day)
+
+                      return (
+                        <div key={day.toISOString()} className="relative">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={isDisabled || disabled}
+                            className={cn(
+                              "h-10 w-full p-0 text-sm relative rounded transition-all duration-200",
+                              !isCurrentMonth && "text-gray-300",
+                              isCurrentMonth && !isSelectedDay && !isTodayDay && "text-gray-700 hover:bg-gray-50",
+                              isTodayDay && !isSelectedDay && "bg-gray-100 text-gray-900 font-medium border border-gray-200",
+                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm",
+                              isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
+                            )}
+                            onClick={() => !isDisabled && handleSelect(day)}
+                          >
+                            {formatDate(day, "d")}
+                          </Button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* Next Month */}
+                {numberOfMonths === 2 && (
+                <div>
+                  {/* Weekday headers */}
+                  <div className="grid grid-cols-7 gap-0.5 mb-1">
+                    {dayNames.map((day, index) => (
+                      <div key={index} className="h-8 flex items-center justify-center">
+                        <span className="text-xs font-medium text-gray-400 uppercase">
+                          {day}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Calendar grid */}
+                  <div className="grid grid-cols-7 gap-0.5">
+                    {Array.from({ length: nextMonthStart.getDay() }).map((_, index) => (
+                      <div key={`next-empty-${index}`} className="h-10" />
+                    ))}
+                    {nextMonthDays.map((day) => {
+                      const isSelectedDay = date && isSameDay(day, date)
+                      const isTodayDay = isToday(day)
+                      const isCurrentMonth = isSameMonth(day, nextMonthDate)
+                      const isDisabled = isDateDisabledCheck(day)
+
+                      return (
+                        <div key={day.toISOString()} className="relative">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={isDisabled || disabled}
+                            className={cn(
+                              "h-10 w-full p-0 text-sm relative rounded transition-all duration-200",
+                              !isCurrentMonth && "text-gray-300",
+                              isCurrentMonth && !isSelectedDay && !isTodayDay && "text-gray-700 hover:bg-gray-50",
+                              isTodayDay && !isSelectedDay && "bg-gray-100 text-gray-900 font-medium border border-gray-200",
+                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm",
+                              isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
+                            )}
+                            onClick={() => !isDisabled && handleSelect(day)}
+                          >
+                            {formatDate(day, "d")}
+                          </Button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+                )}
+              </div>
             )}
           </div>
         </div>
