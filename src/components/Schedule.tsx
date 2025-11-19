@@ -298,36 +298,63 @@ export function Schedule({
                             <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200/60 z-[5]" />
                           )}
 
-                          {dayEvents.map(event => (
-                            <div
-                              key={event.id}
-                              className={cn(
-                                "absolute inset-1 rounded-md p-2 text-white cursor-pointer hover:scale-[1.02] transition-transform overflow-hidden",
-                                event.color
-                              )}
-                              style={{ height: `${getEventHeight(event)}px`, zIndex: 10 }}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleOpenModal(undefined, undefined, event)
-                              }}
-                            >
-                              <div className="text-xs font-semibold truncate">{event.title}</div>
-
-                              {/* Display custom fields with showInCard: true */}
-                              {customFields
-                                .filter(field => field.showInCard && event[field.key])
-                                .map(field => (
-                                  <div key={field.key} className="text-xs opacity-90 flex items-center gap-1 mt-1">
-                                    {field.icon}
-                                    <span className="truncate">{event[field.key]}</span>
+                          {dayEvents.map(event => {
+                            const eventHeight = getEventHeight(event)
+                            const isShortEvent = eventHeight < 40 // Less than 40px is considered short
+                            
+                            return (
+                              <div
+                                key={event.id}
+                                className={cn(
+                                  "absolute rounded-md text-white cursor-pointer hover:scale-[1.02] transition-transform overflow-visible",
+                                  event.color,
+                                  isShortEvent ? "inset-x-1 py-0.5 px-1" : "inset-1 p-2"
+                                )}
+                                style={{ 
+                                  height: `${eventHeight}px`, 
+                                  zIndex: 10,
+                                  minHeight: isShortEvent ? 'auto' : undefined
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleOpenModal(undefined, undefined, event)
+                                }}
+                              >
+                                {isShortEvent ? (
+                                  // Short event layout: title and time side by side
+                                  <div className="flex items-center justify-between gap-1">
+                                    <div className="font-semibold truncate text-[10px] leading-tight flex-1">
+                                      {event.title}
+                                    </div>
+                                    <div className="text-[9px] opacity-80 whitespace-nowrap">
+                                      {event.startTime}-{event.endTime}
+                                    </div>
                                   </div>
-                                ))}
+                                ) : (
+                                  // Normal event layout
+                                  <>
+                                    <div className="text-xs font-semibold truncate">
+                                      {event.title}
+                                    </div>
 
-                              <div className="text-xs opacity-80 mt-1">
-                                <span>{event.startTime}-{event.endTime}</span>
+                                    {/* Display custom fields with showInCard: true */}
+                                    {customFields
+                                      .filter(field => field.showInCard && event[field.key])
+                                      .map(field => (
+                                        <div key={field.key} className="text-xs opacity-90 flex items-center gap-1 mt-1">
+                                          {field.icon}
+                                          <span className="truncate">{event[field.key]}</span>
+                                        </div>
+                                      ))}
+
+                                    <div className="text-xs opacity-80 mt-1">
+                                      <span>{event.startTime}-{event.endTime}</span>
+                                    </div>
+                                  </>
+                                )}
                               </div>
-                            </div>
-                          ))}
+                            )
+                          })}
 
                           {/* Current Time Indicator */}
                           {showCurrentTimeIndicator && isToday && isCurrentTimeSlot && (
