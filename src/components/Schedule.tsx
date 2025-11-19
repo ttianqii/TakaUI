@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useState } from "react"
 import { Plus, Trash2 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Button } from "./ui/button"
@@ -49,6 +50,9 @@ export interface ScheduleProps {
   eventColors?: { name: string; value: string }[]
   customFields?: CustomField[]
   showWeekNavigation?: boolean
+  showHalfHourLines?: boolean // Show separator line at :30 mark
+  showCurrentTimeIndicator?: boolean // Show red line for current time
+  slotHeight?: number // Height in pixels for each hour slot (default 85)
 }
 
 const defaultTimeSlots = [
@@ -80,6 +84,9 @@ export function Schedule({
   eventColors = defaultColors,
   customFields = [],
   showWeekNavigation = false,
+  showHalfHourLines = true,
+  showCurrentTimeIndicator = true,
+  slotHeight = 85,
 }: ScheduleProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null)
@@ -181,7 +188,7 @@ export function Schedule({
     const start = parseInt(event.startTime.replace(":", ""))
     const end = parseInt(event.endTime.replace(":", ""))
     const duration = (end - start) / 100
-    return duration * 85 - 8 // 85px per hour, minus padding
+    return duration * slotHeight - 8 // slotHeight px per hour, minus padding
   }
 
   return (
@@ -243,59 +250,101 @@ export function Schedule({
               </div>
 
               {/* Time Slots */}
-              {timeSlots.map(time => (
-                <div key={time} className="grid border-b border-gray-100 last:border-b-0" style={{ gridTemplateColumns: `80px repeat(${daysOfWeek.length}, 1fr)` }}>
-                  <div className="p-2 bg-gray-50/50 border-r border-gray-200">
-                    <span className="text-xs text-gray-600">{time}</span>
-                  </div>
-                  {daysOfWeek.map(day => {
-                    const dayEvents = getEventsForSlot(day, time)
-                    return (
-                      <div
-                        key={`${day}-${time}`}
-                        className="relative min-h-[85px] border-r border-gray-200 last:border-r-0 hover:bg-blue-50/30 cursor-pointer transition-colors"
-                        onClick={() => !dayEvents.length && handleOpenModal(day, time)}
-                      >
-                        {dayEvents.map(event => (
-                          <div
-                            key={event.id}
-                            className={cn(
-                              "absolute inset-1 rounded-md p-2 text-white cursor-pointer hover:scale-[1.02] transition-transform overflow-hidden",
-                              event.color
-                            )}
-                            style={{ height: `${getEventHeight(event)}px` }}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleOpenModal(undefined, undefined, event)
-                            }}
-                          >
-                            <div className="text-xs font-semibold truncate">{event.title}</div>
+              {timeSlots.map((time, timeIndex) => {
+                // Calculate current time indicator position for this slot
+                const now = new Date()
+                const currentHour = now.getHours()
+                const currentMinute = now.getMinutes()
+                const [slotHour, slotMinuteRaw] = time.split(":")
+                const slotMinute = parseInt(slotMinuteRaw || "0")
+                const slotHourNum = parseInt(slotHour || "0")
+                const slotStart = slotHourNum * 60 + slotMinute
+                const slotEnd = slotStart + 60
+                const nowMinutes = currentHour * 60 + currentMinute
+                const isCurrentTimeSlot = nowMinutes >= slotStart && nowMinutes < slotEnd
+                const elapsedMinutes = nowMinutes - slotStart
+                const progressRatio = elapsedMinutes / 60
+                const indicatorTop = progressRatio * slotHeight
 
-                            {/* Display custom fields with showInCard: true */}
-                            {customFields
-                              .filter(field => field.showInCard && event[field.key])
-                              .map(field => (
-                                <div key={field.key} className="text-xs opacity-90 flex items-center gap-1 mt-1">
-                                  {field.icon}
-                                  <span className="truncate">{event[field.key]}</span>
-                                </div>
-                              ))}
+                return (
+                  <div key={time} className="grid border-b border-gray-100 last:border-b-0" style={{ gridTemplateColumns: `80px repeat(${daysOfWeek.length}, 1fr)` }}>
+                    <div className="p-2 bg-gray-50/50 border-r border-gray-200">
+                      <span className="text-xs text-gray-600">{time}</span>
+                    </div>
+                    {daysOfWeek.map((day, dayIndex) => {
+                      const dayEvents = getEventsForSlot(day, time)
+                      const today = new Date()
+                      const dateForDay = showWeekNavigation && currentWeekDates[dayIndex]
+                      const isToday = dateForDay ? 
+                        dateForDay.getDate() === today.getDate() && 
+                        dateForDay.getMonth() === today.getMonth() && 
+                        dateForDay.getFullYear() === today.getFullYear() 
+                        : false
 
-                            <div className="text-xs opacity-80 mt-1">
-                              <span>{event.startTime}-{event.endTime}</span>
+                      return (
+                        <div
+                          key={`${day}-${time}`}
+                          className="relative border-r border-gray-200 last:border-r-0 hover:bg-blue-50/30 cursor-pointer transition-colors"
+                          style={{ minHeight: `${slotHeight}px` }}
+                          onClick={() => !dayEvents.length && handleOpenModal(day, time)}
+                        >
+                          {/* Half-hour separator line */}
+                          {showHalfHourLines && (
+                            <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200/60 z-[5]" />
+                          )}
+
+                          {dayEvents.map(event => (
+                            <div
+                              key={event.id}
+                              className={cn(
+                                "absolute inset-1 rounded-md p-2 text-white cursor-pointer hover:scale-[1.02] transition-transform overflow-hidden",
+                                event.color
+                              )}
+                              style={{ height: `${getEventHeight(event)}px`, zIndex: 10 }}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleOpenModal(undefined, undefined, event)
+                              }}
+                            >
+                              <div className="text-xs font-semibold truncate">{event.title}</div>
+
+                              {/* Display custom fields with showInCard: true */}
+                              {customFields
+                                .filter(field => field.showInCard && event[field.key])
+                                .map(field => (
+                                  <div key={field.key} className="text-xs opacity-90 flex items-center gap-1 mt-1">
+                                    {field.icon}
+                                    <span className="truncate">{event[field.key]}</span>
+                                  </div>
+                                ))}
+
+                              <div className="text-xs opacity-80 mt-1">
+                                <span>{event.startTime}-{event.endTime}</span>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                        {!dayEvents.length && (
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                            <Plus className="h-5 w-5 text-gray-400" />
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              ))}
+                          ))}
+
+                          {/* Current Time Indicator */}
+                          {showCurrentTimeIndicator && isToday && isCurrentTimeSlot && (
+                            <div className="absolute left-0 right-0 flex items-center z-20" style={{ top: `${indicatorTop}px` }}>
+                              <div className="h-[3px] bg-red-500 absolute left-0 right-0" />
+                              <div className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-semibold whitespace-nowrap relative z-30">
+                                {now.getHours().toString().padStart(2, '0')}:{now.getMinutes().toString().padStart(2, '0')}
+                              </div>
+                            </div>
+                          )}
+
+                          {!dayEvents.length && (
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                              <Plus className="h-5 w-5 text-gray-400" />
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </CardContent>

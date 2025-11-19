@@ -1293,6 +1293,9 @@ function App() {
             events={classScheduleEvents}
             customFields={classroomFields}
             showWeekNavigation={true}
+            showHalfHourLines={true}
+            showCurrentTimeIndicator={true}
+            slotHeight={85}
             onEventAdd={(event) => {
               const newEvent = { ...event, id: Date.now().toString() } as ScheduleEvent
               setClassScheduleEvents([...classScheduleEvents, newEvent])
@@ -1322,6 +1325,9 @@ function App() {
             customFields={meetingFields}
             daysOfWeek={["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]}
             showWeekNavigation={true}
+            showHalfHourLines={true}
+            showCurrentTimeIndicator={true}
+            slotHeight={85}
             onEventAdd={(event) => {
               const newEvent = { ...event, id: Date.now().toString() } as ScheduleEvent
               setMeetingScheduleEvents([...meetingScheduleEvents, newEvent])
