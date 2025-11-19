@@ -10,6 +10,12 @@ export interface DatePickerProps {
   date?: Date
   /** Callback when date changes */
   onDateChange?: (date: Date | undefined) => void
+  /** Mode: single date or range */
+  mode?: 'single' | 'range'
+  /** Selected date range (for range mode) */
+  dateRange?: { from?: Date; to?: Date }
+  /** Callback when date range changes (for range mode) */
+  onDateRangeChange?: (range: { from?: Date; to?: Date } | undefined) => void
   /** Placeholder text when no date is selected */
   placeholder?: string
   /** Date format string (default: "PPP") */
@@ -47,6 +53,9 @@ export interface DatePickerProps {
 export function DatePicker({
   date,
   onDateChange,
+  mode = 'single',
+  dateRange,
+  onDateRangeChange,
   placeholder = "Pick a date",
   dateFormat = "PPP",
   disabled = false,
@@ -67,10 +76,29 @@ export function DatePicker({
   const [open, setOpen] = React.useState(false)
   const [currentMonth, setCurrentMonth] = React.useState(date || new Date())
   const [view, setView] = React.useState<'calendar' | 'months' | 'years'>('calendar')
+  const [rangeStart, setRangeStart] = React.useState<Date | undefined>(dateRange?.from)
+  const [rangeEnd, setRangeEnd] = React.useState<Date | undefined>(dateRange?.to)
 
   const handleSelect = (selectedDate: Date) => {
-    onDateChange?.(selectedDate)
-    setOpen(false)
+    if (mode === 'range') {
+      if (!rangeStart || (rangeStart && rangeEnd)) {
+        // Start new range
+        setRangeStart(selectedDate)
+        setRangeEnd(undefined)
+        onDateRangeChange?.({ from: selectedDate, to: undefined })
+      } else {
+        // Complete the range
+        const from = rangeStart < selectedDate ? rangeStart : selectedDate
+        const to = rangeStart < selectedDate ? selectedDate : rangeStart
+        setRangeStart(from)
+        setRangeEnd(to)
+        onDateRangeChange?.({ from, to })
+        setOpen(false)
+      }
+    } else {
+      onDateChange?.(selectedDate)
+      setOpen(false)
+    }
   }
 
   const isDateDisabledCheck = (checkDate: Date) => {
@@ -112,6 +140,19 @@ export function DatePicker({
     return format(date, formatStr)
   }
 
+  const isInRange = (day: Date) => {
+    if (!rangeStart || !rangeEnd) return false
+    return day >= rangeStart && day <= rangeEnd
+  }
+
+  const isRangeStart = (day: Date) => {
+    return rangeStart && isSameDay(day, rangeStart)
+  }
+
+  const isRangeEnd = (day: Date) => {
+    return rangeEnd && isSameDay(day, rangeEnd)
+  }
+
   const previousYear = () => {
     const newDate = new Date(currentMonth)
     newDate.setFullYear(currentYear - 1)
@@ -150,14 +191,24 @@ export function DatePicker({
       size={size}
       className={cn(
         "justify-start text-left font-normal",
-        !date && "text-gray-500",
+        !date && !rangeStart && "text-gray-500",
         fullWidth && "w-full",
         className
       )}
       disabled={disabled}
     >
       {showIcon && (icon || <CalendarIcon className="mr-2 h-4 w-4" />)}
-      {date ? format(date, dateFormat) : <span>{placeholder}</span>}
+      {mode === 'range' ? (
+        rangeStart && rangeEnd ? (
+          <span>{format(rangeStart, dateFormat)} - {format(rangeEnd, dateFormat)}</span>
+        ) : rangeStart ? (
+          <span>{format(rangeStart, dateFormat)} - ...</span>
+        ) : (
+          <span>{placeholder}</span>
+        )
+      ) : (
+        date ? format(date, dateFormat) : <span>{placeholder}</span>
+      )}
     </Button>
   )
 
@@ -340,10 +391,11 @@ export function DatePicker({
                       <div key={`empty-${index}`} className="h-10" />
                     ))}
                     {days.map((day) => {
-                      const isSelectedDay = date && isSameDay(day, date)
+                      const isSelectedDay = mode === 'single' ? (date && isSameDay(day, date)) : (isRangeStart(day) || isRangeEnd(day))
                       const isTodayDay = isToday(day)
                       const isCurrentMonth = isSameMonth(day, currentMonth)
                       const isDisabled = isDateDisabledCheck(day)
+                      const inRange = mode === 'range' && isInRange(day)
 
                       return (
                         <div key={day.toISOString()} className="relative">
@@ -354,9 +406,10 @@ export function DatePicker({
                             className={cn(
                               "h-10 w-full p-0 text-sm relative rounded transition-all duration-200",
                               !isCurrentMonth && "text-gray-300",
-                              isCurrentMonth && !isSelectedDay && !isTodayDay && "text-gray-700 hover:bg-gray-50",
+                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && "text-gray-700 hover:bg-gray-50",
                               isTodayDay && !isSelectedDay && "bg-gray-100 text-gray-900 font-medium border border-gray-200",
                               isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm",
+                              inRange && !isSelectedDay && "bg-gray-100 text-gray-900",
                               isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
                             )}
                             onClick={() => !isDisabled && handleSelect(day)}
@@ -389,10 +442,11 @@ export function DatePicker({
                       <div key={`next-empty-${index}`} className="h-10" />
                     ))}
                     {nextMonthDays.map((day) => {
-                      const isSelectedDay = date && isSameDay(day, date)
+                      const isSelectedDay = mode === 'single' ? (date && isSameDay(day, date)) : (isRangeStart(day) || isRangeEnd(day))
                       const isTodayDay = isToday(day)
                       const isCurrentMonth = isSameMonth(day, nextMonthDate)
                       const isDisabled = isDateDisabledCheck(day)
+                      const inRange = mode === 'range' && isInRange(day)
 
                       return (
                         <div key={day.toISOString()} className="relative">
@@ -403,9 +457,10 @@ export function DatePicker({
                             className={cn(
                               "h-10 w-full p-0 text-sm relative rounded transition-all duration-200",
                               !isCurrentMonth && "text-gray-300",
-                              isCurrentMonth && !isSelectedDay && !isTodayDay && "text-gray-700 hover:bg-gray-50",
+                              isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && "text-gray-700 hover:bg-gray-50",
                               isTodayDay && !isSelectedDay && "bg-gray-100 text-gray-900 font-medium border border-gray-200",
                               isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm",
+                              inRange && !isSelectedDay && "bg-gray-100 text-gray-900",
                               isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
                             )}
                             onClick={() => !isDisabled && handleSelect(day)}
