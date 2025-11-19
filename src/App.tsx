@@ -9,6 +9,7 @@ import { Checkbox } from './components/ui/checkbox'
 import { Separator } from './components/ui/separator'
 import { DataTable } from './components/DataTable'
 import { DatePicker, type Holiday } from './components/DatePicker'
+import { TimePicker } from './components/TimePicker'
 import { Schedule, type ScheduleEvent, type CustomField } from './components/Schedule'
 import { Calendar as CalendarComponent, type CalendarEvent } from './components/Calendar'
 import { MapPin, Users as UsersIcon, Building } from 'lucide-react'
@@ -299,6 +300,14 @@ function App() {
     return { from: firstDay, to: lastDay }
   })
   const [dateRange2, setDateRange2] = useState<{ from?: Date; to?: Date }>()
+
+  // TimePicker state
+  const [time1, setTime1] = useState<Date>()
+  const [time2, setTime2] = useState<Date>()
+  const [time3, setTime3] = useState<Date>()
+  const [time4, setTime4] = useState<Date>()
+  const [timezone1, setTimezone1] = useState('UTC')
+  const [timezone2, setTimezone2] = useState('Asia/Bangkok')
 
   // Schedule state - Classroom Example
   const [classScheduleEvents, setClassScheduleEvents] = useState<ScheduleEvent[]>([
@@ -1465,6 +1474,237 @@ function App() {
               setMeetingScheduleEvents(meetingScheduleEvents.filter(e => e.id !== eventId))
             }}
           />
+        </div>
+
+        <Separator className="my-4" />
+
+        {/* TimePicker Component Showcase */}
+        <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
+          <div>
+            <h2 className="text-2xl font-semibold mb-1">TimePicker Component</h2>
+            <p className="text-sm text-gray-600">Time selector with timezone support and customization</p>
+          </div>
+
+          <Separator />
+
+          {/* Basic Time Pickers */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Basic Time Pickers</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">24-Hour Format</label>
+                <TimePicker
+                  time={time1}
+                  onTimeChange={setTime1}
+                  format="24h"
+                  placeholder="Select time"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">12-Hour Format</label>
+                <TimePicker
+                  time={time2}
+                  onTimeChange={setTime2}
+                  format="12h"
+                  placeholder="Select time"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">With Seconds</label>
+                <TimePicker
+                  time={time3}
+                  onTimeChange={setTime3}
+                  format="24h"
+                  showSeconds
+                  placeholder="Select time"
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Timezone Support */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Timezone Support</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">With Timezone Selector (UTC)</label>
+                <TimePicker
+                  time={time1}
+                  onTimeChange={setTime1}
+                  timezone={timezone1}
+                  onTimezoneChange={setTimezone1}
+                  showTimezone
+                  format="24h"
+                  placeholder="Select time with timezone"
+                />
+                {time1 && (
+                  <p className="text-xs text-gray-600">
+                    Selected: {time1.toLocaleTimeString()} ({timezone1})
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Bangkok Time (12h)</label>
+                <TimePicker
+                  time={time2}
+                  onTimeChange={setTime2}
+                  timezone={timezone2}
+                  onTimezoneChange={setTimezone2}
+                  showTimezone
+                  format="12h"
+                  placeholder="Select time"
+                />
+                {time2 && (
+                  <p className="text-xs text-gray-600">
+                    Selected: {time2.toLocaleTimeString('en-US', { 
+                      hour: '2-digit', 
+                      minute: '2-digit',
+                      hour12: true 
+                    })} ({timezone2})
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Minute Steps */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Minute Steps</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">1 Minute Steps</label>
+                <TimePicker
+                  time={time1}
+                  onTimeChange={setTime1}
+                  minuteStep={1}
+                  placeholder="Every minute"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">5 Minute Steps</label>
+                <TimePicker
+                  time={time2}
+                  onTimeChange={setTime2}
+                  minuteStep={5}
+                  placeholder="Every 5 minutes"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">15 Minute Steps</label>
+                <TimePicker
+                  time={time3}
+                  onTimeChange={setTime3}
+                  minuteStep={15}
+                  placeholder="Every 15 minutes"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">30 Minute Steps</label>
+                <TimePicker
+                  time={time4}
+                  onTimeChange={setTime4}
+                  minuteStep={30}
+                  placeholder="Every 30 minutes"
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Variants and Sizes */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Variants & Sizes</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Small Size</label>
+                <TimePicker
+                  time={time1}
+                  onTimeChange={setTime1}
+                  size="sm"
+                  placeholder="Small"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Default Size</label>
+                <TimePicker
+                  time={time2}
+                  onTimeChange={setTime2}
+                  size="default"
+                  placeholder="Default"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs text-gray-600">Large Size</label>
+                <TimePicker
+                  time={time3}
+                  onTimeChange={setTime3}
+                  size="lg"
+                  placeholder="Large"
+                />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Real-World Example */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-gray-700">Meeting Scheduler Example</h3>
+            <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-gray-700">Meeting Time (Your Timezone)</label>
+                  <TimePicker
+                    time={time1}
+                    onTimeChange={setTime1}
+                    timezone={timezone1}
+                    onTimezoneChange={setTimezone1}
+                    showTimezone
+                    format="12h"
+                    minuteStep={15}
+                    placeholder="Select meeting time"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-gray-700">Meeting Time (Remote Team)</label>
+                  <TimePicker
+                    time={time2}
+                    onTimeChange={setTime2}
+                    timezone={timezone2}
+                    onTimezoneChange={setTimezone2}
+                    showTimezone
+                    format="12h"
+                    minuteStep={15}
+                    placeholder="Select meeting time"
+                  />
+                </div>
+              </div>
+
+              {time1 && time2 && (
+                <div className="bg-white rounded p-3 border border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Meeting Details:</p>
+                  <ul className="text-xs text-gray-600 space-y-1">
+                    <li>• Your time: {time1.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} ({timezone1})</li>
+                    <li>• Remote team time: {time2.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} ({timezone2})</li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         <Separator className="my-4" />
