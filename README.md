@@ -1,45 +1,24 @@
 # TakaUI
 
-A modern, fully-featured React component library for building beautiful data tables.
+A modern, customizable React UI component library built with TypeScript, Tailwind CSS, and Radix UI primitives.
 
-## Features
-
-✨ **DataTable Component** - Feature-rich table with sorting, filtering, pagination  
-🎨 **Tailwind CSS** - Beautiful, customizable styling  
-📦 **TypeScript** - Full type safety  
-🔍 **Search & Filter** - Built-in global search  
-✅ **Row Selection** - Multi-row selection support  
-📱 **Responsive** - Mobile-friendly design  
-⚡ **Fast** - Optimized with TanStack Table  
-
-## Installation
+## 📦 Installation
 
 ```bash
 npm install @ttianqii/takaui
 ```
 
-### Install Peer Dependencies
+### Peer Dependencies
+
+TakaUI requires React 18+ or React 19+:
 
 ```bash
-npm install react react-dom @tanstack/react-table
+npm install react react-dom
 ```
 
-### Install Tailwind CSS (if not already installed)
+### Tailwind CSS Setup
 
-```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-```
-
-## Quick Start
-
-1. **Import the CSS** in your main file (`main.tsx` or `App.tsx`):
-
-```tsx
-import '@ttianqii/takaui/styles.css'
-```
-
-2. **Configure Tailwind** (`tailwind.config.js`):
+TakaUI uses Tailwind CSS for styling. Add the TakaUI paths to your `tailwind.config.js`:
 
 ```js
 export default {
@@ -48,6 +27,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@ttianqii/takaui/**/*.{js,jsx,ts,tsx}",
   ],
+```js
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@ttianqii/takaui/dist/**/*.{js,mjs,cjs}"
+  ],
   theme: {
     extend: {},
   },
@@ -55,97 +42,155 @@ export default {
 }
 ```
 
-3. **Use the DataTable**:
+### Import Styles
+
+Import the TakaUI styles in your main entry file (e.g., `main.tsx` or `App.tsx`):
 
 ```tsx
-import { DataTable } from '@ttianqii/takaui'
-import type { ColumnDef } from '@tanstack/react-table'
+import '@ttianqii/takaui/styles.css'
+```
 
-type Product = {
-  id: string
-  name: string
-  price: number
-}
+## 🚀 Quick Start
 
-const columns: ColumnDef<Product>[] = [
-  { accessorKey: 'name', header: 'Product Name' },
-  { accessorKey: 'price', header: 'Price' },
-]
-
-const data: Product[] = [
-  { id: '1', name: 'Laptop', price: 999 },
-  { id: '2', name: 'Mouse', price: 29 },
-]
+```tsx
+import { Calendar, TimePicker, DataTable } from '@ttianqii/takaui'
+import '@ttianqii/takaui/styles.css'
+import { useState } from 'react'
 
 function App() {
-  return <DataTable data={data} columns={columns} searchable />
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  
+  return (
+    <div>
+      <Calendar
+        mode="single"
+        selected={date}
+        onSelect={setDate}
+      />
+    </div>
+  )
 }
 ```
 
-## Documentation
+## 📚 Components
 
-📖 **[Quick Start Guide](./QUICK_START.md)** - Get started in 5 minutes  
-🎨 **[Customization Guide](./CUSTOMIZATION.md)** - Advanced customization options  
+TakaUI includes the following components:
 
-## Components
+### Form & Input Components
 
-### DataTable
+- **[Calendar](./docs/CALENDAR.md)** - Flexible date picker with multiple selection modes
+- **[DatePicker](./docs/DATEPICKER.md)** - Date picker with popover and custom formatting
+- **[TimePicker](./docs/TIMEPICKER.md)** - Time picker with 12h/24h formats and timezone support
+- **[DropdownMenu](./docs/DROPDOWN.md)** - Accessible dropdown menu component
 
-Full-featured data table with:
-- ✅ Sorting (single/multi-column)
-- 🔍 Global search
-- ✅ Row selection
-- 📄 Pagination
-- 🎨 Custom toolbar
-- 🎯 Custom cell rendering
-- 📱 Responsive design
+### Data Display Components
 
-### Other Components
+- **[DataTable](./docs/DATATABLE.md)** - Powerful table with sorting, filtering, and pagination
+- **[Schedule](./docs/SCHEDULE.md)** - Weekly schedule component with custom fields
+- **[WeekNavigator](./docs/WEEKNAVIGATOR.md)** - Week navigation with date range display
 
-- `Button` - Styled button with variants
-- `Input` - Form input component
-- `Checkbox` - Checkbox component
-- `Table` - Base table primitives
-- `DropdownMenu` - Dropdown menu system
+### Base UI Components
 
-## Examples
+All components are built on top of shadcn/ui primitives:
 
-Check out the [examples](./src/App.tsx) in the source code for:
-- Basic table
-- Dark theme table
-- Table with row selection
-- Table with custom toolbar
-- Table with actions
+- Button
+- Input
+- Label
+- Select
+- Popover
+- Dialog/Modal
+- Checkbox
+- Card
 
-## License
+## 📖 Documentation
+
+Detailed documentation for each component:
+
+- [Calendar Documentation](./docs/CALENDAR.md)
+- [DatePicker Documentation](./docs/DATEPICKER.md)
+- [TimePicker Documentation](./docs/TIMEPICKER.md)
+- [DataTable Documentation](./docs/DATATABLE.md)
+- [Schedule Documentation](./docs/SCHEDULE.md)
+- [WeekNavigator Documentation](./docs/WEEKNAVIGATOR.md)
+- [DropdownMenu Documentation](./docs/DROPDOWN.md)
+
+## 🎨 Customization
+
+### Styling with Tailwind
+
+All components accept a `className` prop for custom styling:
+
+```tsx
+<Calendar 
+  className="rounded-lg shadow-lg border-2 border-blue-500"
+  mode="single"
+  selected={date}
+  onSelect={setDate}
+/>
+```
+
+### Theming
+
+TakaUI components use CSS variables for theming. You can customize colors in your global CSS:
+
+```css
+:root {
+  --primary: 220 90% 56%;
+  --primary-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  /* Add more custom variables */
+}
+```
+
+## 🔧 TypeScript Support
+
+TakaUI is built with TypeScript and includes full type definitions. All props are fully typed for excellent IDE support.
+
+```tsx
+import type { CalendarProps, DatePickerProps } from '@ttianqii/takaui'
+```
+
+## 📦 Tree Shaking
+
+TakaUI supports tree shaking. Import only the components you need:
+
+```tsx
+// Good - Only imports Calendar
+import { Calendar } from '@ttianqii/takaui'
+
+// Also works - Named imports
+import { Calendar, TimePicker, DataTable } from '@ttianqii/takaui'
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
 
 MIT
 
-## Links
+## 🔗 Links
 
-- 📦 [npm package](https://www.npmjs.com/package/@ttianqii/takaui)
-- 📚 [Documentation](./QUICK_START.md)
-- 🐛 [Report Issues](https://github.com/yourusername/takaui/issues)
-import reactDom from 'eslint-plugin-react-dom'
+- [GitHub Repository](https://github.com/ttianqii/takaui)
+- [npm Package](https://www.npmjs.com/package/@ttianqii/takaui)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📞 Support
+
+For issues and questions:
+
+- Open an issue on [GitHub](https://github.com/ttianqii/takaui/issues)
+- Check the [documentation](./docs/)
+
+## 🎯 Roadmap
+
+- [ ] Additional form components (Switch, Radio, Slider)
+- [ ] Chart components
+- [ ] Toast notifications
+- [ ] Command palette
+- [ ] Theme switcher
+- [ ] More data display components
+
+---
+
+Made with ❤️ by [@ttianqii](https://github.com/ttianqii)
