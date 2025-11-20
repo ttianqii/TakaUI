@@ -21,13 +21,6 @@ npm install react react-dom
 TakaUI uses Tailwind CSS for styling. Add the TakaUI paths to your `tailwind.config.js`:
 
 ```js
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@ttianqii/takaui/**/*.{js,jsx,ts,tsx}",
-  ],
-```js
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
