@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { DatePicker } from '../components'
 import { addDays, subDays } from 'date-fns'
-import { Calendar, Heart } from 'lucide-react'
+import { Heart } from 'lucide-react'
 
 export function DatePickerExample() {
   const [date1, setDate1] = useState<Date>()
@@ -155,12 +155,12 @@ export function DatePickerExample() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">With Dropdown Navigation</label>
+              <label className="text-sm font-medium text-gray-700">Custom Format (ISO)</label>
               <DatePicker
                 date={date3}
                 onDateChange={setDate3}
-                captionLayout="dropdown"
-                placeholder="Dropdown navigation"
+                dateFormat="yyyy-MM-dd"
+                placeholder="ISO format"
               />
             </div>
 
