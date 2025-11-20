@@ -8,7 +8,8 @@ import { Label } from "./ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { SimpleModal } from "./ui/modal"
 import { cn } from "@/lib/utils"
-import { WeekNavigator, weekNavigatorUtils } from "./WeekNavigator"
+import { WeekNavigator } from "./WeekNavigator"
+import { weekNavigatorUtils } from "../utils/weekNavigatorUtils"
 
 export interface ScheduleEvent {
   id: string
@@ -22,7 +23,7 @@ export interface ScheduleEvent {
   recurrenceType?: 'none' | 'weekly' | 'monthly' | 'yearly'
   specificDate?: string // For monthly/yearly recurrence
   // Flexible metadata - can be anything
-  [key: string]: any
+  [key: string]: string | number | boolean | undefined
 }
 
 export interface CustomField {
@@ -90,7 +91,7 @@ export function Schedule({
 }: ScheduleProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null)
-  const [formData, setFormData] = useState<Record<string, any>>({
+  const [formData, setFormData] = useState<Record<string, string | number | boolean>>({
     title: "",
     day: "",
     startTime: "",
@@ -110,7 +111,7 @@ export function Schedule({
     if (event) {
       setSelectedEvent(event)
       // Populate form with all event data including custom fields
-      const data: Record<string, any> = {
+      const data: Record<string, string | number | boolean> = {
         title: event.title,
         day: event.day,
         startTime: event.startTime,
@@ -129,7 +130,7 @@ export function Schedule({
     } else {
       setSelectedEvent(null)
       // Initialize form with empty values
-      const data: Record<string, any> = {
+      const data: Record<string, string | number | boolean> = {
         title: "",
         day: day || "",
         startTime: time || "",
@@ -255,7 +256,7 @@ export function Schedule({
               </div>
 
               {/* Time Slots */}
-              {timeSlots.map((time, timeIndex) => {
+              {timeSlots.map((time) => {
                 // Calculate current time indicator position for this slot
                 const now = new Date()
                 const currentHour = now.getHours()
@@ -393,7 +394,7 @@ export function Schedule({
           <div className="space-y-2">
             <Label className="text-sm font-medium">Schedule Type</Label>
             <Select
-              value={formData.scheduleMode}
+              value={String(formData.scheduleMode)}
               onValueChange={(value) => setFormData({ ...formData, scheduleMode: value })}
             >
               <SelectTrigger>
@@ -416,7 +417,7 @@ export function Schedule({
             <Label htmlFor="title">Title *</Label>
             <Input
               id="title"
-              value={formData.title}
+              value={String(formData.title)}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Event title"
             />
@@ -427,7 +428,7 @@ export function Schedule({
             {formData.scheduleMode === "day" ? (
               <div className="space-y-2">
                 <Label>Day *</Label>
-                <Select value={formData.day} onValueChange={(value) => setFormData({ ...formData, day: value })}>
+                <Select value={String(formData.day)} onValueChange={(value) => setFormData({ ...formData, day: value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select day" />
                   </SelectTrigger>
@@ -444,7 +445,7 @@ export function Schedule({
                 <Input
                   id="specificDate"
                   type="date"
-                  value={formData.specificDate}
+                  value={String(formData.specificDate)}
                   onChange={(e) => setFormData({ ...formData, specificDate: e.target.value })}
                 />
               </div>
@@ -454,7 +455,7 @@ export function Schedule({
               <Input
                 id="startTime"
                 type="time"
-                value={formData.startTime}
+                value={String(formData.startTime)}
                 onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
               />
             </div>
@@ -463,7 +464,7 @@ export function Schedule({
               <Input
                 id="endTime"
                 type="time"
-                value={formData.endTime}
+                value={String(formData.endTime)}
                 onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
               />
             </div>
@@ -479,7 +480,7 @@ export function Schedule({
                   </Label>
                   {field.type === "select" ? (
                     <Select
-                      value={formData[field.key] || ""}
+                      value={String(formData[field.key] || "")}
                       onValueChange={(value) => setFormData({ ...formData, [field.key]: value })}
                     >
                       <SelectTrigger>
@@ -497,7 +498,7 @@ export function Schedule({
                     <Input
                       id={field.key}
                       type={field.type}
-                      value={formData[field.key] || ""}
+                      value={field.type === "number" ? Number(formData[field.key] || 0) : String(formData[field.key] || "")}
                       onChange={(e) => setFormData({
                         ...formData,
                         [field.key]: field.type === "number" ? parseInt(e.target.value) || 0 : e.target.value
@@ -540,7 +541,7 @@ export function Schedule({
           {/* Color Selection */}
           <div className="space-y-2">
             <Label>Color</Label>
-            <Select value={formData.color} onValueChange={(value) => setFormData({ ...formData, color: value })}>
+            <Select value={String(formData.color)} onValueChange={(value) => setFormData({ ...formData, color: value })}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -562,7 +563,7 @@ export function Schedule({
             <Label htmlFor="description">Description</Label>
             <Input
               id="description"
-              value={formData.description || ""}
+              value={String(formData.description || "")}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Optional description"
             />

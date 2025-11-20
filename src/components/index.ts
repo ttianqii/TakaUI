@@ -33,7 +33,8 @@ export {
 export { DataTable } from './DataTable';
 export { DatePicker, type DatePickerProps } from './DatePicker';
 export { Schedule, type ScheduleEvent, type ScheduleProps, type CustomField } from './Schedule';
-export { WeekNavigator, type WeekNavigatorProps, weekNavigatorUtils } from './WeekNavigator';
+export { WeekNavigator, type WeekNavigatorProps } from './WeekNavigator';
+export { weekNavigatorUtils } from '../utils/weekNavigatorUtils';
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from './ui/popover';
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './ui/card';
 export { Label } from './ui/label';

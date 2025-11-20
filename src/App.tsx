@@ -1,7 +1,7 @@
 import './index.css'
 import { useMemo, useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart, Calendar } from 'lucide-react'
+import { ArrowUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart } from 'lucide-react'
 import { addDays, subDays } from 'date-fns'
 
 import { Button } from './components/ui/button'
@@ -448,7 +448,7 @@ function App() {
 
   // Calendar state
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
-  const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([
+  const [calendarEvents] = useState<CalendarEvent[]>([
     {
       id: "1",
       date: new Date(),
