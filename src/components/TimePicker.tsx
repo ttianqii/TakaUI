@@ -3,6 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Button } from './ui/button';
 import { Clock } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { TIMEZONES } from '../utils/timeUtils';
 
 interface TimePickerProps {
   time: Date | undefined;
@@ -18,25 +19,6 @@ interface TimePickerProps {
   size?: 'sm' | 'default' | 'lg';
   showClockFace?: boolean;
 }
-
-const TIMEZONES = [
-  { label: 'UTC', offset: 0 },
-  { label: 'America/New_York', offset: -5 },
-  { label: 'America/Chicago', offset: -6 },
-  { label: 'America/Denver', offset: -7 },
-  { label: 'America/Los_Angeles', offset: -8 },
-  { label: 'Europe/London', offset: 0 },
-  { label: 'Europe/Paris', offset: 1 },
-  { label: 'Europe/Berlin', offset: 1 },
-  { label: 'Asia/Dubai', offset: 4 },
-  { label: 'Asia/Kolkata', offset: 5.5 },
-  { label: 'Asia/Bangkok', offset: 7 },
-  { label: 'Asia/Singapore', offset: 8 },
-  { label: 'Asia/Tokyo', offset: 9 },
-  { label: 'Australia/Sydney', offset: 10 },
-  { label: 'Pacific/Auckland', offset: 12 },
-  { label: 'Pacific/Honolulu', offset: -10 },
-];
 
 export const TimePicker: React.FC<TimePickerProps> = ({
   time,
@@ -54,24 +36,38 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 }) => {
   const [view, setView] = useState<'time' | 'timezone'>('time');
   const is24Hour = format === '24h';
-  const [hours, setHours] = useState<number>(time ? time.getHours() : 0);
-  const [minutes, setMinutes] = useState<number>(time ? time.getMinutes() : 0);
-  const [seconds, setSeconds] = useState<number>(time ? time.getSeconds() : 0);
-  const [period, setPeriod] = useState<'AM' | 'PM'>('AM');
+  
+  // Initialize state from time prop to avoid cascading renders
+  const initialHours = time ? time.getHours() : 0;
+  const initialMinutes = time ? time.getMinutes() : 0;
+  const initialSeconds = time ? time.getSeconds() : 0;
+  const initialPeriod = initialHours >= 12 ? 'PM' : 'AM';
+  
+  const [hours, setHours] = useState<number>(initialHours);
+  const [minutes, setMinutes] = useState<number>(initialMinutes);
+  const [seconds, setSeconds] = useState<number>(initialSeconds);
+  const [period, setPeriod] = useState<'AM' | 'PM'>(initialPeriod);
 
   const hourScrollRef = useRef<HTMLDivElement>(null);
   const minuteScrollRef = useRef<HTMLDivElement>(null);
   const secondScrollRef = useRef<HTMLDivElement>(null);
 
+  // Update internal state when time prop changes
   useEffect(() => {
     if (time) {
       const h = time.getHours();
-      setHours(h);
-      setMinutes(time.getMinutes());
-      setSeconds(time.getSeconds());
-      setPeriod(h >= 12 ? 'PM' : 'AM');
+      const m = time.getMinutes();
+      const s = time.getSeconds();
+      const p = h >= 12 ? 'PM' : 'AM';
+      
+      // Only update if values actually changed to prevent loops
+      if (h !== hours) setHours(h);
+      if (m !== minutes) setMinutes(m);
+      if (s !== seconds) setSeconds(s);
+      if (p !== period) setPeriod(p);
     }
-  }, [time]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [time]); // Only depend on time prop
 
   useEffect(() => {
     // Scroll to selected values
@@ -447,35 +443,4 @@ export const TimePicker: React.FC<TimePickerProps> = ({
       </PopoverContent>
     </Popover>
   );
-};
-
-// Utility function to convert time between timezones
-export const convertTimezone = (date: Date, fromTz: string, toTz: string): Date => {
-  const fromOffset = TIMEZONES.find(tz => tz.label === fromTz)?.offset || 0;
-  const toOffset = TIMEZONES.find(tz => tz.label === toTz)?.offset || 0;
-  
-  const converted = new Date(date);
-  converted.setHours(converted.getHours() + (toOffset - fromOffset));
-  
-  return converted;
-};
-
-// Utility function to format time with timezone
-export const formatTimeWithTimezone = (
-  date: Date,
-  timezone: string,
-  format: '12h' | '24h' = '24h',
-  showSeconds: boolean = false
-): string => {
-  const h = format === '12h' ? (date.getHours() % 12 || 12) : date.getHours();
-  const m = date.getMinutes().toString().padStart(2, '0');
-  const s = date.getSeconds().toString().padStart(2, '0');
-  const period = date.getHours() >= 12 ? 'PM' : 'AM';
-  
-  let timeStr = `${h.toString().padStart(2, '0')}:${m}`;
-  if (showSeconds) timeStr += `:${s}`;
-  if (format === '12h') timeStr += ` ${period}`;
-  timeStr += ` ${timezone}`;
-  
-  return timeStr;
 };
