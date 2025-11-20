@@ -3,7 +3,6 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Button } from './ui/button';
 import { Clock } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { TIMEZONES } from '../utils/timeUtils';
 
 interface TimePickerProps {
   time: Date | undefined;
@@ -24,7 +23,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   time,
   onTimeChange,
   timezone = 'UTC',
-  onTimezoneChange,
   format = '24h',
   showTimezone = false,
   minuteStep = 1,
@@ -34,7 +32,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   size = 'default',
   showClockFace = false,
 }) => {
-  const [view, setView] = useState<'time' | 'timezone'>('time');
   const is24Hour = format === '24h';
   
   // Initialize state from time prop to avoid cascading renders
@@ -249,10 +246,9 @@ export const TimePicker: React.FC<TimePickerProps> = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        {view === 'time' ? (
-          <div className="p-4 space-y-4 min-w-[280px]">
-            {/* Time Display with AM/PM buttons */}
-            <div className="space-y-2">
+        <div className="p-4 space-y-4 min-w-[280px]">
+          {/* Time Display with AM/PM buttons */}
+          <div className="space-y-2">
               <div className="flex items-center justify-center gap-4">
                 {/* Time Display */}
                 <div className="flex items-center gap-1">
@@ -393,54 +389,12 @@ export const TimePicker: React.FC<TimePickerProps> = ({
               <Button size="sm" variant="outline" onClick={handleNow}>
                 Now
               </Button>
-              {showTimezone && onTimezoneChange && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setView('timezone')}
-                >
-                  {timezone}
-                </Button>
-              )}
               <Button size="sm" onClick={() => onTimeChange(time)}>
                 Done
               </Button>
             </div>
           </div>
-        ) : (
-          <div className="p-4 space-y-2">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold">Select Timezone</h3>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setView('time')}
-              >
-                Back
-              </Button>
-            </div>
-            <div className="max-h-64 overflow-y-auto space-y-1">
-              {TIMEZONES.map((tz) => (
-                <Button
-                  key={tz.label}
-                  variant={timezone === tz.label ? 'default' : 'ghost'}
-                  className="w-full justify-start"
-                  size="sm"
-                  onClick={() => {
-                    onTimezoneChange?.(tz.label);
-                    setView('time');
-                  }}
-                >
-                  <span className="flex-1 text-left">{tz.label}</span>
-                  <span className="text-xs text-gray-500">
-                    UTC{tz.offset >= 0 ? '+' : ''}{tz.offset}
-                  </span>
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
-      </PopoverContent>
+        </PopoverContent>
     </Popover>
   );
 };
