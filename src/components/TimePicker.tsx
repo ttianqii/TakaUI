@@ -246,23 +246,23 @@ export const TimePicker: React.FC<TimePickerProps> = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <div className="p-4 space-y-4 min-w-[280px]">
+        <div className="p-4 space-y-4 min-w-[380px]">
           {/* Time Display with AM/PM buttons */}
           <div className="space-y-2">
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center justify-center gap-4 overflow-visible">
                 {/* Time Display */}
                 <div className="flex items-center gap-1">
-                  <div className="text-5xl font-medium tabular-nums">
+                  <div className="text-6xl font-medium tabular-nums">
                     {displayHour.toString().padStart(2, '0')}
                   </div>
-                  <div className="text-5xl font-medium">:</div>
-                  <div className="text-5xl font-medium tabular-nums">
+                  <div className="text-6xl font-medium">:</div>
+                  <div className="text-6xl font-medium tabular-nums">
                     {minutes.toString().padStart(2, '0')}
                   </div>
                   {showSeconds && (
                     <>
-                      <div className="text-5xl font-medium">:</div>
-                      <div className="text-5xl font-medium tabular-nums">
+                      <div className="text-6xl font-medium">:</div>
+                      <div className="text-6xl font-medium tabular-nums">
                         {seconds.toString().padStart(2, '0')}
                       </div>
                     </>
@@ -276,7 +276,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                       size="sm"
                       variant={period === 'AM' ? 'default' : 'outline'}
                       onClick={() => handlePeriodToggle('AM')}
-                      className="h-10 w-14 text-sm font-medium"
+                      className="h-8 w-12 text-xs font-medium"
                     >
                       AM
                     </Button>
@@ -284,7 +284,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                       size="sm"
                       variant={period === 'PM' ? 'default' : 'outline'}
                       onClick={() => handlePeriodToggle('PM')}
-                      className="h-10 w-14 text-sm font-medium"
+                      className="h-8 w-12 text-xs font-medium"
                     >
                       PM
                     </Button>
