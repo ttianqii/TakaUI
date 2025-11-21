@@ -5,7 +5,17 @@ A modern, customizable React UI component library built with TypeScript, Tailwin
 ## 📦 Installation
 
 ```bash
+# npm
 npm install @ttianqii/takaui
+
+# yarn
+yarn add @ttianqii/takaui
+
+# pnpm
+pnpm add @ttianqii/takaui
+
+# bun
+bun add @ttianqii/takaui
 ```
 
 ### Peer Dependencies
@@ -13,7 +23,17 @@ npm install @ttianqii/takaui
 TakaUI requires React 18+ or React 19+:
 
 ```bash
+# npm
 npm install react react-dom
+
+# yarn
+yarn add react react-dom
+
+# pnpm
+pnpm add react react-dom
+
+# bun
+bun add react react-dom
 ```
 
 ### Tailwind CSS Setup
