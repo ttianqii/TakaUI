@@ -45,6 +45,15 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   const [seconds, setSeconds] = useState<number>(initialSeconds);
   const [period, setPeriod] = useState<'AM' | 'PM'>(initialPeriod);
 
+  // Input states for editable fields
+  const [hourInput, setHourInput] = useState<string>('');
+  const [minuteInput, setMinuteInput] = useState<string>('');
+  const [secondInput, setSecondInput] = useState<string>('');
+
+  const hourInputRef = useRef<HTMLInputElement>(null);
+  const minuteInputRef = useRef<HTMLInputElement>(null);
+  const secondInputRef = useRef<HTMLInputElement>(null);
+
   const hourScrollRef = useRef<HTMLDivElement>(null);
   const minuteScrollRef = useRef<HTMLDivElement>(null);
   const secondScrollRef = useRef<HTMLDivElement>(null);
@@ -246,25 +255,171 @@ export const TimePicker: React.FC<TimePickerProps> = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <div className="p-4 space-y-4 min-w-[380px]">
+        <div className="p-6 space-y-4 min-w-[420px]">
           {/* Time Display with AM/PM buttons */}
           <div className="space-y-2">
-              <div className="flex items-center justify-center gap-4 overflow-visible">
-                {/* Time Display */}
-                <div className="flex items-center gap-1">
-                  <div className="text-6xl font-medium tabular-nums">
-                    {displayHour.toString().padStart(2, '0')}
-                  </div>
-                  <div className="text-6xl font-medium">:</div>
-                  <div className="text-6xl font-medium tabular-nums">
-                    {minutes.toString().padStart(2, '0')}
-                  </div>
+              <div className="flex items-center justify-center gap-6">
+                {/* Time Display - Editable */}
+                <div className="flex items-center gap-3">
+                  <input
+                    ref={hourInputRef}
+                    type="text"
+                    inputMode="numeric"
+                    value={hourInput !== '' ? hourInput.padStart(2, '0') : displayHour.toString().padStart(2, '0')}
+                    onKeyDown={(e) => {
+                      if (e.key >= '0' && e.key <= '9') {
+                        e.preventDefault();
+                        const newVal = hourInput + e.key;
+                        if (newVal.length === 1) {
+                          setHourInput(e.key);
+                        } else if (newVal.length === 2) {
+                          const num = parseInt(newVal);
+                          const max = is24Hour ? 23 : 12;
+                          const min = is24Hour ? 0 : 1;
+                          let validVal = num;
+                          
+                          // Validate range
+                          if (num < min) validVal = min;
+                          if (num > max) validVal = max;
+                          
+                          setHourInput('');
+                          handleHourChange(validVal);
+                          setTimeout(() => minuteInputRef.current?.focus(), 0);
+                        }
+                      } else if (e.key === 'Backspace') {
+                        e.preventDefault();
+                        if (hourInput.length > 0) {
+                          setHourInput(hourInput.slice(0, -1));
+                        }
+                      } else if (e.key === 'ArrowRight' || e.key === 'Tab') {
+                        if (e.key === 'ArrowRight') e.preventDefault();
+                        minuteInputRef.current?.focus();
+                      } else if (e.key === ':') {
+                        e.preventDefault();
+                        minuteInputRef.current?.focus();
+                      }
+                    }}
+                    onBlur={() => {
+                      if (hourInput) {
+                        const val = parseInt(hourInput);
+                        const max = is24Hour ? 23 : 12;
+                        const min = is24Hour ? 0 : 1;
+                        let validVal = val;
+                        if (val < min) validVal = min;
+                        if (val > max) validVal = max;
+                        handleHourChange(validVal);
+                      }
+                      setHourInput('');
+                    }}
+                    onFocus={() => {
+                      setHourInput('');
+                    }}
+                    className="text-6xl font-medium tabular-nums leading-none w-[120px] text-center bg-transparent border-none outline-none focus:ring-2 focus:ring-primary rounded px-2 cursor-text"
+                    readOnly
+                  />
+                  <div className="text-6xl font-medium leading-none flex items-center">:</div>
+                  <input
+                    ref={minuteInputRef}
+                    type="text"
+                    inputMode="numeric"
+                    value={minuteInput !== '' ? minuteInput.padStart(2, '0') : minutes.toString().padStart(2, '0')}
+                    onKeyDown={(e) => {
+                      if (e.key >= '0' && e.key <= '9') {
+                        e.preventDefault();
+                        const newVal = minuteInput + e.key;
+                        if (newVal.length === 1) {
+                          setMinuteInput(e.key);
+                        } else if (newVal.length === 2) {
+                          const num = parseInt(newVal);
+                          const validVal = Math.min(59, Math.max(0, num));
+                          setMinuteInput('');
+                          handleMinuteChange(validVal);
+                          if (showSeconds) {
+                            setTimeout(() => secondInputRef.current?.focus(), 0);
+                          }
+                        }
+                      } else if (e.key === 'Backspace') {
+                        e.preventDefault();
+                        if (minuteInput.length > 0) {
+                          setMinuteInput(minuteInput.slice(0, -1));
+                        } else {
+                          hourInputRef.current?.focus();
+                        }
+                      } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        hourInputRef.current?.focus();
+                      } else if (e.key === 'ArrowRight' || e.key === 'Tab') {
+                        if (e.key === 'ArrowRight') e.preventDefault();
+                        if (showSeconds) {
+                          secondInputRef.current?.focus();
+                        }
+                      } else if (e.key === ':') {
+                        e.preventDefault();
+                        if (showSeconds) {
+                          secondInputRef.current?.focus();
+                        }
+                      }
+                    }}
+                    onBlur={() => {
+                      if (minuteInput) {
+                        const val = parseInt(minuteInput);
+                        const validVal = Math.min(59, Math.max(0, val));
+                        handleMinuteChange(validVal);
+                      }
+                      setMinuteInput('');
+                    }}
+                    onFocus={() => {
+                      setMinuteInput('');
+                    }}
+                    className="text-6xl font-medium tabular-nums leading-none w-[120px] text-center bg-transparent border-none outline-none focus:ring-2 focus:ring-primary rounded px-2 cursor-text"
+                    readOnly
+                  />
                   {showSeconds && (
                     <>
-                      <div className="text-6xl font-medium">:</div>
-                      <div className="text-6xl font-medium tabular-nums">
-                        {seconds.toString().padStart(2, '0')}
-                      </div>
+                      <div className="text-6xl font-medium leading-none flex items-center">:</div>
+                      <input
+                        ref={secondInputRef}
+                        type="text"
+                        inputMode="numeric"
+                        value={secondInput !== '' ? secondInput.padStart(2, '0') : seconds.toString().padStart(2, '0')}
+                        onKeyDown={(e) => {
+                          if (e.key >= '0' && e.key <= '9') {
+                            e.preventDefault();
+                            const newVal = secondInput + e.key;
+                            if (newVal.length === 1) {
+                              setSecondInput(e.key);
+                            } else if (newVal.length === 2) {
+                              const num = parseInt(newVal);
+                              const validVal = Math.min(59, Math.max(0, num));
+                              setSecondInput('');
+                              handleSecondChange(validVal);
+                            }
+                          } else if (e.key === 'Backspace') {
+                            e.preventDefault();
+                            if (secondInput.length > 0) {
+                              setSecondInput(secondInput.slice(0, -1));
+                            } else {
+                              minuteInputRef.current?.focus();
+                            }
+                          } else if (e.key === 'ArrowLeft') {
+                            e.preventDefault();
+                            minuteInputRef.current?.focus();
+                          }
+                        }}
+                        onBlur={() => {
+                          if (secondInput) {
+                            const val = parseInt(secondInput);
+                            const validVal = Math.min(59, Math.max(0, val));
+                            handleSecondChange(validVal);
+                          }
+                          setSecondInput('');
+                        }}
+                        onFocus={() => {
+                          setSecondInput('');
+                        }}
+                        className="text-6xl font-medium tabular-nums leading-none w-[120px] text-center bg-transparent border-none outline-none focus:ring-2 focus:ring-primary rounded px-2 cursor-text"
+                        readOnly
+                      />
                     </>
                   )}
                 </div>
