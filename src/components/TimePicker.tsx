@@ -255,12 +255,12 @@ export const TimePicker: React.FC<TimePickerProps> = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <div className="p-6 space-y-4 min-w-[420px]">
+        <div className="p-6 space-y-4 min-w-[460px]">
           {/* Time Display with AM/PM buttons */}
           <div className="space-y-2">
               <div className="flex items-center justify-center gap-6">
                 {/* Time Display - Editable */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
                   <input
                     ref={hourInputRef}
                     type="text"
@@ -314,10 +314,10 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     onFocus={() => {
                       setHourInput('');
                     }}
-                    className="text-6xl font-medium tabular-nums leading-none w-[120px] text-center bg-transparent border-none outline-none focus:ring-2 focus:ring-primary rounded px-2 cursor-text"
+                    className="text-6xl font-medium tabular-nums leading-none w-[85px] text-center bg-transparent outline-none focus:ring-2 focus:ring-primary rounded px-1 cursor-text"
                     readOnly
                   />
-                  <div className="text-6xl font-medium leading-none flex items-center">:</div>
+                  <div className="text-6xl font-medium leading-none flex items-center px-1">:</div>
                   <input
                     ref={minuteInputRef}
                     type="text"
@@ -371,12 +371,12 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     onFocus={() => {
                       setMinuteInput('');
                     }}
-                    className="text-6xl font-medium tabular-nums leading-none w-[120px] text-center bg-transparent border-none outline-none focus:ring-2 focus:ring-primary rounded px-2 cursor-text"
+                    className="text-6xl font-medium tabular-nums leading-none w-[85px] text-center bg-transparent outline-none focus:ring-2 focus:ring-primary rounded px-1 cursor-text"
                     readOnly
                   />
                   {showSeconds && (
                     <>
-                      <div className="text-6xl font-medium leading-none flex items-center">:</div>
+                      <div className="text-6xl font-medium leading-none flex items-center px-1">:</div>
                       <input
                         ref={secondInputRef}
                         type="text"
@@ -417,7 +417,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                         onFocus={() => {
                           setSecondInput('');
                         }}
-                        className="text-6xl font-medium tabular-nums leading-none w-[120px] text-center bg-transparent border-none outline-none focus:ring-2 focus:ring-primary rounded px-2 cursor-text"
+                        className="text-6xl font-medium tabular-nums leading-none w-[85px] text-center bg-transparent outline-none focus:ring-2 focus:ring-primary rounded px-1 cursor-text"
                         readOnly
                       />
                     </>
@@ -465,7 +465,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                   <div className="text-xs text-center text-gray-500 mb-2">Hour</div>
                   <div 
                     ref={hourScrollRef}
-                    className="h-40 overflow-y-auto border rounded-md scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                    className="h-40 overflow-y-scroll border rounded-md scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
                   >
                     {generateHours().map((h) => (
                       <button
@@ -490,7 +490,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                   <div className="text-xs text-center text-gray-500 mb-2">Min</div>
                   <div 
                     ref={minuteScrollRef}
-                    className="h-40 overflow-y-auto border rounded-md scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                    className="h-40 overflow-y-scroll border rounded-md scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
                   >
                     {generateMinutes().map((m) => (
                       <button
@@ -516,7 +516,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     <div className="text-xs text-center text-gray-500 mb-2">Sec</div>
                     <div 
                       ref={secondScrollRef}
-                      className="h-40 overflow-y-auto border rounded-md scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                      className="h-40 overflow-y-scroll border rounded-md scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
                     >
                       {generateSeconds().map((s) => (
                         <button
