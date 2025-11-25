@@ -104,7 +104,7 @@ export function DataTable<T = Record<string, unknown>>({
                 {columns.map((column) => (
                   <TableHead
                     key={column.key}
-                    className="px-3 py-4 text-xs font-normal text-gray-500 uppercase tracking-widest"
+                    className="px-3 py-3 text-xs font-normal text-gray-500 uppercase tracking-widest"
                   >
                     {column.header}
                   </TableHead>

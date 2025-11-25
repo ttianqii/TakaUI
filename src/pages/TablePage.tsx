@@ -2,16 +2,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  getFilteredRowModel,
-  type ColumnDef,
-  type SortingState,
-} from '@tanstack/react-table';
-import { TableRoot, TableWrapper, TableContent, TableNavigator, SortableHeader } from '../components';
+import { DataTable, type DataTableColumn } from '../components';
 import { ArrowLeft, Copy, Check, Code } from 'lucide-react';
 
 interface Product {
@@ -33,10 +24,6 @@ const sampleData: Product[] = [
 ];
 
 export default function TablePage() {
-  const [sorting1, setSorting1] = useState<SortingState>([]);
-  const [sorting2, setSorting2] = useState<SortingState>([]);
-  const [sorting3, setSorting3] = useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
   const [copiedInstall, setCopiedInstall] = useState(false);
   const [copiedImport, setCopiedImport] = useState(false);
   const [showCode1, setShowCode1] = useState(false);
@@ -54,63 +41,53 @@ export default function TablePage() {
     }
   };
 
-  // Example 1: Basic Table
-  const basicColumns: ColumnDef<Product>[] = [
+  // Example 1: Basic Table Columns
+  const basicColumns: DataTableColumn<Product>[] = [
     {
-      accessorKey: 'name',
-      header: ({ column }) => <SortableHeader column={column} title="Product" />,
+      key: 'name',
+      header: 'Product',
     },
     {
-      accessorKey: 'category',
+      key: 'category',
       header: 'Category',
     },
     {
-      accessorKey: 'price',
-      header: ({ column }) => <SortableHeader column={column} title="Price" />,
-      cell: ({ row }) => `$${(row.getValue('price') as number).toFixed(2)}`,
+      key: 'price',
+      header: 'Price',
+      cell: (value) => `$${(value as number).toFixed(2)}`,
     },
   ];
 
-  const table1 = useReactTable({
-    data: sampleData.slice(0, 4),
-    columns: basicColumns,
-    state: { sorting: sorting1 },
-    onSortingChange: setSorting1,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
-
-  // Example 2: With Custom Cells
-  const styledColumns: ColumnDef<Product>[] = [
+  // Example 2: Styled Columns
+  const styledColumns: DataTableColumn<Product>[] = [
     {
-      accessorKey: 'name',
-      header: ({ column }) => <SortableHeader column={column} title="Product Name" />,
-      cell: ({ row }) => <span className="font-semibold text-slate-900">{row.getValue('name')}</span>,
+      key: 'name',
+      header: 'Product Name',
+      cell: (value) => <span className="font-semibold text-slate-900">{value}</span>,
     },
     {
-      accessorKey: 'category',
+      key: 'category',
       header: 'Category',
-      cell: ({ row }) => (
+      cell: (value) => (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          {row.getValue('category')}
+          {value}
         </span>
       ),
     },
     {
-      accessorKey: 'price',
-      header: ({ column }) => <SortableHeader column={column} title="Price" />,
-      cell: ({ row }) => (
+      key: 'price',
+      header: 'Price',
+      cell: (value) => (
         <span className="font-mono text-green-600 font-medium">
-          ${(row.getValue('price') as number).toFixed(2)}
+          ${(value as number).toFixed(2)}
         </span>
       ),
     },
     {
-      accessorKey: 'status',
+      key: 'status',
       header: 'Status',
-      cell: ({ row }) => {
-        const status = row.getValue('status') as string;
+      cell: (value) => {
+        const status = value as string;
         const colors = {
           'In Stock': 'bg-green-100 text-green-800 border-green-200',
           'Low Stock': 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -125,37 +102,26 @@ export default function TablePage() {
     },
   ];
 
-  const table2 = useReactTable({
-    data: sampleData,
-    columns: styledColumns,
-    state: { sorting: sorting2 },
-    onSortingChange: setSorting2,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: 5 } },
-  });
-
-  // Example 3: With Search
-  const searchColumns: ColumnDef<Product>[] = [
+  // Example 3: All Columns with Search
+  const searchColumns: DataTableColumn<Product>[] = [
     {
-      accessorKey: 'name',
-      header: ({ column }) => <SortableHeader column={column} title="Product" />,
+      key: 'name',
+      header: 'Product',
     },
     {
-      accessorKey: 'category',
+      key: 'category',
       header: 'Category',
     },
     {
-      accessorKey: 'price',
-      header: ({ column }) => <SortableHeader column={column} title="Price" />,
-      cell: ({ row }) => `$${(row.getValue('price') as number).toFixed(2)}`,
+      key: 'price',
+      header: 'Price',
+      cell: (value) => `$${(value as number).toFixed(2)}`,
     },
     {
-      accessorKey: 'stock',
-      header: ({ column }) => <SortableHeader column={column} title="Stock" />,
-      cell: ({ row }) => {
-        const stock = row.getValue('stock') as number;
+      key: 'stock',
+      header: 'Stock',
+      cell: (value) => {
+        const stock = value as number;
         return (
           <span className={stock < 10 ? 'text-red-600 font-medium' : ''}>
             {stock} units
@@ -164,19 +130,6 @@ export default function TablePage() {
       },
     },
   ];
-
-  const table3 = useReactTable({
-    data: sampleData,
-    columns: searchColumns,
-    state: { sorting: sorting3, globalFilter },
-    onSortingChange: setSorting3,
-    onGlobalFilterChange: setGlobalFilter,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    initialState: { pagination: { pageSize: 4 } },
-  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
@@ -191,8 +144,8 @@ export default function TablePage() {
             Back to Home
           </Link>
           <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl p-8 shadow-lg">
-            <h1 className="text-5xl font-bold mb-3">Table System</h1>
-            <p className="text-xl text-indigo-100">Powerful data tables with sorting, pagination, and custom styling</p>
+            <h1 className="text-5xl font-bold mb-3">DataTable</h1>
+            <p className="text-xl text-indigo-100">Independent data table with built-in sorting, pagination, and search</p>
           </div>
         </div>
 
@@ -201,13 +154,13 @@ export default function TablePage() {
           <h2 className="text-2xl font-bold text-slate-900 mb-6">Installation</h2>
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-slate-600 mb-2">Install the package:</p>
+              <p className="text-sm text-slate-600 mb-2">Install the package (no extra dependencies needed!):</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 bg-slate-900 text-slate-100 px-4 py-3 rounded-lg text-sm">
-                  npm install takaui @tanstack/react-table
+                  npm install takaui
                 </code>
                 <button
-                  onClick={() => handleCopy('npm install takaui @tanstack/react-table', 'install')}
+                  onClick={() => handleCopy('npm install takaui', 'install')}
                   className="p-3 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                 >
                   {copiedInstall ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5 text-slate-600" />}
@@ -215,13 +168,13 @@ export default function TablePage() {
               </div>
             </div>
             <div>
-              <p className="text-sm text-slate-600 mb-2">Import components:</p>
+              <p className="text-sm text-slate-600 mb-2">Import the component:</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 bg-slate-900 text-slate-100 px-4 py-3 rounded-lg text-sm">
-                  import &#123; TableRoot, TableWrapper, TableContent, TableNavigator, SortableHeader &#125; from 'takaui';
+                  import &#123; DataTable &#125; from 'takaui';
                 </code>
                 <button
-                  onClick={() => handleCopy("import { TableRoot, TableWrapper, TableContent, TableNavigator, SortableHeader } from 'takaui';", 'import')}
+                  onClick={() => handleCopy("import { DataTable } from 'takaui';", 'import')}
                   className="p-3 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                 >
                   {copiedImport ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5 text-slate-600" />}
@@ -252,33 +205,38 @@ export default function TablePage() {
                 </div>
               </div>
               
-              <TableRoot table={table1} totalRecords={sampleData.slice(0, 4).length}>
-                <TableWrapper>
-                  <TableContent />
-                </TableWrapper>
-                <TableNavigator rowsPerPageOptions={[5, 10]} showPageSelector={true} />
-              </TableRoot>
+              <DataTable
+                columns={basicColumns}
+                data={sampleData.slice(0, 4)}
+                showPagination={false}
+                showSearch={false}
+              />
 
               {showCode1 && (
                 <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
                   <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
-                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">ColumnDef</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
+                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
                     <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: ({'{'} <span className="text-blue-300">column</span> {'}'}) =&gt; &lt;<span className="text-green-400">SortableHeader</span> <span className="text-blue-400">column</span>={'{'}column{'}'} <span className="text-blue-400">title</span>=<span className="text-green-400">"Product"</span> /&gt;,</div>
+                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>,</div>
+                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span>,</div>
                     <div>  {'}'},</div>
-                    <div>  {'{'} <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span> {'}'},</div>
-                    <div>  {'{'} <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'price'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span> {'}'},</div>
+                    <div>  {'{'}</div>
+                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'category'</span>,</div>
+                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span>,</div>
+                    <div>  {'}'},</div>
+                    <div>  {'{'}</div>
+                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'price'</span>,</div>
+                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span>,</div>
+                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">value</span>) =&gt; `$${'{'}(<span className="text-blue-300">value</span> <span className="text-purple-400">as</span> <span className="text-blue-400">number</span>).<span className="text-yellow-400">toFixed</span>(<span className="text-orange-400">2</span>){'}'}`,</div>
+                    <div>  {'}'},</div>
                     <div>];</div>
                     <div className="h-4"></div>
-                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">table</span> = <span className="text-yellow-400">useReactTable</span>({'{'}data, columns{'}'});</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-green-400">TableRoot</span>&gt;</div>
-                    <div>  &lt;<span className="text-green-400">TableWrapper</span>&gt;</div>
-                    <div>    &lt;<span className="text-green-400">TableContent</span> <span className="text-blue-400">table</span>={'{'}table{'}'} <span className="text-blue-400">columns</span>={'{'}columns{'}'} /&gt;</div>
-                    <div>  &lt;/<span className="text-green-400">TableWrapper</span>&gt;</div>
-                    <div>  &lt;<span className="text-green-400">TableNavigator</span> <span className="text-blue-400">table</span>={'{'}table{'}'} /&gt;</div>
-                    <div>&lt;/<span className="text-green-400">TableRoot</span>&gt;</div>
+                    <div>&lt;<span className="text-green-400">DataTable</span></div>
+                    <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
+                    <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
+                    <div>  <span className="text-blue-400">showPagination</span>={'{'}false{'}'}</div>
+                    <div>  <span className="text-blue-400">showSearch</span>={'{'}false{'}'}</div>
+                    <div>/&gt;</div>
                   </div>
                 </div>
               )}
@@ -300,30 +258,44 @@ export default function TablePage() {
                 </div>
               </div>
               
-              <TableRoot table={table2} totalRecords={sampleData.length}>
-                <TableWrapper>
-                  <TableContent />
-                </TableWrapper>
-                <TableNavigator rowsPerPageOptions={[5, 10]} showPageSelector={true} />
-              </TableRoot>
+              <DataTable
+                columns={styledColumns}
+                data={sampleData}
+                showPagination={true}
+                pageSize={5}
+                showSearch={false}
+              />
 
               {showCode2 && (
                 <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
                   <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
-                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span> = [</div>
+                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
                     <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'status'</span>,</div>
+                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>,</div>
+                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Product Name'</span>,</div>
+                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">value</span>) =&gt; (</div>
+                    <div>      &lt;<span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"font-semibold text-slate-900"</span>&gt;</div>
+                    <div>        {'{'}value{'}'}</div>
+                    <div>      &lt;/<span className="text-green-400">span</span>&gt;</div>
+                    <div>    ),</div>
+                    <div>  {'}'},</div>
+                    <div>  {'{'}</div>
+                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'status'</span>,</div>
                     <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Status'</span>,</div>
-                    <div>    <span className="text-blue-400">cell</span>: ({'{'} <span className="text-blue-300">row</span> {'}'}) =&gt; {'{'}</div>
-                    <div>      <span className="text-purple-400">const</span> <span className="text-blue-300">status</span> = row.<span className="text-yellow-400">getValue</span>(<span className="text-green-400">'status'</span>);</div>
-                    <div>      <span className="text-purple-400">return</span> (</div>
-                    <div>        &lt;<span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"px-2 py-1 rounded-full text-xs"</span>&gt;</div>
-                    <div>          {'{'}status{'}'}</div>
-                    <div>        &lt;/<span className="text-green-400">span</span>&gt;</div>
-                    <div>      );</div>
-                    <div>    {'}'},</div>
+                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">value</span>) =&gt; (</div>
+                    <div>      &lt;<span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"px-2.5 py-0.5 rounded-full text-xs"</span>&gt;</div>
+                    <div>        {'{'}value{'}'}</div>
+                    <div>      &lt;/<span className="text-green-400">span</span>&gt;</div>
+                    <div>    ),</div>
                     <div>  {'}'},</div>
                     <div>];</div>
+                    <div className="h-4"></div>
+                    <div>&lt;<span className="text-green-400">DataTable</span></div>
+                    <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
+                    <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
+                    <div>  <span className="text-blue-400">showPagination</span>={'{'}true{'}'}</div>
+                    <div>  <span className="text-blue-400">pageSize</span>={'{'}5{'}'}</div>
+                    <div>/&gt;</div>
                   </div>
                 </div>
               )}
@@ -332,7 +304,7 @@ export default function TablePage() {
             {/* Example 3: With Search */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-slate-900">With Search Filter</h3>
+                <h3 className="text-xl font-semibold text-slate-900">With Search & Pagination</h3>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShowCode3(!showCode3)}
@@ -341,145 +313,144 @@ export default function TablePage() {
                     <Code className="w-4 h-4" />
                     {showCode3 ? 'Hide' : 'View'} Code
                   </button>
-                  <span className="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium">Advanced</span>
+                  <span className="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium">Full Featured</span>
                 </div>
               </div>
-
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={globalFilter}
-                  onChange={(e) => setGlobalFilter(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
               
-              <TableRoot table={table3} totalRecords={sampleData.length}>
-                <TableWrapper>
-                  <TableContent />
-                </TableWrapper>
-                <TableNavigator rowsPerPageOptions={[4, 8]} showPageSelector={true} />
-              </TableRoot>
+              <DataTable
+                columns={searchColumns}
+                data={sampleData}
+                showPagination={true}
+                showSearch={true}
+                pageSize={4}
+                searchPlaceholder="Search products..."
+              />
 
               {showCode3 && (
                 <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
                   <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
-                    <div><span className="text-purple-400">const</span> [<span className="text-blue-300">globalFilter</span>, <span className="text-blue-300">setGlobalFilter</span>] = <span className="text-yellow-400">useState</span>(<span className="text-green-400">''</span>);</div>
-                    <div className="h-4"></div>
-                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">table</span> = <span className="text-yellow-400">useReactTable</span>({'{'}</div>
-                    <div>  data,</div>
-                    <div>  columns,</div>
-                    <div>  <span className="text-blue-400">state</span>: {'{'} globalFilter {'}'},</div>
-                    <div>  onGlobalFilterChange: setGlobalFilter,</div>
-                    <div>  <span className="text-yellow-400">getFilteredRowModel</span>: <span className="text-yellow-400">getFilteredRowModel</span>(),</div>
-                    <div>{'}'});</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-green-400">input</span></div>
-                    <div>  <span className="text-blue-400">value</span>={'{'}globalFilter{'}'}</div>
-                    <div>  <span className="text-blue-400">onChange</span>={'{'}(<span className="text-blue-300">e</span>) =&gt; <span className="text-yellow-400">setGlobalFilter</span>(e.target.value){'}'}</div>
-                    <div>  <span className="text-blue-400">placeholder</span>=<span className="text-green-400">"Search..."</span></div>
+                    <div>&lt;<span className="text-green-400">DataTable</span></div>
+                    <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
+                    <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
+                    <div>  <span className="text-blue-400">showPagination</span>={'{'}true{'}'}</div>
+                    <div>  <span className="text-blue-400">showSearch</span>={'{'}true{'}'}</div>
+                    <div>  <span className="text-blue-400">pageSize</span>={'{'}4{'}'}</div>
+                    <div>  <span className="text-blue-400">searchPlaceholder</span>=<span className="text-green-400">"Search products..."</span></div>
                     <div>/&gt;</div>
                   </div>
                 </div>
               )}
             </div>
-
           </div>
         </div>
 
         {/* API Reference */}
-        <div className="mb-12 bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
           <h2 className="text-2xl font-bold text-slate-900 mb-6">API Reference</h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-3">TableRoot</h3>
-              <p className="text-sm text-slate-600 mb-2">Wrapper component for the entire table system.</p>
+          
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">DataTable Props</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Prop</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Type</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Default</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Description</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">columns</td>
+                    <td className="py-3 px-4 font-mono text-xs">DataTableColumn[]</td>
+                    <td className="py-3 px-4 text-slate-500">required</td>
+                    <td className="py-3 px-4 text-slate-600">Column definitions</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">data</td>
+                    <td className="py-3 px-4 font-mono text-xs">T[]</td>
+                    <td className="py-3 px-4 text-slate-500">required</td>
+                    <td className="py-3 px-4 text-slate-600">Array of data objects</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">showPagination</td>
+                    <td className="py-3 px-4 font-mono text-xs">boolean</td>
+                    <td className="py-3 px-4 font-mono text-xs">true</td>
+                    <td className="py-3 px-4 text-slate-600">Show pagination controls</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">showSearch</td>
+                    <td className="py-3 px-4 font-mono text-xs">boolean</td>
+                    <td className="py-3 px-4 font-mono text-xs">true</td>
+                    <td className="py-3 px-4 text-slate-600">Show search input</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">pageSize</td>
+                    <td className="py-3 px-4 font-mono text-xs">number</td>
+                    <td className="py-3 px-4 font-mono text-xs">10</td>
+                    <td className="py-3 px-4 text-slate-600">Rows per page</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">searchPlaceholder</td>
+                    <td className="py-3 px-4 font-mono text-xs">string</td>
+                    <td className="py-3 px-4 font-mono text-xs">"Search..."</td>
+                    <td className="py-3 px-4 text-slate-600">Search input placeholder</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">variant</td>
+                    <td className="py-3 px-4 font-mono text-xs">"default" | "clean"</td>
+                    <td className="py-3 px-4 font-mono text-xs">"default"</td>
+                    <td className="py-3 px-4 text-slate-600">Table style variant</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">onRowClick</td>
+                    <td className="py-3 px-4 font-mono text-xs">(row: T) =&gt; void</td>
+                    <td className="py-3 px-4 text-slate-500">-</td>
+                    <td className="py-3 px-4 text-slate-600">Callback when row is clicked</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+          </div>
 
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-3">TableWrapper</h3>
-              <p className="text-sm text-slate-600 mb-2">Container for the table with scrolling support.</p>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-3">TableContent</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Prop</th>
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Type</th>
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Description</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    <tr className="hover:bg-slate-50">
-                      <td className="py-3 px-4 text-sm font-mono text-purple-600">table</td>
-                      <td className="py-3 px-4 text-sm font-mono text-slate-600">Table&lt;TData&gt;</td>
-                      <td className="py-3 px-4 text-sm text-slate-700">TanStack Table instance</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="py-3 px-4 text-sm font-mono text-purple-600">columns</td>
-                      <td className="py-3 px-4 text-sm font-mono text-slate-600">ColumnDef&lt;TData&gt;[]</td>
-                      <td className="py-3 px-4 text-sm text-slate-700">Column definitions</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-3">TableNavigator</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Prop</th>
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Type</th>
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Description</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    <tr className="hover:bg-slate-50">
-                      <td className="py-3 px-4 text-sm font-mono text-purple-600">table</td>
-                      <td className="py-3 px-4 text-sm font-mono text-slate-600">Table&lt;TData&gt;</td>
-                      <td className="py-3 px-4 text-sm text-slate-700">TanStack Table instance for pagination</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-3">SortableHeader</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Prop</th>
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Type</th>
-                      <th className="py-3 px-4 text-sm font-semibold text-slate-900">Description</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    <tr className="hover:bg-slate-50">
-                      <td className="py-3 px-4 text-sm font-mono text-purple-600">column</td>
-                      <td className="py-3 px-4 text-sm font-mono text-slate-600">Column&lt;TData&gt;</td>
-                      <td className="py-3 px-4 text-sm text-slate-700">Column instance from TanStack Table</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="py-3 px-4 text-sm font-mono text-purple-600">title</td>
-                      <td className="py-3 px-4 text-sm font-mono text-slate-600">string</td>
-                      <td className="py-3 px-4 text-sm text-slate-700">Header title text</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">DataTableColumn Interface</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Property</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Type</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Description</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">key</td>
+                    <td className="py-3 px-4 font-mono text-xs">string</td>
+                    <td className="py-3 px-4 text-slate-600">Unique key for the column (matches data property)</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">header</td>
+                    <td className="py-3 px-4 font-mono text-xs">string</td>
+                    <td className="py-3 px-4 text-slate-600">Column header text</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">cell</td>
+                    <td className="py-3 px-4 font-mono text-xs">(value, row, index) =&gt; ReactNode</td>
+                    <td className="py-3 px-4 text-slate-600">Optional custom cell renderer</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">accessor</td>
+                    <td className="py-3 px-4 font-mono text-xs">(row: T) =&gt; any</td>
+                    <td className="py-3 px-4 text-slate-600">Optional custom accessor function</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
