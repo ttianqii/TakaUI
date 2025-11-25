@@ -38,8 +38,10 @@ export { TableContent } from './ui/data-table-view';
 export { TableNavigator, type TableNavigatorProps } from './ui/data-table-pagination';
 export { SortableHeader, type SortableHeaderProps } from './ui/data-table-column-header';
 
-// Legacy components (kept for backward compatibility)
+// TakaUI Components
+export { Calendar } from './Calendar';
 export { DatePicker, type DatePickerProps } from './DatePicker';
+export { TimePicker } from './TimePicker';
 export { Schedule, type ScheduleEvent, type ScheduleProps, type CustomField } from './Schedule';
 export { WeekNavigator, type WeekNavigatorProps } from './WeekNavigator';
 export { weekNavigatorUtils } from '../utils/weekNavigatorUtils';

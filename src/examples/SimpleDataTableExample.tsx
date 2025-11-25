@@ -5,13 +5,13 @@ import { ArrowUpDown, Edit, Trash, MoreHorizontal } from 'lucide-react'
 import {
   Button,
   Checkbox,
-  DataTable,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '../components'
+import { DataTable } from '../components/DataTable'
 
 // Define your data type
 type Product = {
