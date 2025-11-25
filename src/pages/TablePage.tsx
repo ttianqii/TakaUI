@@ -295,6 +295,7 @@ export default function TablePage() {
                     <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
                     <div>  <span className="text-blue-400">showPagination</span>={'{'}true{'}'}</div>
                     <div>  <span className="text-blue-400">pageSize</span>={'{'}5{'}'}</div>
+                    <div>  <span className="text-blue-400">showSearch</span>={'{'}false{'}'}</div>
                     <div>/&gt;</div>
                   </div>
                 </div>
@@ -329,6 +330,15 @@ export default function TablePage() {
               {showCode3 && (
                 <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
                   <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataTable</span>, <span className="text-purple-400">type</span> <span className="text-blue-300">DataTableColumn</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                    <div className="h-4"></div>
+                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
+                    <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span> {'}'},</div>
+                    <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span> {'}'},</div>
+                    <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'price'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span> {'}'},</div>
+                    <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'stock'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Stock'</span> {'}'},</div>
+                    <div>];</div>
+                    <div className="h-4"></div>
                     <div>&lt;<span className="text-green-400">DataTable</span></div>
                     <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
                     <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>

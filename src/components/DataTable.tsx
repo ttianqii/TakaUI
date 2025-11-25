@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, ChevronsUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import {
@@ -50,6 +50,8 @@ export function DataTable<T = Record<string, unknown>>({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(initialPageSize);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const filteredData = useMemo(() => {
     if (!showSearch || !searchQuery.trim()) return data;
@@ -62,13 +64,40 @@ export function DataTable<T = Record<string, unknown>>({
     });
   }, [data, searchQuery, showSearch, columns]);
 
+  const sortedData = useMemo(() => {
+    if (!sortKey) return filteredData;
+    return [...filteredData].sort((a, b) => {
+      const column = columns.find(col => col.key === sortKey);
+      if (!column) return 0;
+      
+      const aVal = column.accessor ? column.accessor(a) : (a as Record<string, unknown>)[column.key];
+      const bVal = column.accessor ? column.accessor(b) : (b as Record<string, unknown>)[column.key];
+      
+      if (aVal === bVal) return 0;
+      if (aVal === null || aVal === undefined) return 1;
+      if (bVal === null || bVal === undefined) return -1;
+      
+      const comparison = aVal < bVal ? -1 : 1;
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+  }, [filteredData, sortKey, sortOrder, columns]);
+
   const paginatedData = useMemo(() => {
-    if (!showPagination) return filteredData;
+    if (!showPagination) return sortedData;
     const start = (currentPage - 1) * pageSize;
-    return filteredData.slice(start, start + pageSize);
-  }, [filteredData, currentPage, pageSize, showPagination]);
+    return sortedData.slice(start, start + pageSize);
+  }, [sortedData, currentPage, pageSize, showPagination]);
 
   React.useEffect(() => setCurrentPage(1), [searchQuery]);
+
+  const handleSort = (columnKey: string) => {
+    if (sortKey === columnKey) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(columnKey);
+      setSortOrder('asc');
+    }
+  };
 
   const getCellValue = (row: T, column: DataTableColumn<T>, rowIndex: number): React.ReactNode => {
     const value = column.accessor ? column.accessor(row) : (row as Record<string, unknown>)[column.key];
@@ -104,9 +133,28 @@ export function DataTable<T = Record<string, unknown>>({
                 {columns.map((column) => (
                   <TableHead
                     key={column.key}
-                    className="px-3 py-3 text-xs font-normal text-gray-500 uppercase tracking-widest"
+                    className="h-10 px-0 py-0"
                   >
-                    {column.header}
+                    <div className="h-10 flex items-center px-3 text-xs font-normal text-gray-500 uppercase tracking-widest">
+                      {column.sortable !== false ? (
+                        <Button
+                          variant="ghost"
+                          className="h-auto px-3 py-1.5 font-normal hover:bg-transparent hover:text-gray-900"
+                          onClick={() => handleSort(column.key)}
+                        >
+                          {column.header}
+                          {sortKey === column.key && sortOrder === 'desc' ? (
+                            <ChevronDown className="h-4 w-4" />
+                          ) : sortKey === column.key && sortOrder === 'asc' ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronsUpDown className="h-4 w-4" />
+                          )}
+                        </Button>
+                      ) : (
+                        <span>{column.header}</span>
+                      )}
+                    </div>
                   </TableHead>
                 ))}
               </TableRow>
@@ -125,7 +173,7 @@ export function DataTable<T = Record<string, unknown>>({
                 paginatedData.map((row, rowIndex) => (
                   <TableRow
                     key={rowIndex}
-                    className="hover:bg-gray-50/60 transition-colors cursor-pointer"
+                    className="hover:bg-gray-50 cursor-pointer"
                     onClick={() => onRowClick?.(row)}
                   >
                     {columns.map((column) => (
@@ -145,12 +193,12 @@ export function DataTable<T = Record<string, unknown>>({
       {showPagination && (
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-sm text-gray-500 font-light">
-            Showing {paginatedData.length} of {filteredData.length} row(s)
+            Showing {paginatedData.length} of {sortedData.length} row(s)
           </div>
 
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700 font-light">
-              Page {currentPage} of {Math.ceil(filteredData.length / pageSize)}
+              Page {currentPage} of {Math.ceil(sortedData.length / pageSize)}
             </span>
             <div className="flex gap-1">
               <Button
@@ -165,8 +213,8 @@ export function DataTable<T = Record<string, unknown>>({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredData.length / pageSize), p + 1))}
-                disabled={currentPage === Math.ceil(filteredData.length / pageSize)}
+                onClick={() => setCurrentPage(p => Math.min(Math.ceil(sortedData.length / pageSize), p + 1))}
+                disabled={currentPage === Math.ceil(sortedData.length / pageSize)}
                 className="h-8 w-8 p-0"
               >
                 <ChevronRight className="h-4 w-4" />
