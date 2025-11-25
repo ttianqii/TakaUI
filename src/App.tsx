@@ -1,7 +1,7 @@
 import './index.css'
 import { useMemo, useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { ChevronsUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart } from 'lucide-react'
+import { ChevronsUpDown, ChevronUp, ChevronDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart } from 'lucide-react'
 import { addDays, subDays } from 'date-fns'
 
 import { Button } from './components/ui/button'
@@ -525,7 +525,13 @@ function App() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
               Product Name
-              <ChevronsUpDown className="h-4 w-4" />
+              {column.getIsSorted() === 'asc' ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : column.getIsSorted() === 'desc' ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronsUpDown className="h-4 w-4" />
+              )}
             </Button>
           )
         },
@@ -543,7 +549,13 @@ function App() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
               Category
-              <ChevronsUpDown className="h-4 w-4" />
+              {column.getIsSorted() === 'asc' ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : column.getIsSorted() === 'desc' ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronsUpDown className="h-4 w-4" />
+              )}
             </Button>
           )
         },
@@ -562,7 +574,13 @@ function App() {
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Quantity
-                <ChevronsUpDown className="h-4 w-4" />
+                {column.getIsSorted() === 'asc' ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : column.getIsSorted() === 'desc' ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronsUpDown className="h-4 w-4" />
+                )}
               </Button>
             </div>
           )
@@ -582,7 +600,13 @@ function App() {
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Unit Price
-                <ChevronsUpDown className="h-4 w-4" />
+                {column.getIsSorted() === 'asc' ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : column.getIsSorted() === 'desc' ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronsUpDown className="h-4 w-4" />
+                )}
               </Button>
             </div>
           )
@@ -607,7 +631,13 @@ function App() {
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Total Cost
-                <ChevronsUpDown className="h-4 w-4" />
+                {column.getIsSorted() === 'asc' ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : column.getIsSorted() === 'desc' ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronsUpDown className="h-4 w-4" />
+                )}
               </Button>
             </div>
           )
