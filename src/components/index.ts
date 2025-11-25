@@ -31,7 +31,10 @@ export {
   DropdownMenuRadioGroup,
 } from './ui/dropdown-menu';
 
-// TakaUI Table System - Modular components for data tables
+// TakaUI Independent DataTable (No external dependencies - recommended!)
+export { DataTable, type DataTableColumn, type DataTableProps } from './DataTable';
+
+// TakaUI Advanced Table System (requires @tanstack/react-table - optional)
 export { TableRoot } from './ui/data-table';
 export { TableWrapper } from './ui/data-table-container';
 export { TableContent } from './ui/data-table-view';

@@ -73,12 +73,39 @@ import { useState } from 'react'
 function App() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   
+  // DataTable example - No TanStack required!
+  const columns = [
+    { key: 'name', header: 'Name', sortable: true },
+    { key: 'email', header: 'Email' },
+    { 
+      key: 'status', 
+      header: 'Status',
+      cell: (value) => (
+        <span className="px-2 py-1 bg-green-100 text-green-800 rounded">
+          {value}
+        </span>
+      )
+    },
+  ]
+  
+  const data = [
+    { id: 1, name: 'John', email: 'john@example.com', status: 'Active' },
+    { id: 2, name: 'Jane', email: 'jane@example.com', status: 'Active' },
+  ]
+  
   return (
     <div>
       <Calendar
         mode="single"
         selected={date}
         onSelect={setDate}
+      />
+      
+      <DataTable 
+        data={data} 
+        columns={columns}
+        showSearch
+        searchPlaceholder="Search users..."
       />
     </div>
   )
@@ -98,13 +125,23 @@ TakaUI includes the following components:
 
 ### Data Display Components
 
-- **[DataTable](./docs/DATATABLE.md)** - Powerful table with sorting, filtering, and pagination
-  - **NEW:** [Modular Structure](./docs/DATATABLE_MODULAR.md) - Composable DataTable components
-  - [Installation Guide](./DATATABLE_INSTALL.md) - How to install and use
-  - [Quick Reference](./DATATABLE_QUICKREF.md) - Cheat sheet for common patterns
-  - [Architecture](./DATATABLE_ARCHITECTURE.md) - Component design and data flow
+- **[DataTable](./docs/DATATABLE_NEW.md)** - **NEW!** Independent table with sorting, filtering, and pagination (No TanStack!)
+  - ✅ Zero external dependencies (except icons)
+  - ✅ Built-in sorting, pagination, search
+  - ✅ Custom cell rendering
+  - ✅ Loading states
+  - [Quick Reference](./DATATABLE_QUICKREF.md) - Cheat sheet
 - **[Schedule](./docs/SCHEDULE.md)** - Weekly schedule component with custom fields
 - **[WeekNavigator](./docs/WEEKNAVIGATOR.md)** - Week navigation with date range display
+
+### Advanced Table System (Optional)
+
+For advanced users who need TanStack Table features:
+
+- **[TableRoot, TableContent, TableNavigator](./docs/DATATABLE.md)** - Modular table components
+  - Requires: `npm install @tanstack/react-table`
+  - [Modular Structure](./docs/DATATABLE_MODULAR.md)
+  - [Architecture](./DATATABLE_ARCHITECTURE.md)
 
 ### Base UI Components
 
