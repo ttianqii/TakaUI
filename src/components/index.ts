@@ -30,7 +30,15 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
 } from './ui/dropdown-menu';
-export { DataTable } from './DataTable';
+
+// TakaUI Table System - Modular components for data tables
+export { TableRoot } from './ui/data-table';
+export { TableWrapper } from './ui/data-table-container';
+export { TableContent } from './ui/data-table-view';
+export { TableNavigator, type TableNavigatorProps } from './ui/data-table-pagination';
+export { SortableHeader, type SortableHeaderProps } from './ui/data-table-column-header';
+
+// Legacy components (kept for backward compatibility)
 export { DatePicker, type DatePickerProps } from './DatePicker';
 export { Schedule, type ScheduleEvent, type ScheduleProps, type CustomField } from './Schedule';
 export { WeekNavigator, type WeekNavigatorProps } from './WeekNavigator';

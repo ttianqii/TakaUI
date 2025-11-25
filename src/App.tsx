@@ -8,6 +8,7 @@ import { Button } from './components/ui/button'
 import { Checkbox } from './components/ui/checkbox'
 import { Separator } from './components/ui/separator'
 import { DataTable } from './components/DataTable'
+import { DataTableColumnHeader } from './components/DataTableColumnHeader'
 import { DatePicker, type Holiday } from './components/DatePicker'
 import { TimePicker } from './components/TimePicker'
 import { Schedule, type ScheduleEvent, type CustomField } from './components/Schedule'
@@ -1765,6 +1766,58 @@ function App() {
             columns={columns}
             data={sampleData}
             searchPlaceholder="Search products, categories, suppliers..."
+          />
+        </div>
+
+        <Separator />
+        
+        {/* DataTable Demo with Column Header Component */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4">Product Catalog (Using DataTableColumnHeader)</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            This example shows how to use the DataTableColumnHeader component for consistent column styling.
+          </p>
+          <DataTable
+            columns={[
+              {
+                accessorKey: 'product',
+                header: ({ column }) => (
+                  <DataTableColumnHeader column={column} title="Product Name" />
+                ),
+                cell: ({ row }) => <div className="font-medium ml-3">{row.getValue('product')}</div>,
+              },
+              {
+                accessorKey: 'category',
+                header: ({ column }) => (
+                  <DataTableColumnHeader column={column} title="Category" />
+                ),
+                cell: ({ row }) => <div className="text-gray-600 ml-3">{row.getValue('category')}</div>,
+              },
+              {
+                accessorKey: 'quantity',
+                header: ({ column }) => (
+                  <DataTableColumnHeader column={column} title="Stock" align="center" />
+                ),
+                cell: ({ row }) => <div className="text-center tabular-nums">{row.getValue('quantity')}</div>,
+              },
+              {
+                accessorKey: 'unitPrice',
+                header: ({ column }) => (
+                  <DataTableColumnHeader column={column} title="Price" align="right" />
+                ),
+                cell: ({ row }) => {
+                  const price = row.getValue('unitPrice') as number
+                  const formatted = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  }).format(price)
+                  return <div className="text-right tabular-nums font-medium pr-8">{formatted}</div>
+                },
+              },
+            ]}
+            data={sampleData}
+            searchPlaceholder="Search products..."
+            pageSize={5}
           />
         </div>
 

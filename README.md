@@ -99,6 +99,10 @@ TakaUI includes the following components:
 ### Data Display Components
 
 - **[DataTable](./docs/DATATABLE.md)** - Powerful table with sorting, filtering, and pagination
+  - **NEW:** [Modular Structure](./docs/DATATABLE_MODULAR.md) - Composable DataTable components
+  - [Installation Guide](./DATATABLE_INSTALL.md) - How to install and use
+  - [Quick Reference](./DATATABLE_QUICKREF.md) - Cheat sheet for common patterns
+  - [Architecture](./DATATABLE_ARCHITECTURE.md) - Component design and data flow
 - **[Schedule](./docs/SCHEDULE.md)** - Weekly schedule component with custom fields
 - **[WeekNavigator](./docs/WEEKNAVIGATOR.md)** - Week navigation with date range display
 
