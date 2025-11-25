@@ -521,7 +521,7 @@ function App() {
           return (
             <Button
               variant="ghost"
-              className="h-auto p-0 font-normal hover:bg-transparent hover:text-gray-900"
+              className="h-auto px-3 py-1.5 font-normal hover:bg-transparent hover:text-gray-900"
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
               Product Name
@@ -539,7 +539,7 @@ function App() {
           return (
             <Button
               variant="ghost"
-              className="h-auto p-0 font-normal hover:bg-transparent hover:text-gray-900"
+              className="h-auto px-3 py-1.5 font-normal hover:bg-transparent hover:text-gray-900"
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
               Category
@@ -558,7 +558,7 @@ function App() {
             <div className="text-center">
               <Button
                 variant="ghost"
-                className="h-auto p-0 font-normal hover:bg-transparent hover:text-gray-900"
+                className="h-auto px-3 py-1.5 font-normal hover:bg-transparent hover:text-gray-900"
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Quantity
@@ -578,7 +578,7 @@ function App() {
             <div className="text-right ">
               <Button
                 variant="ghost"
-                className="h-auto p-0  font-normal hover:bg-transparent hover:text-gray-900"
+                className="h-auto px-3 py-1.5  font-normal hover:bg-transparent hover:text-gray-900"
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Unit Price
@@ -603,7 +603,7 @@ function App() {
             <div className="text-right">
               <Button
                 variant="ghost"
-                className="h-auto p-0 font-normal hover:bg-transparent hover:text-gray-900"
+                className="h-auto px-3 py-1.5 font-normal hover:bg-transparent hover:text-gray-900"
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Total Cost
