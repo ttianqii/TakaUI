@@ -29,6 +29,7 @@ export default function TablePage() {
   const [showCode1, setShowCode1] = useState(false);
   const [showCode2, setShowCode2] = useState(false);
   const [showCode3, setShowCode3] = useState(false);
+  const [showCode4, setShowCode4] = useState(false);
 
   const handleCopy = (text: string, type: 'install' | 'import') => {
     navigator.clipboard.writeText(text);
@@ -350,6 +351,60 @@ export default function TablePage() {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+
+        {/* Example 4: Clean Table (No Row Borders) */}
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-2xl font-bold text-slate-900">Clean Table (No Row Borders)</h2>
+            <span className="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">Minimal</span>
+          </div>
+          <p className="text-slate-600 mb-6">
+            A cleaner table style without row separators, keeping only the header separator for a minimal look.
+          </p>
+          
+          <div className="mb-6 bg-slate-50 rounded-xl p-6 border border-slate-200">
+            <DataTable
+              columns={styledColumns}
+              data={sampleData}
+              variant="clean"
+              showPagination={true}
+              pageSize={4}
+            />
+          </div>
+
+          <div className="border-t border-slate-200 pt-6">
+            <button
+              onClick={() => setShowCode4(!showCode4)}
+              className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
+            >
+              <Code className="h-4 w-4" />
+              {showCode4 ? 'Hide' : 'View'} Code
+            </button>
+
+            <div className={`overflow-hidden transition-all duration-300 ${showCode4 ? 'max-h-[2000px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
+              <div className="bg-slate-900 rounded-lg p-6 overflow-x-auto">
+                <div className="font-mono text-sm text-slate-300 space-y-1">
+                  <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-400">DataTable</span>, <span className="text-blue-400">type</span> <span className="text-green-400">DataTableColumn</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                  <div className="h-4"></div>
+                  <div><span className="text-purple-400">const</span> columns: <span className="text-green-400">DataTableColumn</span>[] = [</div>
+                  <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span>, <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span> {'}'},</div>
+                  <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span>, <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span> {'}'},</div>
+                  <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'price'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span>, <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span> {'}'},</div>
+                  <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'stock'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Stock'</span> {'}'},</div>
+                  <div>];</div>
+                  <div className="h-4"></div>
+                  <div>&lt;<span className="text-green-400">DataTable</span></div>
+                  <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
+                  <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
+                  <div>  <span className="text-blue-400">variant</span>=<span className="text-green-400">"clean"</span></div>
+                  <div>  <span className="text-blue-400">showPagination</span>={'{'}true{'}'}</div>
+                  <div>  <span className="text-blue-400">pageSize</span>={'{'}4{'}'}</div>
+                  <div>/&gt;</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
