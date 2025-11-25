@@ -134,6 +134,7 @@ export function DataTable<T = Record<string, unknown>>({
                   <TableHead
                     key={column.key}
                     className="h-10 px-0 py-0"
+                    style={{ width: column.width }}
                   >
                     <div className="h-10 flex items-center px-3 text-xs font-normal text-gray-500 uppercase tracking-widest">
                       {column.sortable !== false ? (
@@ -177,7 +178,11 @@ export function DataTable<T = Record<string, unknown>>({
                     onClick={() => onRowClick?.(row)}
                   >
                     {columns.map((column) => (
-                      <TableCell key={column.key} className="px-3 py-4">
+                      <TableCell 
+                        key={column.key} 
+                        className="px-3 py-4"
+                        style={{ width: column.width }}
+                      >
                         {getCellValue(row, column, rowIndex)}
                       </TableCell>
                     ))}
