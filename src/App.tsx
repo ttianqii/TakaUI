@@ -1,7 +1,7 @@
 import './index.css'
 import { useMemo, useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart } from 'lucide-react'
+import { ChevronsUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart } from 'lucide-react'
 import { addDays, subDays } from 'date-fns'
 
 import { Button } from './components/ui/button'
@@ -525,7 +525,7 @@ function App() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
               Product Name
-              <ArrowUpDown className="ml-2 h-4 w-4" />
+              <ChevronsUpDown className="h-4 w-4" />
             </Button>
           )
         },
@@ -543,7 +543,7 @@ function App() {
               onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
               Category
-              <ArrowUpDown className="ml-2 h-4 w-4" />
+              <ChevronsUpDown className="h-4 w-4" />
             </Button>
           )
         },
@@ -562,7 +562,7 @@ function App() {
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Quantity
-                <ArrowUpDown className="ml-2 h-4 w-4" />
+                <ChevronsUpDown className="h-4 w-4" />
               </Button>
             </div>
           )
@@ -582,7 +582,7 @@ function App() {
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Unit Price
-                <ArrowUpDown className="ml-2 h-4 w-4" />
+                <ChevronsUpDown className="h-4 w-4" />
               </Button>
             </div>
           )
@@ -607,7 +607,7 @@ function App() {
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
               >
                 Total Cost
-                <ArrowUpDown className="ml-2 h-4 w-4" />
+                <ChevronsUpDown className="h-4 w-4" />
               </Button>
             </div>
           )
@@ -964,7 +964,7 @@ function App() {
               </Button>
               <Button variant="destructive">
                 Delete
-                <ArrowUpDown className="ml-2 h-4 w-4" />
+                <ChevronsUpDown className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
