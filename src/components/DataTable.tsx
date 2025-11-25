@@ -117,7 +117,7 @@ export function DataTable<TData, TValue>({
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="px-3 py-4 text-xs font-light text-gray-500 uppercase tracking-widest"
+                      className="px-3 py-4 text-xs font-normal text-gray-500 uppercase tracking-widest"
                     >
                       {header.isPlaceholder
                         ? null
