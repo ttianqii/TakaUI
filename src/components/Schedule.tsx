@@ -23,7 +23,7 @@ export interface ScheduleEvent {
   recurrenceType?: 'none' | 'weekly' | 'monthly' | 'yearly'
   specificDate?: string // For monthly/yearly recurrence
   // Flexible metadata - can be anything
-  [key: string]: string | number | boolean | undefined
+  [key: string]: string | number | boolean | Date | undefined
 }
 
 export interface CustomField {
@@ -91,7 +91,7 @@ export function Schedule({
 }: ScheduleProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null)
-  const [formData, setFormData] = useState<Record<string, string | number | boolean>>({
+  const [formData, setFormData] = useState<Record<string, string | number | boolean | Date>>({
     title: "",
     day: "",
     startTime: "",
@@ -124,13 +124,14 @@ export function Schedule({
       }
       // Add custom field values
       customFields.forEach(field => {
-        data[field.key] = event[field.key] || (field.type === "number" ? 0 : "")
+        const value = event[field.key];
+        data[field.key] = value instanceof Date ? value.toISOString() : (value || (field.type === "number" ? 0 : ""))
       })
       setFormData(data)
     } else {
       setSelectedEvent(null)
       // Initialize form with empty values
-      const data: Record<string, string | number | boolean> = {
+      const data: Record<string, string | number | boolean | Date> = {
         title: "",
         day: day || "",
         startTime: time || "",
@@ -344,7 +345,7 @@ export function Schedule({
                                       .map(field => (
                                         <div key={field.key} className="text-xs opacity-90 flex items-center gap-1 mt-1">
                                           {field.icon}
-                                          <span className="truncate">{event[field.key]}</span>
+                                          <span className="truncate">{event[field.key] instanceof Date ? (event[field.key] as Date).toLocaleString() : String(event[field.key] || '')}</span>
                                         </div>
                                       ))}
 
