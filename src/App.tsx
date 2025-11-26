@@ -1,4 +1,4 @@
-import './index.css'
+
 import { useState } from 'react'
 import { ChevronsUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart } from 'lucide-react'
 import { addDays, subDays } from 'date-fns'

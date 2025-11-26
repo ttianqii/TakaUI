@@ -10,6 +10,9 @@ export default function SchedulePage() {
     {
       id: '1',
       title: 'Team Meeting',
+      day: 'Monday',
+      startTime: '09:00',
+      endTime: '10:00',
       start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 0),
       end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 0),
       color: 'bg-blue-500',
@@ -17,6 +20,9 @@ export default function SchedulePage() {
     {
       id: '2',
       title: 'Lunch Break',
+      day: 'Monday',
+      startTime: '12:00',
+      endTime: '13:00',
       start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0),
       end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 13, 0),
       color: 'bg-green-500',
@@ -24,6 +30,9 @@ export default function SchedulePage() {
     {
       id: '3',
       title: 'Client Call',
+      day: 'Monday',
+      startTime: '14:30',
+      endTime: '15:30',
       start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14, 30),
       end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 15, 30),
       color: 'bg-purple-500',
