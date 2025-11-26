@@ -437,13 +437,16 @@ export function DatePicker({
                       const isDisabled = isDateDisabledCheck(day)
                       const inRange = mode === 'range' && isInRange(day)
                       const isHolidayDay = isHoliday(day)
+                      const dayOfWeek = day.getDay() // 0 = Sunday, 6 = Saturday
 
                       return (
                         <div 
                           key={day.toISOString()} 
                           className={cn(
                             "relative p-0.5",
-                            inRange && "bg-gray-100"
+                            inRange && "bg-gray-100",
+                            inRange && dayOfWeek === 0 && "rounded-l", // Sunday - left rounded
+                            inRange && dayOfWeek === 6 && "rounded-r"  // Saturday - right rounded
                           )}
                           onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
                           onMouseLeave={() => setHoverDate(undefined)}
@@ -498,13 +501,16 @@ export function DatePicker({
                       const isDisabled = isDateDisabledCheck(day)
                       const inRange = mode === 'range' && isInRange(day)
                       const isHolidayDay = isHoliday(day)
+                      const dayOfWeek = day.getDay() // 0 = Sunday, 6 = Saturday
 
                       return (
                         <div 
                           key={day.toISOString()} 
                           className={cn(
                             "relative p-0.5",
-                            inRange && "bg-gray-100"
+                            inRange && "bg-gray-100",
+                            inRange && dayOfWeek === 0 && "rounded-l", // Sunday - left rounded
+                            inRange && dayOfWeek === 6 && "rounded-r"  // Saturday - right rounded
                           )}
                           onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
                           onMouseLeave={() => setHoverDate(undefined)}
