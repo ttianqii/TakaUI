@@ -136,7 +136,7 @@ export function DataTable<T = Record<string, unknown>>({
                     className="h-10 px-0 py-0"
                     style={{ width: column.width }}
                   >
-                    <div className="h-10 flex items-center px-3 text-xs font-normal text-gray-500 uppercase tracking-widest">
+                    <div className="h-10 flex items-center text-xs font-normal text-gray-500 uppercase tracking-widest">
                       {column.sortable !== false ? (
                         <Button
                           variant="ghost"
@@ -153,7 +153,7 @@ export function DataTable<T = Record<string, unknown>>({
                           )}
                         </Button>
                       ) : (
-                        <span>{column.header}</span>
+                        <span className="px-3">{column.header}</span>
                       )}
                     </div>
                   </TableHead>
