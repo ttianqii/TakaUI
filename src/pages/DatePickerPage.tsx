@@ -7,11 +7,15 @@ export default function DatePickerPage() {
   const [selectedDate1, setSelectedDate1] = useState<Date | undefined>(new Date());
   const [selectedDate2, setSelectedDate2] = useState<Date | undefined>();
   const [selectedDate3, setSelectedDate3] = useState<Date | undefined>(new Date());
+  const [dateRange1, setDateRange1] = useState<{ from?: Date; to?: Date } | undefined>();
+  const [dateRange2, setDateRange2] = useState<{ from?: Date; to?: Date } | undefined>();
   const [copiedInstall, setCopiedInstall] = useState(false);
   const [copiedImport, setCopiedImport] = useState(false);
   const [showCode1, setShowCode1] = useState(false);
   const [showCode2, setShowCode2] = useState(false);
   const [showCode3, setShowCode3] = useState(false);
+  const [showCode4, setShowCode4] = useState(false);
+  const [showCode5, setShowCode5] = useState(false);
 
   const copyToClipboard = (text: string, setter: (val: boolean) => void) => {
     navigator.clipboard.writeText(text);
@@ -191,6 +195,108 @@ export default function DatePickerPage() {
                 </div>
               )}
             </div>
+
+            {/* Example 4: Date Range Picker (1 Month) */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-slate-900">Date Range (1 Month)</h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowCode4(!showCode4)}
+                    className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+                  >
+                    <Code className="w-4 h-4" />
+                    {showCode4 ? 'Hide' : 'View'} Code
+                  </button>
+                  <span className="text-xs px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-medium">Range</span>
+                </div>
+              </div>
+              <DatePicker 
+                mode="range"
+                dateRange={dateRange1}
+                onDateRangeChange={setDateRange1}
+                numberOfMonths={1}
+                placeholder="Select date range..."
+              />
+              {dateRange1?.from && (
+                <p className="mt-4 text-sm text-slate-600 p-3 bg-slate-50 rounded-lg">
+                  {dateRange1.to ? (
+                    <>
+                      From: <span className="font-medium">{dateRange1.from.toLocaleDateString()}</span>
+                      {' '} To: <span className="font-medium">{dateRange1.to.toLocaleDateString()}</span>
+                    </>
+                  ) : (
+                    <>Start: <span className="font-medium">{dateRange1.from.toLocaleDateString()}</span></>
+                  )}
+                </p>
+              )}
+              {showCode4 && (
+                <div className="mt-4 rounded-lg overflow-hidden border border-slate-200">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
+                    <div><span className="text-purple-400">const</span> [<span className="text-blue-300">dateRange</span>, <span className="text-blue-300">setDateRange</span>] = <span className="text-yellow-400">useState</span>&lt;{'{'} <span className="text-blue-400">from</span>?: <span className="text-blue-400">Date</span>; <span className="text-blue-400">to</span>?: <span className="text-blue-400">Date</span> {'}'} | <span className="text-blue-400">undefined</span>&gt;();</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DatePicker</span></div>
+                    <div className="pl-4"><span className="text-blue-400">mode</span>=<span className="text-orange-300">"range"</span></div>
+                    <div className="pl-4"><span className="text-blue-400">dateRange</span>=<span className="text-orange-300">{'{'}dateRange{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">onDateRangeChange</span>=<span className="text-orange-300">{'{'}setDateRange{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">numberOfMonths</span>=<span className="text-orange-300">{'{'}1{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">placeholder</span>=<span className="text-green-400">"Select date range..."</span></div>
+                    <div><span className="text-gray-500">/&gt;</span></div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Example 5: Date Range Picker (2 Months) */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-slate-900">Date Range (2 Months)</h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowCode5(!showCode5)}
+                    className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+                  >
+                    <Code className="w-4 h-4" />
+                    {showCode5 ? 'Hide' : 'View'} Code
+                  </button>
+                  <span className="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium">Advanced</span>
+                </div>
+              </div>
+              <DatePicker 
+                mode="range"
+                dateRange={dateRange2}
+                onDateRangeChange={setDateRange2}
+                numberOfMonths={2}
+                placeholder="Select date range..."
+              />
+              {dateRange2?.from && (
+                <p className="mt-4 text-sm text-slate-600 p-3 bg-slate-50 rounded-lg">
+                  {dateRange2.to ? (
+                    <>
+                      From: <span className="font-medium">{dateRange2.from.toLocaleDateString()}</span>
+                      {' '} To: <span className="font-medium">{dateRange2.to.toLocaleDateString()}</span>
+                    </>
+                  ) : (
+                    <>Start: <span className="font-medium">{dateRange2.from.toLocaleDateString()}</span></>
+                  )}
+                </p>
+              )}
+              {showCode5 && (
+                <div className="mt-4 rounded-lg overflow-hidden border border-slate-200">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
+                    <div><span className="text-purple-400">const</span> [<span className="text-blue-300">dateRange</span>, <span className="text-blue-300">setDateRange</span>] = <span className="text-yellow-400">useState</span>&lt;{'{'} <span className="text-blue-400">from</span>?: <span className="text-blue-400">Date</span>; <span className="text-blue-400">to</span>?: <span className="text-blue-400">Date</span> {'}'} | <span className="text-blue-400">undefined</span>&gt;();</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DatePicker</span></div>
+                    <div className="pl-4"><span className="text-blue-400">mode</span>=<span className="text-orange-300">"range"</span></div>
+                    <div className="pl-4"><span className="text-blue-400">dateRange</span>=<span className="text-orange-300">{'{'}dateRange{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">onDateRangeChange</span>=<span className="text-orange-300">{'{'}setDateRange{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">numberOfMonths</span>=<span className="text-orange-300">{'{'}2{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">placeholder</span>=<span className="text-green-400">"Select date range..."</span></div>
+                    <div><span className="text-gray-500">/&gt;</span></div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -212,13 +318,37 @@ export default function DatePickerPage() {
                   <td className="py-3 px-4 font-mono text-purple-600">date</td>
                   <td className="py-3 px-4 text-slate-600">Date | undefined</td>
                   <td className="py-3 px-4 text-slate-500">-</td>
-                  <td className="py-3 px-4 text-slate-600">The currently selected date</td>
+                  <td className="py-3 px-4 text-slate-600">The currently selected date (single mode)</td>
                 </tr>
                 <tr className="border-b border-slate-100">
                   <td className="py-3 px-4 font-mono text-purple-600">onDateChange</td>
                   <td className="py-3 px-4 text-slate-600">(date?: Date) =&gt; void</td>
                   <td className="py-3 px-4 text-slate-500">-</td>
-                  <td className="py-3 px-4 text-slate-600">Callback when date changes</td>
+                  <td className="py-3 px-4 text-slate-600">Callback when date changes (single mode)</td>
+                </tr>
+                <tr className="border-b border-slate-100">
+                  <td className="py-3 px-4 font-mono text-purple-600">mode</td>
+                  <td className="py-3 px-4 text-slate-600">'single' | 'range'</td>
+                  <td className="py-3 px-4 text-slate-500">'single'</td>
+                  <td className="py-3 px-4 text-slate-600">Picker mode: single date or date range</td>
+                </tr>
+                <tr className="border-b border-slate-100">
+                  <td className="py-3 px-4 font-mono text-purple-600">dateRange</td>
+                  <td className="py-3 px-4 text-slate-600">{'{'} from?: Date; to?: Date {'}'}</td>
+                  <td className="py-3 px-4 text-slate-500">-</td>
+                  <td className="py-3 px-4 text-slate-600">Selected date range (range mode)</td>
+                </tr>
+                <tr className="border-b border-slate-100">
+                  <td className="py-3 px-4 font-mono text-purple-600">onDateRangeChange</td>
+                  <td className="py-3 px-4 text-slate-600">(range?: {'{'} from?: Date; to?: Date {'}'}) =&gt; void</td>
+                  <td className="py-3 px-4 text-slate-500">-</td>
+                  <td className="py-3 px-4 text-slate-600">Callback when date range changes (range mode)</td>
+                </tr>
+                <tr className="border-b border-slate-100">
+                  <td className="py-3 px-4 font-mono text-purple-600">numberOfMonths</td>
+                  <td className="py-3 px-4 text-slate-600">1 | 2</td>
+                  <td className="py-3 px-4 text-slate-500">1</td>
+                  <td className="py-3 px-4 text-slate-600">Number of calendar months to display</td>
                 </tr>
                 <tr className="border-b border-slate-100">
                   <td className="py-3 px-4 font-mono text-purple-600">placeholder</td>

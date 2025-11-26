@@ -458,8 +458,8 @@ export function DatePicker({
                               isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && !isHolidayDay && "text-gray-700 hover:bg-gray-50 rounded",
                               isHolidayDay && !isSelectedDay && "text-red-600 font-medium hover:bg-red-50 rounded",
                               isTodayDay && !isSelectedDay && !inRange && "bg-gray-50 text-gray-900 font-medium border border-gray-200 rounded",
-                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 rounded",
-                              inRange && !isSelectedDay && "bg-transparent text-gray-900",
+                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 rounded hover:bg-gray-500",
+                              inRange && !isSelectedDay && "text-gray-900 hover:bg-gray-200",
                               isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
                             )}
                             onClick={() => !isDisabled && handleSelect(day)}
@@ -519,8 +519,8 @@ export function DatePicker({
                               isCurrentMonth && !isSelectedDay && !isTodayDay && !inRange && !isHolidayDay && "text-gray-700 hover:bg-gray-50 rounded",
                               isHolidayDay && !isSelectedDay && "text-red-600 font-medium hover:bg-red-50 rounded",
                               isTodayDay && !isSelectedDay && !inRange && "bg-gray-50 text-gray-900 font-medium border border-gray-200 rounded",
-                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 rounded",
-                              inRange && !isSelectedDay && "bg-transparent text-gray-900",
+                              isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 rounded hover:bg-gray-500",
+                              inRange && !isSelectedDay && "text-gray-900 hover:bg-gray-200",
                               isDisabled && "opacity-40 cursor-not-allowed hover:bg-transparent"
                             )}
                             onClick={() => !isDisabled && handleSelect(day)}
