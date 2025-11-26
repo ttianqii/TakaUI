@@ -3,41 +3,47 @@ import { useDataGrid } from './DataGrid';
 import { Button } from './ui/button';
 
 export function DataGridPagination() {
-  const { pagination, setPagination, totalPages, paginatedData, recordCount } = useDataGrid();
-
-  const startRecord = pagination.pageIndex * pagination.pageSize + 1;
-  const endRecord = Math.min((pagination.pageIndex + 1) * pagination.pageSize, recordCount);
-
-  const canPreviousPage = pagination.pageIndex > 0;
-  const canNextPage = pagination.pageIndex < totalPages - 1;
+  const {
+    paginatedData,
+    sortedData,
+    canPreviousPage,
+    canNextPage,
+    previousPage,
+    nextPage,
+    pageCount,
+    pagination,
+  } = useDataGrid();
 
   return (
-    <div className="flex items-center justify-between px-4 py-3">
-      <div className="text-sm font-light text-gray-600">
-        Showing {paginatedData.length > 0 ? startRecord : 0} to {endRecord} of {recordCount} entries
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div className="text-sm text-gray-500 font-light">
+        Showing {paginatedData.length} of {sortedData.length} row(s)
       </div>
+
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex - 1 }))}
-          disabled={!canPreviousPage}
-          className="h-8 w-8 p-0"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <div className="text-sm font-light text-gray-600">
-          Page {pagination.pageIndex + 1} of {totalPages}
+        <span className="text-sm text-gray-700 font-light">
+          Page {pagination.pageIndex + 1} of {pageCount}
+        </span>
+        <div className="flex gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={previousPage}
+            disabled={!canPreviousPage}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={nextPage}
+            disabled={!canNextPage}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex + 1 }))}
-          disabled={!canNextPage}
-          className="h-8 w-8 p-0"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
       </div>
     </div>
   );

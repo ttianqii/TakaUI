@@ -30,6 +30,11 @@ interface DataGridContextValue<T = Record<string, unknown>> {
   // Pagination
   pagination: { pageIndex: number; pageSize: number };
   setPagination: React.Dispatch<React.SetStateAction<{ pageIndex: number; pageSize: number }>>;
+  canPreviousPage: boolean;
+  canNextPage: boolean;
+  previousPage: () => void;
+  nextPage: () => void;
+  pageCount: number;
   
   // Sorting
   sorting: { id: string; desc: boolean }[];
@@ -102,6 +107,13 @@ export function DataGrid<T extends Record<string, unknown>>({
   }, [sortedData, pagination]);
 
   const totalPages = Math.ceil(sortedData.length / pagination.pageSize);
+  const pageCount = totalPages;
+
+  // Pagination helpers
+  const canPreviousPage = pagination.pageIndex > 0;
+  const canNextPage = pagination.pageIndex < totalPages - 1;
+  const previousPage = () => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex - 1 }));
+  const nextPage = () => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex + 1 }));
 
   // Selection logic
   const toggleRow = (id: string) => {
@@ -133,6 +145,11 @@ export function DataGrid<T extends Record<string, unknown>>({
     onRowClick,
     pagination,
     setPagination,
+    canPreviousPage,
+    canNextPage,
+    previousPage,
+    nextPage,
+    pageCount,
     sorting,
     setSorting,
     selectedRows,
