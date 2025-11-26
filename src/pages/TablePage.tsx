@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DataTable, type DataTableColumn } from '../components';
-import { ArrowLeft, Copy, Check, Code } from 'lucide-react';
+import { Checkbox } from '../components/ui/checkbox';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
+import { Button } from '../components/ui/button';
+import { ArrowLeft, Copy, Check, Code, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -30,6 +33,8 @@ export default function TablePage() {
   const [showCode2, setShowCode2] = useState(false);
   const [showCode3, setShowCode3] = useState(false);
   const [showCode4, setShowCode4] = useState(false);
+  const [showCode5, setShowCode5] = useState(false);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   const handleCopy = (text: string, type: 'install' | 'import') => {
     navigator.clipboard.writeText(text);
@@ -129,6 +134,90 @@ export default function TablePage() {
           </span>
         );
       },
+    },
+  ];
+
+  // Example 5: With Checkboxes and Actions
+  const toggleRowSelection = (id: string) => {
+    setSelectedRows(prev => 
+      prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleAllRows = () => {
+    setSelectedRows(prev => 
+      prev.length === sampleData.length ? [] : sampleData.map(item => item.id)
+    );
+  };
+
+  const handleAction = (action: string, item: Product) => {
+    console.log(`${action} action for:`, item);
+  };
+
+  const checkboxColumns: DataTableColumn<Product>[] = [
+    {
+      key: 'checkbox',
+      header: (
+        <Checkbox
+          checked={selectedRows.length === sampleData.length}
+          onCheckedChange={toggleAllRows}
+        />
+      ),
+      sortable: false,
+      width: '50px',
+      align: 'center',
+      cell: (_, row) => (
+        <Checkbox
+          checked={selectedRows.includes(row.id)}
+          onCheckedChange={() => toggleRowSelection(row.id)}
+        />
+      ),
+    },
+    {
+      key: 'name',
+      header: 'Product',
+      sortable: true,
+    },
+    {
+      key: 'category',
+      header: 'Category',
+      sortable: true,
+    },
+    {
+      key: 'price',
+      header: 'Price',
+      sortable: true,
+      cell: (value) => `$${(value as number).toFixed(2)}`,
+    },
+    {
+      key: 'stock',
+      header: 'Stock',
+    },
+    {
+      key: 'actions',
+      header: '',
+      sortable: false,
+      width: '100px',
+      align: 'center',
+      cell: (_, row) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => handleAction('edit', row)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleAction('delete', row)} className="text-red-600">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
     },
   ];
 
@@ -422,6 +511,97 @@ export default function TablePage() {
                 <div>  <span className="text-blue-400">showPagination</span>={'{'}true{'}'}</div>
                 <div>  <span className="text-blue-400">pageSize</span>={'{'}4{'}'}</div>
                 <div>/&gt;</div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Example 5: With Checkboxes and Actions */}
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-2xl font-bold text-slate-900">With Checkboxes and Actions</h2>
+            <span className="px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">Interactive</span>
+          </div>
+          <p className="text-slate-600 mb-6">
+            Add row selection with checkboxes and action menus for each row. Selected: {selectedRows.length} items.
+          </p>
+          
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowCode5(!showCode5)}
+                  className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+                >
+                  <Code className="w-4 h-4" />
+                  {showCode5 ? 'Hide' : 'View'} Code
+                </button>
+                <span className="text-xs px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-medium">Advanced</span>
+              </div>
+              {selectedRows.length > 0 && (
+                <button
+                  onClick={() => setSelectedRows([])}
+                  className="text-sm px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors"
+                >
+                  Clear Selection
+                </button>
+              )}
+            </div>
+            
+            <DataTable
+              columns={checkboxColumns}
+              data={sampleData}
+              showPagination={true}
+              pageSize={5}
+              showSearch={false}
+            />
+          </div>
+
+          {showCode5 && (
+            <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
+              <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
+                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataTable</span>, <span className="text-purple-400">type</span> <span className="text-blue-300">DataTableColumn</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">Checkbox</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DropdownMenu</span>, <span className="text-blue-300">DropdownMenuContent</span>, <span className="text-blue-300">DropdownMenuItem</span>, <span className="text-blue-300">DropdownMenuTrigger</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">Button</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                <div className="h-4"></div>
+                <div><span className="text-purple-400">const</span> [<span className="text-blue-300">selectedRows</span>, <span className="text-blue-300">setSelectedRows</span>] = <span className="text-blue-300">useState</span>&lt;<span className="text-blue-400">string</span>[]&gt;([]);</div>
+                <div className="h-4"></div>
+                <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
+                <div>  {'{'}</div>
+                <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'checkbox'</span>,</div>
+                <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">''</span>,</div>
+                <div>    <span className="text-blue-400">width</span>: <span className="text-green-400">'50px'</span>,</div>
+                <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">_</span>, <span className="text-blue-300">row</span>) =&gt; (</div>
+                <div>      &lt;<span className="text-blue-300">Checkbox</span></div>
+                <div>        <span className="text-blue-400">checked</span>={'{'}selectedRows.includes(row.id){'}'}</div>
+                <div>        <span className="text-blue-400">onCheckedChange</span>={'{'}() =&gt; toggleRowSelection(row.id){'}'}</div>
+                <div>      /&gt;</div>
+                <div>    )</div>
+                <div>  {'}'},</div>
+                <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span>, <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span> {'}'},</div>
+                <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span>, <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span> {'}'},</div>
+                <div>  {'{'}</div>
+                <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'actions'</span>,</div>
+                <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">''</span>,</div>
+                <div>    <span className="text-blue-400">width</span>: <span className="text-green-400">'50px'</span>,</div>
+                <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">_</span>, <span className="text-blue-300">row</span>) =&gt; (</div>
+                <div>      &lt;<span className="text-blue-300">DropdownMenu</span>&gt;</div>
+                <div>        &lt;<span className="text-blue-300">DropdownMenuTrigger</span> <span className="text-blue-400">asChild</span>&gt;</div>
+                <div>          &lt;<span className="text-blue-300">Button</span> <span className="text-blue-400">variant</span>=<span className="text-green-400">"ghost"</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"h-8 w-8 p-0"</span>&gt;</div>
+                <div>            &lt;<span className="text-blue-300">MoreHorizontal</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"h-4 w-4"</span> /&gt;</div>
+                <div>          &lt;/<span className="text-blue-300">Button</span>&gt;</div>
+                <div>        &lt;/<span className="text-blue-300">DropdownMenuTrigger</span>&gt;</div>
+                <div>        &lt;<span className="text-blue-300">DropdownMenuContent</span>&gt;</div>
+                <div>          &lt;<span className="text-blue-300">DropdownMenuItem</span>&gt;Edit&lt;/<span className="text-blue-300">DropdownMenuItem</span>&gt;</div>
+                <div>          &lt;<span className="text-blue-300">DropdownMenuItem</span>&gt;Delete&lt;/<span className="text-blue-300">DropdownMenuItem</span>&gt;</div>
+                <div>        &lt;/<span className="text-blue-300">DropdownMenuContent</span>&gt;</div>
+                <div>      &lt;/<span className="text-blue-300">DropdownMenu</span>&gt;</div>
+                <div>    )</div>
+                <div>  {'}'}</div>
+                <div>];</div>
+                <div className="h-4"></div>
+                <div>&lt;<span className="text-blue-300">DataTable</span> <span className="text-blue-400">columns</span>={'{'}columns{'}'} <span className="text-blue-400">data</span>={'{'}data{'}'} /&gt;</div>
               </div>
             </div>
           )}

@@ -136,26 +136,38 @@ export function DataTable<T = Record<string, unknown>>({
                     className="h-10 px-0 py-0"
                     style={{ width: column.width }}
                   >
-                    <div className="h-10 flex items-center text-xs font-normal text-gray-500 uppercase tracking-widest">
-                      {column.sortable !== false ? (
-                        <Button
-                          variant="ghost"
-                          className="h-auto px-3 py-1.5 font-normal hover:bg-transparent hover:text-gray-900"
-                          onClick={() => handleSort(column.key)}
-                        >
-                          {column.header}
-                          {sortKey === column.key && sortOrder === 'desc' ? (
-                            <ChevronDown className="h-4 w-4" />
-                          ) : sortKey === column.key && sortOrder === 'asc' ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronsUpDown className="h-4 w-4" />
-                          )}
-                        </Button>
-                      ) : (
-                        <span className="px-3">{column.header}</span>
-                      )}
-                    </div>
+                    {column.align === 'center' || (!column.align && typeof column.header !== 'string') ? (
+                      <div className="h-10 flex items-center justify-center">
+                        {typeof column.header !== 'string' ? (
+                          column.header
+                        ) : (
+                          <span className="text-xs font-normal text-gray-500 uppercase tracking-widest">{column.header}</span>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="h-10 flex items-center text-xs font-normal text-gray-500 uppercase tracking-widest">
+                        {typeof column.header !== 'string' ? (
+                          <div>{column.header}</div>
+                        ) : column.sortable !== false ? (
+                          <Button
+                            variant="ghost"
+                            className="h-auto px-3 py-1.5 font-normal hover:bg-transparent hover:text-gray-900"
+                            onClick={() => handleSort(column.key)}
+                          >
+                            {column.header}
+                            {sortKey === column.key && sortOrder === 'desc' ? (
+                              <ChevronDown className="h-4 w-4" />
+                            ) : sortKey === column.key && sortOrder === 'asc' ? (
+                              <ChevronUp className="h-4 w-4" />
+                            ) : (
+                              <ChevronsUpDown className="h-4 w-4" />
+                            )}
+                          </Button>
+                        ) : (
+                          <span className="px-3">{column.header}</span>
+                        )}
+                      </div>
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -177,15 +189,24 @@ export function DataTable<T = Record<string, unknown>>({
                     className="hover:bg-gray-50 cursor-pointer"
                     onClick={() => onRowClick?.(row)}
                   >
-                    {columns.map((column) => (
-                      <TableCell 
-                        key={column.key} 
-                        className="px-3 py-4"
-                        style={{ width: column.width }}
-                      >
-                        {getCellValue(row, column, rowIndex)}
-                      </TableCell>
-                    ))}
+                    {columns.map((column) => {
+                      const shouldCenter = column.align === 'center' || (!column.align && typeof column.header !== 'string');
+                      return (
+                        <TableCell 
+                          key={column.key} 
+                          className={shouldCenter ? "px-0 py-4" : "px-3 py-4"}
+                          style={{ width: column.width }}
+                        >
+                          {shouldCenter ? (
+                            <div className="flex items-center justify-center h-full">
+                              {getCellValue(row, column, rowIndex)}
+                            </div>
+                          ) : (
+                            getCellValue(row, column, rowIndex)
+                          )}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))
               )}
