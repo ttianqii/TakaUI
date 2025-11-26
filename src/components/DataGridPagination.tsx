@@ -74,7 +74,7 @@ export function DataGridPagination({
     return (
       <div className="flex items-center justify-end px-2 py-4">
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-gray-700 hidden sm:block">
             Page {pagination.pageIndex + 1} of {pageCount}
           </span>
           <div className="flex gap-1">
@@ -104,10 +104,10 @@ export function DataGridPagination({
 
   // Advanced mode
   return (
-    <div className="flex items-center justify-between px-2 py-4">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 py-4">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Rows per page:</span>
+          <span className="text-sm text-gray-600 hidden sm:inline">Rows per page:</span>
           <Select
             value={String(pagination.pageSize)}
             onValueChange={(value) => setPageSize(Number(value))}
@@ -137,7 +137,13 @@ export function DataGridPagination({
           <ChevronLeft className="h-4 w-4" />
         </Button>
         
-        <div className="flex gap-1">
+        {/* Show page count on mobile */}
+        <span className="text-sm text-gray-700 sm:hidden px-2">
+          {pagination.pageIndex + 1} / {pageCount}
+        </span>
+        
+        {/* Show page numbers on desktop */}
+        <div className="hidden sm:flex gap-1">
           {getPageNumbers().map((page, index) => (
             typeof page === 'number' ? (
               <Button
