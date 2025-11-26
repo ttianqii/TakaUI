@@ -18,6 +18,24 @@ A modern, customizable React UI component library built with TypeScript, Tailwin
 
 ## 📦 Installation
 
+### Quick Setup (Recommended)
+
+Run the automatic setup wizard:
+
+```bash
+npm install @ttianqii/takaui
+npx takaui-setup
+```
+
+This will:
+- ✅ Configure your Tailwind config automatically
+- ✅ Add CSS import to your main file
+- ✅ Verify your setup is correct
+
+### Manual Installation
+
+If you prefer manual setup:
+
 ```bash
 # npm
 npm install @ttianqii/takaui
@@ -76,6 +94,8 @@ Import the TakaUI styles in your main entry file (e.g., `main.tsx` or `App.tsx`)
 ```tsx
 import '@ttianqii/takaui/styles.css'
 ```
+
+**💡 Tip:** Run `npx takaui-setup` to automatically add this import!
 
 ## 🚀 Quick Start
 

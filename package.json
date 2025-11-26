@@ -15,8 +15,12 @@
     "./styles.css": "./dist/takaui.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/cli"
   ],
+  "bin": {
+    "takaui-setup": "./src/cli/setup.js"
+  },
   "sideEffects": [
     "**/*.css"
   ],
