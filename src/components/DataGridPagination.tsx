@@ -15,13 +15,13 @@ export function DataGridPagination() {
   } = useDataGrid();
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-      <div className="text-sm text-gray-500 font-light">
+    <div className="flex items-center justify-between px-2 py-4">
+      <div className="text-sm text-gray-600">
         Showing {paginatedData.length} of {sortedData.length} row(s)
       </div>
 
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-700 font-light">
+      <div className="flex items-center gap-3">
+        <span className="text-sm text-gray-700">
           Page {pagination.pageIndex + 1} of {pageCount}
         </span>
         <div className="flex gap-1">
