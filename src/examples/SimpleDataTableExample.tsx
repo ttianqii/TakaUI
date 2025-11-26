@@ -1,16 +1,4 @@
-import { useMemo } from 'react'
-import type { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, Edit, Trash, MoreHorizontal } from 'lucide-react'
-
-import {
-  Button,
-  Checkbox,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '../components'
+import { Button } from '../components'
 import { DataTable } from '../components/DataTable'
 
 // Define your data type
@@ -68,148 +56,55 @@ const products: Product[] = [
 ]
 
 export function SimpleDataTableExample() {
-  // Define columns
-  const columns = useMemo<ColumnDef<Product>[]>(
-    () => [
-      // Selection checkbox
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value: boolean) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-            aria-label="Select all"
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value: boolean) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-      },
-      // Product name
-      {
-        accessorKey: 'name',
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="h-auto p-0 hover:bg-transparent"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Product Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        ),
-      },
-      // Category
-      {
-        accessorKey: 'category',
-        header: 'Category',
-        cell: ({ row }) => {
-          const category = row.getValue('category') as string
-          return (
-            <span className="inline-flex items-center rounded-full border border-gray-300 px-2.5 py-0.5 text-xs">
-              {category}
-            </span>
-          )
-        },
-      },
-      // Price
-      {
-        accessorKey: 'price',
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="h-auto p-0 hover:bg-transparent"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Price
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        ),
-        cell: ({ row }) => {
-          const price = row.getValue('price') as number
-          return <div className="font-medium">${price.toFixed(2)}</div>
-        },
-      },
-      // Stock
-      {
-        accessorKey: 'stock',
-        header: 'Stock',
-        cell: ({ row }) => {
-          const stock = row.getValue('stock') as number
-          return (
-            <div className={stock === 0 ? 'text-red-600' : 'text-gray-900'}>
-              {stock} units
-            </div>
-          )
-        },
-      },
-      // Status
-      {
-        accessorKey: 'status',
-        header: 'Status',
-        cell: ({ row }) => {
-          const status = row.getValue('status') as string
-          return (
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                status === 'available'
-                  ? 'bg-green-100 text-green-800 border border-green-300'
-                  : 'bg-red-100 text-red-800 border border-red-300'
-              }`}
-            >
-              {status === 'available' ? 'Available' : 'Out of Stock'}
-            </span>
-          )
-        },
-      },
-      // Actions
-      {
-        id: 'actions',
-        header: () => <div className="text-center">Actions</div>,
-        cell: ({ row }) => {
-          const product = row.original
-
-          return (
-            <div className="flex justify-center">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem
-                    onClick={() => console.log('Edit product:', product.id)}
-                  >
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => console.log('Delete product:', product.id)}
-                    className="text-red-600 focus:text-red-600"
-                  >
-                    <Trash className="mr-2 h-4 w-4" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )
-        },
-      },
-    ],
-    []
-  )
+  // Define columns in DataTable format
+  const columns = [
+    { key: 'name', header: 'Product Name' },
+    { 
+      key: 'category', 
+      header: 'Category',
+      cell: (value: unknown) => (
+        <span className="inline-flex items-center rounded-full border border-gray-300 px-2.5 py-0.5 text-xs">
+          {String(value)}
+        </span>
+      )
+    },
+    { 
+      key: 'price', 
+      header: 'Price',
+      cell: (value: unknown) => {
+        const price = value as number
+        return <div className="font-medium">${price.toFixed(2)}</div>
+      }
+    },
+    { 
+      key: 'stock', 
+      header: 'Stock',
+      cell: (value: unknown) => {
+        const stock = value as number
+        return (
+          <div className={stock === 0 ? 'text-red-600' : 'text-gray-900'}>
+            {stock} units
+          </div>
+        )
+      }
+    },
+    { 
+      key: 'status', 
+      header: 'Status',
+      cell: (value: unknown) => {
+        const status = value as string
+        return (
+          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+            status === 'available'
+              ? 'bg-green-100 text-green-800 border border-green-300'
+              : 'bg-red-100 text-red-800 border border-red-300'
+          }`}>
+            {status === 'available' ? 'Available' : 'Out of Stock'}
+          </span>
+        )
+      }
+    },
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">

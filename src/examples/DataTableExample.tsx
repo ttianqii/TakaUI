@@ -1,6 +1,5 @@
 'use no memo';
 
-import '../index.css'
 import { useMemo, useState } from 'react'
 import type {
   ColumnDef,

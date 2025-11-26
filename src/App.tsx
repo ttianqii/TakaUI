@@ -1,14 +1,11 @@
 import './index.css'
-import { useMemo, useState } from 'react'
-import type { ColumnDef } from '@tanstack/react-table'
-import { ChevronsUpDown, ChevronUp, ChevronDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronsUpDown, MoreHorizontal, Plus, User, Settings, LogOut, Mail, MessageSquare, UserPlus, CreditCard, Cloud, LifeBuoy, Github, Heart } from 'lucide-react'
 import { addDays, subDays } from 'date-fns'
 
 import { Button } from './components/ui/button'
-import { Checkbox } from './components/ui/checkbox'
 import { Separator } from './components/ui/separator'
 import { DataTable } from './components/DataTable'
-import { DataTableColumnHeader } from './components/DataTableColumnHeader'
 import { DatePicker, type Holiday } from './components/DatePicker'
 import { TimePicker } from './components/TimePicker'
 import { Schedule, type ScheduleEvent, type CustomField } from './components/Schedule'
@@ -492,357 +489,104 @@ function App() {
   ])
 
   // Define columns with TanStack Table
-  const columns = useMemo<ColumnDef<GoodsItem>[]>(
-    () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() ? 'indeterminate' : false)
-            }
-            onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all"
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value: boolean) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-      },
-      {
-        accessorKey: 'product',
-        header: ({ column }) => {
-          return (
-            <Button
-              variant="ghost"
-              className="h-auto px-2 py-1 font-normal hover:bg-transparent hover:text-gray-900"
-              onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-            >
-              Product Name
-              {column.getIsSorted() === 'asc' ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : column.getIsSorted() === 'desc' ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronsUpDown className="h-4 w-4" />
-              )}
-            </Button>
-          )
-        },
-        cell: ({ row }) => {
-          return <div className="font-medium ml-3">{row.getValue('product')}</div>
-        },
-      },
-      {
-        accessorKey: 'category',
-        header: ({ column }) => {
-          return (
-            <Button
-              variant="ghost"
-              className="h-auto px-2 py-1 font-normal hover:bg-transparent hover:text-gray-900"
-              onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-            >
-              Category
-              {column.getIsSorted() === 'asc' ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : column.getIsSorted() === 'desc' ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronsUpDown className="h-4 w-4" />
-              )}
-            </Button>
-          )
-        },
-        cell: ({ row }) => {
-          return <div className="text-gray-600 ml-3">{row.getValue('category')}</div>
-        },
-      },
-      {
-        accessorKey: 'quantity',
-        header: ({ column }) => {
-          return (
-            <div className="text-center">
-              <Button
-                variant="ghost"
-                className="h-auto px-2 py-1 font-normal hover:bg-transparent hover:text-gray-900"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-              >
-                Quantity
-                {column.getIsSorted() === 'asc' ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : column.getIsSorted() === 'desc' ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronsUpDown className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-          )
-        },
-        cell: ({ row }) => {
-          return <div className="text-center tabular-nums">{row.getValue('quantity')}</div>
-        },
-      },
-      {
-        accessorKey: 'unitPrice',
-        header: ({ column }) => {
-          return (
-            <div className="text-right ">
-              <Button
-                variant="ghost"
-                className="h-auto px-2 py-1  font-normal hover:bg-transparent hover:text-gray-900"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-              >
-                Unit Price
-                {column.getIsSorted() === 'asc' ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : column.getIsSorted() === 'desc' ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronsUpDown className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-          )
-        },
-        cell: ({ row }) => {
-          const price = row.getValue('unitPrice') as number
-          const formatted = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          }).format(price)
-          return <div className="text-right tabular-nums font-medium pr-8">{formatted}</div>
-        },
-      },
-      {
-        accessorKey: 'totalCost',
-        header: ({ column }) => {
-          return (
-            <div className="text-right">
-              <Button
-                variant="ghost"
-                className="h-auto px-2 py-1 font-normal hover:bg-transparent hover:text-gray-900"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-              >
-                Total Cost
-                {column.getIsSorted() === 'asc' ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : column.getIsSorted() === 'desc' ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronsUpDown className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-          )
-        },
-        cell: ({ row }) => {
-          const total = row.getValue('totalCost') as number
-          const formatted = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          }).format(total)
-          return <div className="text-right tabular-nums font-bold pr-8">{formatted}</div>
-        },
-      },
-      {
-        accessorKey: 'supplier',
-        header: 'Supplier',
-        cell: ({ row }) => {
-          return <div className="text-sm text-gray-600">{row.getValue('supplier')}</div>
-        },
-      },
-      {
-        accessorKey: 'status',
-        header: () => <div className="text-center">Status</div>,
-        cell: ({ row }) => {
-          const status = row.getValue('status') as string
-          return (
-            <div className="flex justify-center">
-              <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                  status === 'in-stock'
-                    ? 'bg-green-100 text-green-800'
-                    : status === 'low-stock'
-                    ? 'bg-yellow-100 text-yellow-800'
-                    : 'bg-red-100 text-red-800'
-                }`}
-              >
-                {status === 'in-stock' ? 'In Stock' : status === 'low-stock' ? 'Low Stock' : 'Out of Stock'}
-              </span>
-            </div>
-          )
-        },
-      },
-      {
-        id: 'actions',
-        header: () => <div className="text-center">Actions</div>,
-        cell: ({ row }) => {
-          const item = row.original
-
-          return (
-            <div className="flex justify-center">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className=" h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => console.log('Edit:', item.id)}
-                >
-                  Edit Item
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => console.log('Reorder:', item.id)}
-                >
-                  Reorder Stock
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => console.log('Delete:', item.id)}
-                  variant="destructive"
-                >
-                  Delete Item
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            </div>
-          )
-        },
-      },
-    ],
-    []
-  )
+  // Simple columns for DataTable demo
+  const columns = [
+    { key: 'product', header: 'Product Name', cell: (value: unknown) => <div className="font-medium ml-3">{String(value)}</div> },
+    { key: 'category', header: 'Category', cell: (value: unknown) => <div className="text-gray-600 ml-3">{String(value)}</div> },
+    { key: 'quantity', header: 'Quantity', align: 'center' as const, cell: (value: unknown) => <div className="text-center tabular-nums">{String(value)}</div> },
+    { 
+      key: 'unitPrice', 
+      header: 'Unit Price', 
+      align: 'right' as const,
+      cell: (value: unknown) => {
+        const price = value as number
+        const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
+        return <div className="text-right tabular-nums font-medium pr-8">{formatted}</div>
+      }
+    },
+    { key: 'supplier', header: 'Supplier', cell: (value: unknown) => <div className="text-sm text-gray-600">{String(value)}</div> },
+    { 
+      key: 'status', 
+      header: 'Status', 
+      align: 'center' as const,
+      cell: (value: unknown) => {
+        const status = value as string
+        return (
+          <div className="flex justify-center">
+            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              status === 'in-stock' ? 'bg-green-100 text-green-800' :
+              status === 'low-stock' ? 'bg-yellow-100 text-yellow-800' :
+              'bg-red-100 text-red-800'
+            }`}>
+              {status === 'in-stock' ? 'In Stock' : status === 'low-stock' ? 'Low Stock' : 'Out of Stock'}
+            </span>
+          </div>
+        )
+      }
+    },
+  ]
 
   // Simple employee table columns
-  const employeeColumns = useMemo<ColumnDef<Employee>[]>(
-    () => [
-      {
-        accessorKey: 'name',
-        header: () => <div className="px-2 py-1">Name</div>,
-        cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
-      },
-      {
-        accessorKey: 'department',
-        header: () => <div className="px-2 py-1">Department</div>,
-      },
-      {
-        accessorKey: 'position',
-        header: () => <div className="px-2 py-1">Position</div>,
-      },
-      {
-        accessorKey: 'email',
-        header: () => <div className="px-2 py-1">Email</div>,
-        cell: ({ row }) => <div className="text-gray-600">{row.getValue('email')}</div>,
-      },
-    ],
-    []
-  )
+  const employeeColumns = [
+    { key: 'name', header: 'Name', cell: (value: unknown) => <div className="font-medium">{String(value)}</div> },
+    { key: 'department', header: 'Department' },
+    { key: 'position', header: 'Position' },
+    { key: 'email', header: 'Email', cell: (value: unknown) => <div className="text-gray-600">{String(value)}</div> },
+  ]
 
   // Dark theme task table columns
-  const taskColumns = useMemo<ColumnDef<Task>[]>(
-    () => [
-      {
-        accessorKey: 'task',
-        header: 'Task',
-        cell: ({ row }) => <div className="font-medium text-white">{row.getValue('task')}</div>,
-      },
-      {
-        accessorKey: 'priority',
-        header: () => <div className="text-center">Priority</div>,
-        cell: ({ row }) => {
-          const priority = row.getValue('priority') as string
-          return (
-            <div className="flex justify-center">
-              <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                  priority === 'Critical'
-                    ? 'bg-red-500 text-white'
-                    : priority === 'High'
-                    ? 'bg-orange-500 text-white'
-                    : priority === 'Medium'
-                    ? 'bg-yellow-500 text-black'
-                    : 'bg-blue-500 text-white'
-                }`}
-              >
-                {priority}
-              </span>
-            </div>
-          )
-        },
-      },
-      {
-        accessorKey: 'assignee',
-        header: 'Assignee',
-        cell: ({ row }) => <div className="text-gray-300">{row.getValue('assignee')}</div>,
-      },
-      {
-        accessorKey: 'status',
-        header: () => <div className="text-center">Status</div>,
-        cell: ({ row }) => {
-          const status = row.getValue('status') as string
-          return (
-            <div className="flex justify-center">
-              <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                  status === 'Completed'
-                    ? 'bg-green-600 text-white'
-                    : status === 'In Progress'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-600 text-white'
-                }`}
-              >
-                {status}
-              </span>
-            </div>
-          )
-        },
-      },
-      {
-        accessorKey: 'dueDate',
-        header: 'Due Date',
-        cell: ({ row }) => <div className="text-gray-300">{row.getValue('dueDate')}</div>,
-      },
-    ],
-    []
-  )
+  const taskColumns = [
+    { key: 'task', header: 'Task', cell: (value: unknown) => <div className="font-medium text-white">{String(value)}</div> },
+    { 
+      key: 'priority', 
+      header: 'Priority',
+      align: 'center' as const,
+      cell: (value: unknown) => {
+        const priority = value as string
+        return (
+          <div className="flex justify-center">
+            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              priority === 'Critical' ? 'bg-red-500 text-white' :
+              priority === 'High' ? 'bg-orange-500 text-white' :
+              priority === 'Medium' ? 'bg-yellow-500 text-black' :
+              'bg-blue-500 text-white'
+            }`}>
+              {priority}
+            </span>
+          </div>
+        )
+      }
+    },
+    { key: 'assignee', header: 'Assignee', cell: (value: unknown) => <div className="text-gray-300">{String(value)}</div> },
+    { 
+      key: 'status', 
+      header: 'Status',
+      align: 'center' as const,
+      cell: (value: unknown) => {
+        const status = value as string
+        return (
+          <div className="flex justify-center">
+            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              status === 'Completed' ? 'bg-green-600 text-white' :
+              status === 'In Progress' ? 'bg-blue-600 text-white' :
+              'bg-gray-600 text-white'
+            }`}>
+              {status}
+            </span>
+          </div>
+        )
+      }
+    },
+    { key: 'dueDate', header: 'Due Date', cell: (value: unknown) => <div className="text-gray-300">{String(value)}</div> },
+  ]
 
   // Customer table columns with Add New button
-  const customerColumns = useMemo<ColumnDef<Customer>[]>(
-    () => [
-      {
-        accessorKey: 'name',
-        header: 'Name',
-        cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
-      },
-      {
-        accessorKey: 'email',
-        header: 'Email',
-        cell: ({ row }) => <div className="text-gray-600">{row.getValue('email')}</div>,
-      },
-      {
-        accessorKey: 'phone',
-        header: 'Phone',
-      },
-      {
-        accessorKey: 'company',
-        header: 'Company',
-      },
-    ],
-    []
-  )
+  const customerColumns = [
+    { key: 'name', header: 'Name', cell: (value: unknown) => <div className="font-medium">{String(value)}</div> },
+    { key: 'email', header: 'Email', cell: (value: unknown) => <div className="text-gray-600">{String(value)}</div> },
+    { key: 'phone', header: 'Phone' },
+    { key: 'company', header: 'Company' },
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -1771,42 +1515,36 @@ function App() {
 
         <Separator />
         
-        {/* DataTable Demo with Column Header Component */}
+        {/* DataTable Demo - Product Catalog */}
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Product Catalog (Using DataTableColumnHeader)</h2>
+          <h2 className="text-xl font-semibold mb-4">Product Catalog</h2>
           <p className="text-sm text-gray-600 mb-4">
-            This example shows how to use the DataTableColumnHeader component for consistent column styling.
+            This example shows a product catalog with various data types.
           </p>
           <DataTable
             columns={[
               {
-                accessorKey: 'product',
-                header: ({ column }) => (
-                  <DataTableColumnHeader column={column} title="Product Name" />
-                ),
-                cell: ({ row }) => <div className="font-medium ml-3">{row.getValue('product')}</div>,
+                key: 'product',
+                header: 'Product Name',
+                cell: (value) => <div className="font-medium ml-3">{String(value)}</div>,
               },
               {
-                accessorKey: 'category',
-                header: ({ column }) => (
-                  <DataTableColumnHeader column={column} title="Category" />
-                ),
-                cell: ({ row }) => <div className="text-gray-600 ml-3">{row.getValue('category')}</div>,
+                key: 'category',
+                header: 'Category',
+                cell: (value) => <div className="text-gray-600 ml-3">{String(value)}</div>,
               },
               {
-                accessorKey: 'quantity',
-                header: ({ column }) => (
-                  <DataTableColumnHeader column={column} title="Stock" align="center" />
-                ),
-                cell: ({ row }) => <div className="text-center tabular-nums">{row.getValue('quantity')}</div>,
+                key: 'quantity',
+                header: 'Stock',
+                align: 'center' as const,
+                cell: (value) => <div className="text-center tabular-nums">{String(value)}</div>,
               },
               {
-                accessorKey: 'unitPrice',
-                header: ({ column }) => (
-                  <DataTableColumnHeader column={column} title="Price" align="right" />
-                ),
-                cell: ({ row }) => {
-                  const price = row.getValue('unitPrice') as number
+                key: 'unitPrice',
+                header: 'Price',
+                align: 'right' as const,
+                cell: (value) => {
+                  const price = value as number
                   const formatted = new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD',
