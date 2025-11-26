@@ -34,6 +34,13 @@ export {
 // TakaUI Independent DataTable (No external dependencies - recommended!)
 export { DataTable, type DataTableColumn, type DataTableProps } from './DataTable';
 
+// TakaUI DataGrid System (No dependencies - fully independent)
+export { DataGrid, useDataGrid, type DataGridColumn, type DataGridProps } from './DataGrid';
+export { DataGridTable } from './DataGridTable';
+export { DataGridPagination } from './DataGridPagination';
+export { DataGridColumnHeader } from './DataGridColumnHeader';
+export { DataGridTableRowSelect, DataGridTableRowSelectAll } from './DataGridRowSelect';
+
 // TakaUI Advanced Table System (requires @tanstack/react-table - optional)
 export { TableRoot } from './ui/data-table';
 export { TableWrapper } from './ui/data-table-container';

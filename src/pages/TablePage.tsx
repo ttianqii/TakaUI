@@ -1,676 +1,502 @@
-'use no memo';
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { DataTable, type DataTableColumn } from '../components';
-import { Checkbox } from '../components/ui/checkbox';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
+import {
+  DataGrid,
+  DataGridTable,
+  DataGridPagination,
+  DataGridColumnHeader,
+  DataGridTableRowSelect,
+  DataGridTableRowSelectAll,
+  type DataGridColumn,
+} from '../components';
 import { Button } from '../components/ui/button';
-import { ArrowLeft, Copy, Check, Code, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
+import { ArrowLeft, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 
-interface Product {
+interface Product extends Record<string, unknown> {
   id: string;
   name: string;
   category: string;
   price: number;
   stock: number;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
+  status: 'Active' | 'Inactive';
 }
 
 const sampleData: Product[] = [
-  { id: '1', name: 'Wireless Mouse', category: 'Electronics', price: 29.99, stock: 150, status: 'In Stock' },
-  { id: '2', name: 'Mechanical Keyboard', category: 'Electronics', price: 89.99, stock: 45, status: 'In Stock' },
-  { id: '3', name: 'USB-C Cable', category: 'Accessories', price: 12.99, stock: 8, status: 'Low Stock' },
-  { id: '4', name: 'Monitor Stand', category: 'Furniture', price: 49.99, stock: 0, status: 'Out of Stock' },
-  { id: '5', name: 'Laptop Bag', category: 'Accessories', price: 39.99, stock: 67, status: 'In Stock' },
-  { id: '6', name: 'Webcam HD', category: 'Electronics', price: 59.99, stock: 23, status: 'In Stock' },
+  { id: '1', name: 'Wireless Mouse', category: 'Electronics', price: 29.99, stock: 150, status: 'Active' },
+  { id: '2', name: 'Mechanical Keyboard', category: 'Electronics', price: 89.99, stock: 45, status: 'Active' },
+  { id: '3', name: 'USB-C Cable', category: 'Accessories', price: 12.99, stock: 8, status: 'Active' },
+  { id: '4', name: 'Monitor Stand', category: 'Furniture', price: 49.99, stock: 0, status: 'Inactive' },
+  { id: '5', name: 'Laptop Bag', category: 'Accessories', price: 39.99, stock: 67, status: 'Active' },
+  { id: '6', name: 'Webcam HD', category: 'Electronics', price: 59.99, stock: 23, status: 'Active' },
+  { id: '7', name: 'Phone Stand', category: 'Accessories', price: 15.99, stock: 89, status: 'Active' },
+  { id: '8', name: 'LED Desk Lamp', category: 'Furniture', price: 34.99, stock: 12, status: 'Active' },
+  { id: '9', name: 'Bluetooth Speaker', category: 'Electronics', price: 49.99, stock: 33, status: 'Active' },
+  { id: '10', name: 'Portable Charger', category: 'Electronics', price: 25.99, stock: 0, status: 'Inactive' },
 ];
 
 export default function TablePage() {
-  const [copiedInstall, setCopiedInstall] = useState(false);
-  const [copiedImport, setCopiedImport] = useState(false);
   const [showCode1, setShowCode1] = useState(false);
   const [showCode2, setShowCode2] = useState(false);
   const [showCode3, setShowCode3] = useState(false);
-  const [showCode4, setShowCode4] = useState(false);
-  const [showCode5, setShowCode5] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
-  const handleCopy = (text: string, type: 'install' | 'import') => {
-    navigator.clipboard.writeText(text);
-    if (type === 'install') {
-      setCopiedInstall(true);
-      setTimeout(() => setCopiedInstall(false), 2000);
-    } else {
-      setCopiedImport(true);
-      setTimeout(() => setCopiedImport(false), 2000);
-    }
-  };
-
-  // Example 1: Basic Table Columns
-  const basicColumns: DataTableColumn<Product>[] = [
+  // Example 1: Basic Table
+  const basicColumns: DataGridColumn<Product>[] = [
     {
-      key: 'name',
-      header: 'Product',
+      id: 'name',
+      accessorKey: 'name',
+      header: <DataGridColumnHeader id="name" title="Product" />,
+      enableSorting: true,
     },
     {
-      key: 'category',
-      header: 'Category',
+      id: 'category',
+      accessorKey: 'category',
+      header: <DataGridColumnHeader id="category" title="Category" />,
+      enableSorting: true,
     },
     {
-      key: 'price',
-      header: 'Price',
-      cell: (value) => `$${(value as number).toFixed(2)}`,
-    },
-  ];
-
-  // Example 2: Styled Columns
-  const styledColumns: DataTableColumn<Product>[] = [
-    {
-      key: 'name',
-      header: 'Product Name',
-      cell: (value) => <span className="font-semibold text-slate-900">{value}</span>,
+      id: 'price',
+      accessorKey: 'price',
+      header: <DataGridColumnHeader id="price" title="Price" />,
+      cell: (row) => `$${(row.price as number).toFixed(2)}`,
+      enableSorting: true,
     },
     {
-      key: 'category',
-      header: 'Category',
-      cell: (value) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          {value}
-        </span>
-      ),
+      id: 'stock',
+      accessorKey: 'stock',
+      header: <DataGridColumnHeader id="stock" title="Stock" />,
+      enableSorting: true,
     },
     {
-      key: 'price',
-      header: 'Price',
-      cell: (value) => (
-        <span className="font-mono text-green-600 font-medium">
-          ${(value as number).toFixed(2)}
-        </span>
-      ),
-    },
-    {
-      key: 'status',
+      id: 'status',
+      accessorKey: 'status',
       header: 'Status',
-      cell: (value) => {
-        const status = value as string;
-        const colors = {
-          'In Stock': 'bg-green-100 text-green-800 border-green-200',
-          'Low Stock': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-          'Out of Stock': 'bg-red-100 text-red-800 border-red-200',
-        };
-        return (
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${colors[status as keyof typeof colors]}`}>
-            {status}
-          </span>
-        );
-      },
+      cell: (row) => (
+        <span
+          className={`inline-block px-2 py-1 text-xs font-medium rounded ${
+            row.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+          }`}
+        >
+          {row.status as React.ReactNode}
+        </span>
+      ),
     },
   ];
 
-  // Example 3: All Columns with Search
-  const searchColumns: DataTableColumn<Product>[] = [
+  // Example 2: With Row Selection
+  const selectionColumns: DataGridColumn<Product>[] = [
     {
-      key: 'name',
-      header: 'Product',
+      id: 'select',
+      header: <DataGridTableRowSelectAll />,
+      cell: (row) => <DataGridTableRowSelect row={row} />,
+      size: 50,
+      align: 'center',
+    },
+    ...basicColumns,
+  ];
+
+  // Example 3: Advanced with Actions
+  const advancedColumns: DataGridColumn<Product>[] = [
+    {
+      id: 'select',
+      header: <DataGridTableRowSelectAll />,
+      cell: (row) => <DataGridTableRowSelect row={row} />,
+      size: 50,
+      align: 'center',
     },
     {
-      key: 'category',
-      header: 'Category',
+      id: 'name',
+      accessorKey: 'name',
+      header: <DataGridColumnHeader id="name" title="Product" />,
+      enableSorting: true,
     },
     {
-      key: 'price',
-      header: 'Price',
-      cell: (value) => `$${(value as number).toFixed(2)}`,
+      id: 'category',
+      accessorKey: 'category',
+      header: <DataGridColumnHeader id="category" title="Category" />,
+      enableSorting: true,
     },
     {
-      key: 'stock',
-      header: 'Stock',
-      cell: (value) => {
-        const stock = value as number;
+      id: 'price',
+      accessorKey: 'price',
+      header: <DataGridColumnHeader id="price" title="Price" />,
+      cell: (row) => (
+        <span className="font-mono text-green-600 font-medium">
+          ${(row.price as number).toFixed(2)}
+        </span>
+      ),
+      enableSorting: true,
+    },
+    {
+      id: 'stock',
+      accessorKey: 'stock',
+      header: <DataGridColumnHeader id="stock" title="Stock" />,
+      cell: (row) => {
+        const stock = row.stock as number;
         return (
-          <span className={stock < 10 ? 'text-red-600 font-medium' : ''}>
-            {stock} units
+          <span className={stock === 0 ? 'text-red-600 font-semibold' : ''}>
+            {stock}
           </span>
         );
       },
+      enableSorting: true,
     },
-  ];
-
-  // Example 5: With Checkboxes and Actions
-  const toggleRowSelection = (id: string) => {
-    setSelectedRows(prev => 
-      prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]
-    );
-  };
-
-  const toggleAllRows = () => {
-    setSelectedRows(prev => 
-      prev.length === sampleData.length ? [] : sampleData.map(item => item.id)
-    );
-  };
-
-  const handleAction = (action: string, item: Product) => {
-    console.log(`${action} action for:`, item);
-  };
-
-  const checkboxColumns: DataTableColumn<Product>[] = [
     {
-      key: 'checkbox',
-      header: (
-        <Checkbox
-          checked={selectedRows.length === sampleData.length}
-          onCheckedChange={toggleAllRows}
-        />
-      ),
-      sortable: false,
-      width: '50px',
-      align: 'center',
-      cell: (_, row) => (
-        <Checkbox
-          checked={selectedRows.includes(row.id)}
-          onCheckedChange={() => toggleRowSelection(row.id)}
-        />
+      id: 'status',
+      accessorKey: 'status',
+      header: 'Status',
+      cell: (row) => (
+        <span
+          className={`inline-block px-2 py-1 text-xs font-medium rounded ${
+            row.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+          }`}
+        >
+          {row.status as React.ReactNode}
+        </span>
       ),
     },
     {
-      key: 'name',
-      header: 'Product',
-      sortable: true,
-    },
-    {
-      key: 'category',
-      header: 'Category',
-      sortable: true,
-    },
-    {
-      key: 'price',
-      header: 'Price',
-      sortable: true,
-      cell: (value) => `$${(value as number).toFixed(2)}`,
-    },
-    {
-      key: 'stock',
-      header: 'Stock',
-    },
-    {
-      key: 'actions',
-      header: '',
-      sortable: false,
-      width: '100px',
-      align: 'center',
-      cell: (_, row) => (
+      id: 'actions',
+      header: 'Actions',
+      cell: () => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => handleAction('edit', row)}>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleAction('delete', row)} className="text-red-600">
+            <DropdownMenuItem className="text-red-600">
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
+      size: 80,
+      align: 'center',
     },
   ];
 
+  const code1 = `import {
+  DataGrid,
+  DataGridTable,
+  DataGridPagination,
+  DataGridColumnHeader,
+} from '@/components';
+
+const columns = [
+  {
+    id: 'name',
+    accessorKey: 'name',
+    header: <DataGridColumnHeader id="name" title="Product" />,
+    enableSorting: true,
+  },
+  {
+    id: 'category',
+    accessorKey: 'category',
+    header: <DataGridColumnHeader id="category" title="Category" />,
+    enableSorting: true,
+  },
+  {
+    id: 'price',
+    accessorKey: 'price',
+    header: <DataGridColumnHeader id="price" title="Price" />,
+    cell: (row) => \`$\${row.price.toFixed(2)}\`,
+    enableSorting: true,
+  },
+  {
+    id: 'status',
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (row) => (
+      <span className={\`px-2 py-1 text-xs rounded \${
+        row.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100'
+      }\`}>
+        {row.status}
+      </span>
+    ),
+  },
+];
+
+<DataGrid
+  columns={columns}
+  data={data}
+  getRowId={(row) => row.id}
+  recordCount={data.length}
+>
+  <DataGridTable />
+  <div className="mt-4">
+    <DataGridPagination />
+  </div>
+</DataGrid>`;
+
+  const code2 = `import {
+  DataGrid,
+  DataGridTable,
+  DataGridPagination,
+  DataGridColumnHeader,
+  DataGridTableRowSelect,
+  DataGridTableRowSelectAll,
+} from '@/components';
+
+const columns = [
+  {
+    id: 'select',
+    header: <DataGridTableRowSelectAll />,
+    cell: (row) => <DataGridTableRowSelect row={row} />,
+    size: 50,
+    align: 'center',
+  },
+  // ... other columns
+];
+
+<DataGrid
+  columns={columns}
+  data={data}
+  getRowId={(row) => row.id}
+  recordCount={data.length}
+>
+  <DataGridTable />
+  <div className="mt-4">
+    <DataGridPagination />
+  </div>
+</DataGrid>`;
+
+  const code3 = `import {
+  DataGrid,
+  DataGridTable,
+  DataGridPagination,
+  DataGridColumnHeader,
+  DataGridTableRowSelect,
+  DataGridTableRowSelectAll,
+} from '@/components';
+
+const columns = [
+  {
+    id: 'select',
+    header: <DataGridTableRowSelectAll />,
+    cell: (row) => <DataGridTableRowSelect row={row} />,
+    size: 50,
+    align: 'center',
+  },
+  {
+    id: 'name',
+    accessorKey: 'name',
+    header: <DataGridColumnHeader id="name" title="Product" />,
+    enableSorting: true,
+  },
+  {
+    id: 'price',
+    accessorKey: 'price',
+    header: <DataGridColumnHeader id="price" title="Price" />,
+    cell: (row) => (
+      <span className="font-mono text-green-600 font-medium">
+        \${row.price.toFixed(2)}
+      </span>
+    ),
+    enableSorting: true,
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: () => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem>
+            <Edit className="mr-2 h-4 w-4" />
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem className="text-red-600">
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
+    size: 80,
+    align: 'center',
+  },
+];`;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-12">
-          <Link 
-            to="/" 
-            className="inline-flex items-center text-slate-600 hover:text-slate-900 mb-6 transition-colors group"
+    <div className="container mx-auto py-8 px-4">
+      <Link to="/" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-6">
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Home
+      </Link>
+
+      <div className="mb-12">
+        <h1 className="text-4xl font-bold mb-4">DataGrid</h1>
+        <p className="text-gray-600 text-lg">
+          A powerful, composable data grid component with built-in sorting, pagination, and row selection.
+        </p>
+      </div>
+
+      {/* Example 1: Basic Table */}
+      <div className="mb-16">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-semibold mb-2">Basic Table</h2>
+            <p className="text-gray-600">Simple table with sorting and pagination</p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowCode1(!showCode1)}
+            className="gap-2"
           >
-            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-            Back to Home
-          </Link>
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl p-8 shadow-lg">
-            <h1 className="text-5xl font-bold mb-3">DataTable</h1>
-            <p className="text-xl text-indigo-100">Independent data table with built-in sorting, pagination, and search</p>
-          </div>
+            {showCode1 ? 'Hide' : 'View'} Code
+          </Button>
         </div>
 
-        {/* Installation */}
-        <div className="mb-12 bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">Installation</h2>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm text-slate-600 mb-2">Install the package (no extra dependencies needed!):</p>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 bg-slate-900 text-slate-100 px-4 py-3 rounded-lg text-sm">
-                  npm install takaui
-                </code>
-                <button
-                  onClick={() => handleCopy('npm install takaui', 'install')}
-                  className="p-3 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-                >
-                  {copiedInstall ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5 text-slate-600" />}
-                </button>
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-slate-600 mb-2">Import the component:</p>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 bg-slate-900 text-slate-100 px-4 py-3 rounded-lg text-sm">
-                  import &#123; DataTable &#125; from 'takaui';
-                </code>
-                <button
-                  onClick={() => handleCopy("import { DataTable } from 'takaui';", 'import')}
-                  className="p-3 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-                >
-                  {copiedImport ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5 text-slate-600" />}
-                </button>
-              </div>
-            </div>
+        <DataGrid<Product>
+          columns={basicColumns}
+          data={sampleData}
+          getRowId={(row) => row.id}
+          recordCount={sampleData.length}
+        >
+          <DataGridTable />
+          <div className="mt-4">
+            <DataGridPagination />
           </div>
+        </DataGrid>
+
+        {showCode1 && (
+          <div className="mt-4">
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <code>{code1}</code>
+            </pre>
+          </div>
+        )}
+      </div>
+
+      {/* Example 2: With Row Selection */}
+      <div className="mb-16">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-semibold mb-2">With Row Selection</h2>
+            <p className="text-gray-600">Enable row selection with checkboxes</p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowCode2(!showCode2)}
+            className="gap-2"
+          >
+            {showCode2 ? 'Hide' : 'View'} Code
+          </Button>
         </div>
 
-        {/* Examples */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-slate-900 mb-6">Examples</h2>
-          <div className="space-y-8">
-            
-            {/* Example 1: Basic Table */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-slate-900">Basic Table</h3>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowCode1(!showCode1)}
-                    className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
-                  >
-                    <Code className="w-4 h-4" />
-                    {showCode1 ? 'Hide' : 'View'} Code
-                  </button>
-                  <span className="text-xs px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-medium">Simple</span>
-                </div>
-              </div>
-              
-              <DataTable
-                columns={basicColumns}
-                data={sampleData.slice(0, 4)}
-                showPagination={false}
-                showSearch={false}
-              />
-
-              {showCode1 && (
-                <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
-                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
-                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span>,</div>
-                    <div>  {'}'},</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'category'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span>,</div>
-                    <div>  {'}'},</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'price'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span>,</div>
-                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">value</span>) =&gt; `$${'{'}(<span className="text-blue-300">value</span> <span className="text-purple-400">as</span> <span className="text-blue-400">number</span>).<span className="text-yellow-400">toFixed</span>(<span className="text-orange-400">2</span>){'}'}`,</div>
-                    <div>  {'}'},</div>
-                    <div>];</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-green-400">DataTable</span></div>
-                    <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
-                    <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
-                    <div>  <span className="text-blue-400">showPagination</span>={'{'}false{'}'}</div>
-                    <div>  <span className="text-blue-400">showSearch</span>={'{'}false{'}'}</div>
-                    <div>/&gt;</div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Example 2: Styled Cells */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-slate-900">Custom Cell Styling</h3>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowCode2(!showCode2)}
-                    className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
-                  >
-                    <Code className="w-4 h-4" />
-                    {showCode2 ? 'Hide' : 'View'} Code
-                  </button>
-                  <span className="text-xs px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">Styled</span>
-                </div>
-              </div>
-              
-              <DataTable
-                columns={styledColumns}
-                data={sampleData}
-                showPagination={true}
-                pageSize={5}
-                showSearch={false}
-              />
-
-              {showCode2 && (
-                <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
-                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
-                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Product Name'</span>,</div>
-                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">value</span>) =&gt; (</div>
-                    <div>      &lt;<span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"font-semibold text-slate-900"</span>&gt;</div>
-                    <div>        {'{'}value{'}'}</div>
-                    <div>      &lt;/<span className="text-green-400">span</span>&gt;</div>
-                    <div>    ),</div>
-                    <div>  {'}'},</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'status'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Status'</span>,</div>
-                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">value</span>) =&gt; (</div>
-                    <div>      &lt;<span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"px-2.5 py-0.5 rounded-full text-xs"</span>&gt;</div>
-                    <div>        {'{'}value{'}'}</div>
-                    <div>      &lt;/<span className="text-green-400">span</span>&gt;</div>
-                    <div>    ),</div>
-                    <div>  {'}'},</div>
-                    <div>];</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-green-400">DataTable</span></div>
-                    <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
-                    <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
-                    <div>  <span className="text-blue-400">showPagination</span>={'{'}true{'}'}</div>
-                    <div>  <span className="text-blue-400">pageSize</span>={'{'}5{'}'}</div>
-                    <div>  <span className="text-blue-400">showSearch</span>={'{'}false{'}'}</div>
-                    <div>/&gt;</div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Example 3: With Search */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-slate-900">With Search & Pagination</h3>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowCode3(!showCode3)}
-                    className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
-                  >
-                    <Code className="w-4 h-4" />
-                    {showCode3 ? 'Hide' : 'View'} Code
-                  </button>
-                  <span className="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium">Full Featured</span>
-                </div>
-              </div>
-              
-              <DataTable
-                columns={searchColumns}
-                data={sampleData}
-                showPagination={true}
-                showSearch={true}
-                pageSize={4}
-                searchPlaceholder="Search products..."
-              />
-
-              {showCode3 && (
-                <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
-                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
-                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataTable</span>, <span className="text-purple-400">type</span> <span className="text-blue-300">DataTableColumn</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                    <div className="h-4"></div>
-                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                    <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span> {'}'},</div>
-                    <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span> {'}'},</div>
-                    <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'price'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span> {'}'},</div>
-                    <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'stock'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Stock'</span> {'}'},</div>
-                    <div>];</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-green-400">DataTable</span></div>
-                    <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
-                    <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
-                    <div>  <span className="text-blue-400">showPagination</span>={'{'}true{'}'}</div>
-                    <div>  <span className="text-blue-400">showSearch</span>={'{'}true{'}'}</div>
-                    <div>  <span className="text-blue-400">pageSize</span>={'{'}4{'}'}</div>
-                    <div>  <span className="text-blue-400">searchPlaceholder</span>=<span className="text-green-400">"Search products..."</span></div>
-                    <div>/&gt;</div>
-                  </div>
-                </div>
-              )}
-            </div>
+        <DataGrid<Product>
+          columns={selectionColumns}
+          data={sampleData}
+          getRowId={(row) => row.id}
+          recordCount={sampleData.length}
+        >
+          <DataGridTable />
+          <div className="mt-4">
+            <DataGridPagination />
           </div>
+        </DataGrid>
+
+        {showCode2 && (
+          <div className="mt-4">
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <code>{code2}</code>
+            </pre>
+          </div>
+        )}
+      </div>
+
+      {/* Example 3: Advanced with Actions */}
+      <div className="mb-16">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-semibold mb-2">Advanced with Actions</h2>
+            <p className="text-gray-600">Complete example with selection, sorting, custom cells, and action menus</p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowCode3(!showCode3)}
+            className="gap-2"
+          >
+            {showCode3 ? 'Hide' : 'View'} Code
+          </Button>
         </div>
 
-        {/* Example 4: Clean Table (No Row Borders) */}
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-2xl font-bold text-slate-900">Clean Table (No Row Borders)</h2>
-            <span className="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">Minimal</span>
+        <DataGrid<Product>
+          columns={advancedColumns}
+          data={sampleData}
+          getRowId={(row) => row.id}
+          recordCount={sampleData.length}
+        >
+          <DataGridTable />
+          <div className="mt-4">
+            <DataGridPagination />
           </div>
-          <p className="text-slate-600 mb-6">
-            A cleaner table style without row separators, keeping only the header separator for a minimal look.
-          </p>
-          
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowCode4(!showCode4)}
-                  className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
-                >
-                  <Code className="w-4 h-4" />
-                  {showCode4 ? 'Hide' : 'View'} Code
-                </button>
-                <span className="text-xs px-3 py-1 bg-orange-100 text-orange-700 rounded-full font-medium">Clean</span>
-              </div>
-            </div>
-            
-            <DataTable
-              columns={styledColumns}
-              data={sampleData}
-              variant="clean"
-              showPagination={true}
-              pageSize={4}
-            />
+        </DataGrid>
+
+        {showCode3 && (
+          <div className="mt-4">
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+              <code>{code3}</code>
+            </pre>
           </div>
+        )}
+      </div>
 
-          {showCode4 && (
-            <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
-              <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
-                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataTable</span>, <span className="text-purple-400">type</span> <span className="text-blue-300">DataTableColumn</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                <div className="h-4"></div>
-                <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                <div>  {'{'}</div>
-                <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>,</div>
-                <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span>,</div>
-                <div>    <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span></div>
-                <div>  {'}'},</div>
-                <div>  {'{'}</div>
-                <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'category'</span>,</div>
-                <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span>,</div>
-                <div>    <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span></div>
-                <div>  {'}'},</div>
-                <div>  {'{'}</div>
-                <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'price'</span>,</div>
-                <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span>,</div>
-                <div>    <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span></div>
-                <div>  {'}'},</div>
-                <div>  {'{'}</div>
-                <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'stock'</span>,</div>
-                <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Stock'</span></div>
-                <div>  {'}'}</div>
-                <div>];</div>
-                <div className="h-4"></div>
-                <div>&lt;<span className="text-blue-300">DataTable</span></div>
-                <div>  <span className="text-blue-400">columns</span>={'{'}columns{'}'}</div>
-                <div>  <span className="text-blue-400">data</span>={'{'}data{'}'}</div>
-                <div>  <span className="text-blue-400">variant</span>=<span className="text-green-400">"clean"</span></div>
-                <div>  <span className="text-blue-400">showPagination</span>={'{'}true{'}'}</div>
-                <div>  <span className="text-blue-400">pageSize</span>={'{'}4{'}'}</div>
-                <div>/&gt;</div>
-              </div>
-            </div>
-          )}
-        </div>
+      {/* API Reference */}
+      <div className="mt-16 border-t pt-12">
+        <h2 className="text-3xl font-bold mb-8">API Reference</h2>
 
-        {/* Example 5: With Checkboxes and Actions */}
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-2xl font-bold text-slate-900">With Checkboxes and Actions</h2>
-            <span className="px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">Interactive</span>
-          </div>
-          <p className="text-slate-600 mb-6">
-            Add row selection with checkboxes and action menus for each row. Selected: {selectedRows.length} items.
-          </p>
-          
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowCode5(!showCode5)}
-                  className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
-                >
-                  <Code className="w-4 h-4" />
-                  {showCode5 ? 'Hide' : 'View'} Code
-                </button>
-                <span className="text-xs px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-medium">Advanced</span>
-              </div>
-              {selectedRows.length > 0 && (
-                <button
-                  onClick={() => setSelectedRows([])}
-                  className="text-sm px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-colors"
-                >
-                  Clear Selection
-                </button>
-              )}
-            </div>
-            
-            <DataTable
-              columns={checkboxColumns}
-              data={sampleData}
-              showPagination={true}
-              pageSize={5}
-              showSearch={false}
-            />
-          </div>
-
-          {showCode5 && (
-            <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
-              <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
-                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataTable</span>, <span className="text-purple-400">type</span> <span className="text-blue-300">DataTableColumn</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">Checkbox</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DropdownMenu</span>, <span className="text-blue-300">DropdownMenuContent</span>, <span className="text-blue-300">DropdownMenuItem</span>, <span className="text-blue-300">DropdownMenuTrigger</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">Button</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                <div className="h-4"></div>
-                <div><span className="text-purple-400">const</span> [<span className="text-blue-300">selectedRows</span>, <span className="text-blue-300">setSelectedRows</span>] = <span className="text-blue-300">useState</span>&lt;<span className="text-blue-400">string</span>[]&gt;([]);</div>
-                <div className="h-4"></div>
-                <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataTableColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                <div>  {'{'}</div>
-                <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'checkbox'</span>,</div>
-                <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">''</span>,</div>
-                <div>    <span className="text-blue-400">width</span>: <span className="text-green-400">'50px'</span>,</div>
-                <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">_</span>, <span className="text-blue-300">row</span>) =&gt; (</div>
-                <div>      &lt;<span className="text-blue-300">Checkbox</span></div>
-                <div>        <span className="text-blue-400">checked</span>={'{'}selectedRows.includes(row.id){'}'}</div>
-                <div>        <span className="text-blue-400">onCheckedChange</span>={'{'}() =&gt; toggleRowSelection(row.id){'}'}</div>
-                <div>      /&gt;</div>
-                <div>    )</div>
-                <div>  {'}'},</div>
-                <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span>, <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span> {'}'},</div>
-                <div>  {'{'} <span className="text-blue-400">key</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span>, <span className="text-blue-400">sortable</span>: <span className="text-yellow-400">true</span> {'}'},</div>
-                <div>  {'{'}</div>
-                <div>    <span className="text-blue-400">key</span>: <span className="text-green-400">'actions'</span>,</div>
-                <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">''</span>,</div>
-                <div>    <span className="text-blue-400">width</span>: <span className="text-green-400">'50px'</span>,</div>
-                <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">_</span>, <span className="text-blue-300">row</span>) =&gt; (</div>
-                <div>      &lt;<span className="text-blue-300">DropdownMenu</span>&gt;</div>
-                <div>        &lt;<span className="text-blue-300">DropdownMenuTrigger</span> <span className="text-blue-400">asChild</span>&gt;</div>
-                <div>          &lt;<span className="text-blue-300">Button</span> <span className="text-blue-400">variant</span>=<span className="text-green-400">"ghost"</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"h-8 w-8 p-0"</span>&gt;</div>
-                <div>            &lt;<span className="text-blue-300">MoreHorizontal</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"h-4 w-4"</span> /&gt;</div>
-                <div>          &lt;/<span className="text-blue-300">Button</span>&gt;</div>
-                <div>        &lt;/<span className="text-blue-300">DropdownMenuTrigger</span>&gt;</div>
-                <div>        &lt;<span className="text-blue-300">DropdownMenuContent</span>&gt;</div>
-                <div>          &lt;<span className="text-blue-300">DropdownMenuItem</span>&gt;Edit&lt;/<span className="text-blue-300">DropdownMenuItem</span>&gt;</div>
-                <div>          &lt;<span className="text-blue-300">DropdownMenuItem</span>&gt;Delete&lt;/<span className="text-blue-300">DropdownMenuItem</span>&gt;</div>
-                <div>        &lt;/<span className="text-blue-300">DropdownMenuContent</span>&gt;</div>
-                <div>      &lt;/<span className="text-blue-300">DropdownMenu</span>&gt;</div>
-                <div>    )</div>
-                <div>  {'}'}</div>
-                <div>];</div>
-                <div className="h-4"></div>
-                <div>&lt;<span className="text-blue-300">DataTable</span> <span className="text-blue-400">columns</span>={'{'}columns{'}'} <span className="text-blue-400">data</span>={'{'}data{'}'} /&gt;</div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* API Reference */}
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">API Reference</h2>
-          
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">DataTable Props</h3>
+        <div className="space-y-8">
+          <div>
+            <h3 className="text-xl font-semibold mb-4">DataGrid Props</h3>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Prop</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Type</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Default</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Description</th>
+              <table className="min-w-full border border-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold border-b">Prop</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold border-b">Type</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold border-b">Description</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">columns</td>
-                    <td className="py-3 px-4 font-mono text-xs">DataTableColumn[]</td>
-                    <td className="py-3 px-4 text-slate-500">required</td>
-                    <td className="py-3 px-4 text-slate-600">Column definitions</td>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">columns</td>
+                    <td className="px-4 py-3 text-sm font-mono">DataGridColumn[]</td>
+                    <td className="px-4 py-3 text-sm">Column definitions</td>
                   </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">data</td>
-                    <td className="py-3 px-4 font-mono text-xs">T[]</td>
-                    <td className="py-3 px-4 text-slate-500">required</td>
-                    <td className="py-3 px-4 text-slate-600">Array of data objects</td>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">data</td>
+                    <td className="px-4 py-3 text-sm font-mono">T[]</td>
+                    <td className="px-4 py-3 text-sm">Data array to display</td>
                   </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">showPagination</td>
-                    <td className="py-3 px-4 font-mono text-xs">boolean</td>
-                    <td className="py-3 px-4 font-mono text-xs">true</td>
-                    <td className="py-3 px-4 text-slate-600">Show pagination controls</td>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">getRowId</td>
+                    <td className="px-4 py-3 text-sm font-mono">(row: T) =&gt; string</td>
+                    <td className="px-4 py-3 text-sm">Function to get unique row ID</td>
                   </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">showSearch</td>
-                    <td className="py-3 px-4 font-mono text-xs">boolean</td>
-                    <td className="py-3 px-4 font-mono text-xs">true</td>
-                    <td className="py-3 px-4 text-slate-600">Show search input</td>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">recordCount</td>
+                    <td className="px-4 py-3 text-sm font-mono">number</td>
+                    <td className="px-4 py-3 text-sm">Total number of records</td>
                   </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">pageSize</td>
-                    <td className="py-3 px-4 font-mono text-xs">number</td>
-                    <td className="py-3 px-4 font-mono text-xs">10</td>
-                    <td className="py-3 px-4 text-slate-600">Rows per page</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">searchPlaceholder</td>
-                    <td className="py-3 px-4 font-mono text-xs">string</td>
-                    <td className="py-3 px-4 font-mono text-xs">"Search..."</td>
-                    <td className="py-3 px-4 text-slate-600">Search input placeholder</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">variant</td>
-                    <td className="py-3 px-4 font-mono text-xs">"default" | "clean"</td>
-                    <td className="py-3 px-4 font-mono text-xs">"default"</td>
-                    <td className="py-3 px-4 text-slate-600">Table style variant</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">onRowClick</td>
-                    <td className="py-3 px-4 font-mono text-xs">(row: T) =&gt; void</td>
-                    <td className="py-3 px-4 text-slate-500">-</td>
-                    <td className="py-3 px-4 text-slate-600">Callback when row is clicked</td>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">onRowClick</td>
+                    <td className="px-4 py-3 text-sm font-mono">(row: T) =&gt; void</td>
+                    <td className="px-4 py-3 text-sm">Optional row click handler</td>
                   </tr>
                 </tbody>
               </table>
@@ -678,39 +504,84 @@ export default function TablePage() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">DataTableColumn Interface</h3>
+            <h3 className="text-xl font-semibold mb-4">DataGridColumn</h3>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Property</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Type</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Description</th>
+              <table className="min-w-full border border-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold border-b">Property</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold border-b">Type</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold border-b">Description</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">key</td>
-                    <td className="py-3 px-4 font-mono text-xs">string</td>
-                    <td className="py-3 px-4 text-slate-600">Unique key for the column (matches data property)</td>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">id</td>
+                    <td className="px-4 py-3 text-sm font-mono">string</td>
+                    <td className="px-4 py-3 text-sm">Unique column identifier</td>
                   </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">header</td>
-                    <td className="py-3 px-4 font-mono text-xs">string</td>
-                    <td className="py-3 px-4 text-slate-600">Column header text</td>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">accessorKey</td>
+                    <td className="px-4 py-3 text-sm font-mono">keyof T</td>
+                    <td className="px-4 py-3 text-sm">Key to access data in row object</td>
                   </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">cell</td>
-                    <td className="py-3 px-4 font-mono text-xs">(value, row, index) =&gt; ReactNode</td>
-                    <td className="py-3 px-4 text-slate-600">Optional custom cell renderer</td>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">header</td>
+                    <td className="px-4 py-3 text-sm font-mono">string | ReactNode</td>
+                    <td className="px-4 py-3 text-sm">Column header content</td>
                   </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-purple-600">accessor</td>
-                    <td className="py-3 px-4 font-mono text-xs">(row: T) =&gt; any</td>
-                    <td className="py-3 px-4 text-slate-600">Optional custom accessor function</td>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">cell</td>
+                    <td className="px-4 py-3 text-sm font-mono">(row: T, index: number) =&gt; ReactNode</td>
+                    <td className="px-4 py-3 text-sm">Custom cell renderer</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">size</td>
+                    <td className="px-4 py-3 text-sm font-mono">number</td>
+                    <td className="px-4 py-3 text-sm">Column width in pixels</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">enableSorting</td>
+                    <td className="px-4 py-3 text-sm font-mono">boolean</td>
+                    <td className="px-4 py-3 text-sm">Enable sorting for column</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-4 py-3 text-sm font-mono">align</td>
+                    <td className="px-4 py-3 text-sm font-mono">'left' | 'center' | 'right'</td>
+                    <td className="px-4 py-3 text-sm">Column alignment</td>
                   </tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Components</h3>
+            <div className="space-y-4">
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-mono text-sm font-semibold mb-2">DataGrid</h4>
+                <p className="text-sm text-gray-600">Main container component that provides context and state management</p>
+              </div>
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-mono text-sm font-semibold mb-2">DataGridTable</h4>
+                <p className="text-sm text-gray-600">Renders the table with rows and columns</p>
+              </div>
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-mono text-sm font-semibold mb-2">DataGridPagination</h4>
+                <p className="text-sm text-gray-600">Pagination controls for navigating pages</p>
+              </div>
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-mono text-sm font-semibold mb-2">DataGridColumnHeader</h4>
+                <p className="text-sm text-gray-600">Sortable column header with sort indicators</p>
+              </div>
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-mono text-sm font-semibold mb-2">DataGridTableRowSelect</h4>
+                <p className="text-sm text-gray-600">Checkbox for individual row selection</p>
+              </div>
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-mono text-sm font-semibold mb-2">DataGridTableRowSelectAll</h4>
+                <p className="text-sm text-gray-600">Checkbox for selecting all rows on current page</p>
+              </div>
             </div>
           </div>
         </div>
