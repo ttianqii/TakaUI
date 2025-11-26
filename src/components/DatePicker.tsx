@@ -438,6 +438,8 @@ export function DatePicker({
                       const inRange = mode === 'range' && isInRange(day)
                       const isHolidayDay = isHoliday(day)
                       const dayOfWeek = day.getDay() // 0 = Sunday, 6 = Saturday
+                      const isRangeStartDay = isRangeStart(day)
+                      const isRangeEndDay = isRangeEnd(day)
 
                       return (
                         <div 
@@ -446,7 +448,9 @@ export function DatePicker({
                             "relative p-0.5",
                             inRange && "bg-gray-100",
                             inRange && dayOfWeek === 0 && "rounded-l", // Sunday - left rounded
-                            inRange && dayOfWeek === 6 && "rounded-r"  // Saturday - right rounded
+                            inRange && dayOfWeek === 6 && "rounded-r", // Saturday - right rounded
+                            inRange && isRangeStartDay && "rounded-l", // Range start - left rounded
+                            inRange && isRangeEndDay && "rounded-r"    // Range end - right rounded
                           )}
                           onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
                           onMouseLeave={() => setHoverDate(undefined)}
@@ -502,6 +506,8 @@ export function DatePicker({
                       const inRange = mode === 'range' && isInRange(day)
                       const isHolidayDay = isHoliday(day)
                       const dayOfWeek = day.getDay() // 0 = Sunday, 6 = Saturday
+                      const isRangeStartDay = isRangeStart(day)
+                      const isRangeEndDay = isRangeEnd(day)
 
                       return (
                         <div 
@@ -510,7 +516,9 @@ export function DatePicker({
                             "relative p-0.5",
                             inRange && "bg-gray-100",
                             inRange && dayOfWeek === 0 && "rounded-l", // Sunday - left rounded
-                            inRange && dayOfWeek === 6 && "rounded-r"  // Saturday - right rounded
+                            inRange && dayOfWeek === 6 && "rounded-r", // Saturday - right rounded
+                            inRange && isRangeStartDay && "rounded-l", // Range start - left rounded
+                            inRange && isRangeEndDay && "rounded-r"    // Range end - right rounded
                           )}
                           onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
                           onMouseLeave={() => setHoverDate(undefined)}
