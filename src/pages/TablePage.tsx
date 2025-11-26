@@ -31,6 +31,55 @@ const sampleData: Product[] = [
   { id: '6', name: 'Webcam HD', category: 'Electronics', price: 59.99, stock: 23, status: 'In Stock' },
 ];
 
+// Extended data for advanced pagination demo (50+ items)
+const extendedSampleData: Product[] = [
+  ...sampleData,
+  { id: '7', name: 'Gaming Headset', category: 'Electronics', price: 79.99, stock: 34, status: 'In Stock' },
+  { id: '8', name: 'USB Hub', category: 'Accessories', price: 24.99, stock: 89, status: 'In Stock' },
+  { id: '9', name: 'Desk Lamp', category: 'Furniture', price: 34.99, stock: 12, status: 'In Stock' },
+  { id: '10', name: 'Phone Stand', category: 'Accessories', price: 15.99, stock: 56, status: 'In Stock' },
+  { id: '11', name: 'External SSD 1TB', category: 'Electronics', price: 129.99, stock: 28, status: 'In Stock' },
+  { id: '12', name: 'HDMI Cable', category: 'Accessories', price: 9.99, stock: 143, status: 'In Stock' },
+  { id: '13', name: 'Bluetooth Speaker', category: 'Electronics', price: 49.99, stock: 5, status: 'Low Stock' },
+  { id: '14', name: 'Ergonomic Chair', category: 'Furniture', price: 299.99, stock: 0, status: 'Out of Stock' },
+  { id: '15', name: 'Mousepad XL', category: 'Accessories', price: 19.99, stock: 78, status: 'In Stock' },
+  { id: '16', name: 'Webcam 4K', category: 'Electronics', price: 149.99, stock: 15, status: 'In Stock' },
+  { id: '17', name: 'Cable Organizer', category: 'Accessories', price: 12.99, stock: 92, status: 'In Stock' },
+  { id: '18', name: 'Standing Desk', category: 'Furniture', price: 399.99, stock: 7, status: 'Low Stock' },
+  { id: '19', name: 'Wireless Charger', category: 'Electronics', price: 29.99, stock: 64, status: 'In Stock' },
+  { id: '20', name: 'Monitor Arm', category: 'Furniture', price: 89.99, stock: 23, status: 'In Stock' },
+  { id: '21', name: 'Laptop Stand', category: 'Furniture', price: 44.99, stock: 41, status: 'In Stock' },
+  { id: '22', name: 'USB Microphone', category: 'Electronics', price: 99.99, stock: 18, status: 'In Stock' },
+  { id: '23', name: 'Desk Mat', category: 'Accessories', price: 24.99, stock: 55, status: 'In Stock' },
+  { id: '24', name: 'LED Strip Lights', category: 'Electronics', price: 19.99, stock: 87, status: 'In Stock' },
+  { id: '25', name: 'Footrest', category: 'Furniture', price: 34.99, stock: 29, status: 'In Stock' },
+  { id: '26', name: 'Portable SSD 500GB', category: 'Electronics', price: 79.99, stock: 36, status: 'In Stock' },
+  { id: '27', name: 'Document Holder', category: 'Accessories', price: 16.99, stock: 44, status: 'In Stock' },
+  { id: '28', name: 'Mesh Back Chair', category: 'Furniture', price: 179.99, stock: 12, status: 'In Stock' },
+  { id: '29', name: 'Keyboard Wrist Rest', category: 'Accessories', price: 14.99, stock: 68, status: 'In Stock' },
+  { id: '30', name: 'Monitor Privacy Screen', category: 'Accessories', price: 39.99, stock: 22, status: 'In Stock' },
+  { id: '31', name: 'Surge Protector', category: 'Electronics', price: 24.99, stock: 95, status: 'In Stock' },
+  { id: '32', name: 'Cable Sleeve', category: 'Accessories', price: 8.99, stock: 103, status: 'In Stock' },
+  { id: '33', name: 'Ring Light', category: 'Electronics', price: 54.99, stock: 31, status: 'In Stock' },
+  { id: '34', name: 'Filing Cabinet', category: 'Furniture', price: 149.99, stock: 6, status: 'Low Stock' },
+  { id: '35', name: 'USB Fan', category: 'Electronics', price: 12.99, stock: 76, status: 'In Stock' },
+  { id: '36', name: 'Pen Holder', category: 'Accessories', price: 9.99, stock: 88, status: 'In Stock' },
+  { id: '37', name: 'Bookshelf', category: 'Furniture', price: 129.99, stock: 14, status: 'In Stock' },
+  { id: '38', name: 'Graphics Tablet', category: 'Electronics', price: 199.99, stock: 9, status: 'Low Stock' },
+  { id: '39', name: 'Stapler', category: 'Accessories', price: 7.99, stock: 112, status: 'In Stock' },
+  { id: '40', name: 'Desk Organizer', category: 'Accessories', price: 18.99, stock: 47, status: 'In Stock' },
+  { id: '41', name: 'Printer Stand', category: 'Furniture', price: 39.99, stock: 33, status: 'In Stock' },
+  { id: '42', name: 'Noise Cancelling Headphones', category: 'Electronics', price: 249.99, stock: 19, status: 'In Stock' },
+  { id: '43', name: 'Label Maker', category: 'Electronics', price: 34.99, stock: 25, status: 'In Stock' },
+  { id: '44', name: 'Task Light', category: 'Furniture', price: 29.99, stock: 52, status: 'In Stock' },
+  { id: '45', name: 'Monitor Mount', category: 'Furniture', price: 119.99, stock: 11, status: 'In Stock' },
+  { id: '46', name: 'Paper Shredder', category: 'Electronics', price: 79.99, stock: 8, status: 'Low Stock' },
+  { id: '47', name: 'Whiteboard', category: 'Furniture', price: 49.99, stock: 27, status: 'In Stock' },
+  { id: '48', name: 'USB Hub 10-Port', category: 'Electronics', price: 44.99, stock: 38, status: 'In Stock' },
+  { id: '49', name: 'Desk Calendar', category: 'Accessories', price: 11.99, stock: 71, status: 'In Stock' },
+  { id: '50', name: 'Gaming Mouse Pad RGB', category: 'Accessories', price: 29.99, stock: 59, status: 'In Stock' },
+];
+
 export default function TablePage() {
   const [copiedInstall, setCopiedInstall] = useState(false);
   const [copiedImport, setCopiedImport] = useState(false);
@@ -560,7 +609,7 @@ export default function TablePage() {
                 
                 <DataGrid 
                   columns={basicColumns} 
-                  data={sampleData}
+                  data={extendedSampleData}
                   getRowId={(row) => row.id}
                 >
                   <DataGridTable />

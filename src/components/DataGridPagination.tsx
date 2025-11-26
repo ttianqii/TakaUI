@@ -33,36 +33,36 @@ export function DataGridPagination({
   const getPageNumbers = () => {
     const current = pagination.pageIndex;
     const total = pageCount;
-    const delta = 2; // Number of pages to show on each side of current page
     const pages: (number | string)[] = [];
 
     if (total <= 7) {
-      // Show all pages if total is small
+      // Show all pages if total is small (1 2 3 4 5 6 7)
       for (let i = 0; i < total; i++) {
         pages.push(i);
       }
     } else {
-      // Always show first page
-      pages.push(0);
-
-      if (current > delta + 1) {
+      if (current <= 3) {
+        // Near the beginning (1 2 3 4 5 ... 10)
+        for (let i = 0; i <= 4; i++) {
+          pages.push(i);
+        }
         pages.push('...');
-      }
-
-      // Show pages around current
-      const start = Math.max(1, current - delta);
-      const end = Math.min(total - 2, current + delta);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (current < total - delta - 2) {
+        pages.push(total - 1);
+      } else if (current >= total - 4) {
+        // Near the end (1 ... 6 7 8 9 10)
+        pages.push(0);
         pages.push('...');
-      }
-
-      // Always show last page
-      if (total > 1) {
+        for (let i = total - 5; i < total; i++) {
+          pages.push(i);
+        }
+      } else {
+        // In the middle (1 ... 5 6 7 ... 10)
+        pages.push(0);
+        pages.push('...');
+        pages.push(current - 1);
+        pages.push(current);
+        pages.push(current + 1);
+        pages.push('...');
         pages.push(total - 1);
       }
     }
