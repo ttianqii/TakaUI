@@ -16,7 +16,7 @@ export function DataGridTable() {
                   className="h-10 px-0 py-0"
                   style={{ width: column.size ? `${column.size}px` : undefined }}
                 >
-                  {column.align === 'center' || (!column.align && typeof column.header !== 'string') ? (
+                  {column.align === 'center' ? (
                     <div className="h-10 flex items-center justify-center">
                       {typeof column.header !== 'string' ? (
                         column.header
@@ -52,7 +52,7 @@ export function DataGridTable() {
                   onClick={() => onRowClick?.(row)}
                 >
                   {columns.map((column) => {
-                    const shouldCenter = column.align === 'center' || (!column.align && typeof column.header !== 'string');
+                    const shouldCenter = column.align === 'center';
                     const cellValue = column.cell
                       ? column.cell(row, rowIndex)
                       : column.accessorKey

@@ -301,24 +301,28 @@ export default function TablePage() {
 
               {showCode1 && (
                 <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
-                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
                     <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataGridColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span>,</div>
-                    <div>  {'}'},</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">id</span>: <span className="text-green-400">'price'</span>,</div>
-                    <div>    <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'price'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span>,</div>
-                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">row</span>) =&gt; `$${'{'}row.price.<span className="text-yellow-400">toFixed</span>(<span className="text-orange-400">2</span>){'}'}`,</div>
-                    <div>  {'}'},</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'name'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-green-400">'Product'</span>,</div>
+                    <div className="pl-4">{'}'},</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'price'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'price'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-green-400">'Price'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">cell</span>: (<span className="text-blue-300">row</span>) <span className="text-purple-400">=&gt;</span> <span className="text-orange-300">`</span>$<span className="text-orange-300">${'{'}</span>row.price.<span className="text-yellow-400">toFixed</span>(<span className="text-orange-400">2</span>)<span className="text-orange-300">{'}'}`</span>,</div>
+                    <div className="pl-4">{'}'},</div>
                     <div>];</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>={'{'}columns{'}'} <span className="text-blue-400">data</span>={'{'}data{'}'}  <span className="text-blue-400">getRowId</span>={'{'}(row) =&gt; row.id{'}'}  &gt;</div>
-                    <div>  &lt;<span className="text-green-400">DataGridTable</span> /&gt;</div>
-                    <div>&lt;/<span className="text-green-400">DataGrid</span>&gt;</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span></div>
+                    <div className="pl-4"><span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span></div>
+                    <div><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTable</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div><span className="text-gray-500">&lt;/</span><span className="text-green-400">DataGrid</span><span className="text-gray-500">&gt;</span></div>
                   </div>
                 </div>
               )}
@@ -351,34 +355,38 @@ export default function TablePage() {
 
               {showCode2 && (
                 <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
-                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
                     <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataGridColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Product Name'</span>,</div>
-                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">row</span>) =&gt; (</div>
-                    <div>      &lt;<span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"font-semibold text-slate-900"</span>&gt;</div>
-                    <div>        {'{'}row.name{'}'}</div>
-                    <div>      &lt;/<span className="text-green-400">span</span>&gt;</div>
-                    <div>    ),</div>
-                    <div>  {'}'},</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">id</span>: <span className="text-green-400">'status'</span>,</div>
-                    <div>    <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'status'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: <span className="text-green-400">'Status'</span>,</div>
-                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">row</span>) =&gt; (</div>
-                    <div>      &lt;<span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"px-2.5 py-0.5 rounded-full text-xs"</span>&gt;</div>
-                    <div>        {'{'}row.status{'}'}</div>
-                    <div>      &lt;/<span className="text-green-400">span</span>&gt;</div>
-                    <div>    ),</div>
-                    <div>  {'}'},</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'name'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-green-400">'Product Name'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">cell</span>: (<span className="text-blue-300">row</span>) <span className="text-purple-400">=&gt;</span> (</div>
+                    <div className="pl-12"><span className="text-gray-500">&lt;</span><span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-orange-300">"font-semibold text-slate-900"</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-16"><span className="text-orange-300">{'{'}row.name{'}'}</span></div>
+                    <div className="pl-12"><span className="text-gray-500">&lt;/</span><span className="text-green-400">span</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-8">),</div>
+                    <div className="pl-4">{'}'},</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'status'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'status'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-green-400">'Status'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">cell</span>: (<span className="text-blue-300">row</span>) <span className="text-purple-400">=&gt;</span> (</div>
+                    <div className="pl-12"><span className="text-gray-500">&lt;</span><span className="text-green-400">span</span> <span className="text-blue-400">className</span>=<span className="text-orange-300">"px-2.5 py-0.5 rounded-full text-xs"</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-16"><span className="text-orange-300">{'{'}row.status{'}'}</span></div>
+                    <div className="pl-12"><span className="text-gray-500">&lt;/</span><span className="text-green-400">span</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-8">),</div>
+                    <div className="pl-4">{'}'},</div>
                     <div>];</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>={'{'}columns{'}'} <span className="text-blue-400">data</span>={'{'}data{'}'}  <span className="text-blue-400">getRowId</span>={'{'}(row) =&gt; row.id{'}'}  &gt;</div>
-                    <div>  &lt;<span className="text-green-400">DataGridTable</span> /&gt;</div>
-                    <div>  &lt;<span className="text-green-400">DataGridPagination</span> /&gt;</div>
-                    <div>&lt;/<span className="text-green-400">DataGrid</span>&gt;</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span></div>
+                    <div className="pl-4"><span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span></div>
+                    <div><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTable</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridPagination</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div><span className="text-gray-500">&lt;/</span><span className="text-green-400">DataGrid</span><span className="text-gray-500">&gt;</span></div>
                   </div>
                 </div>
               )}
@@ -411,24 +419,38 @@ export default function TablePage() {
 
               {showCode3 && (
                 <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
-                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
                     <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span>, <span className="text-blue-300">DataGridColumnHeader</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                    <div className="h-4"></div>
+                    <div className="my-3"></div>
                     <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataGridColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'name'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: &lt;<span className="text-blue-300">DataGridColumnHeader</span> <span className="text-blue-400">id</span>=<span className="text-green-400">"name"</span> <span className="text-blue-400">title</span>=<span className="text-green-400">"Product"</span> /&gt;,</div>
-                    <div>    <span className="text-blue-400">enableSorting</span>: <span className="text-yellow-400">true</span>,</div>
-                    <div>  {'}'},</div>
-                    <div>  {'{'} <span className="text-blue-400">id</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">header</span>: &lt;<span className="text-blue-300">DataGridColumnHeader</span> .../&gt;, <span className="text-blue-400">enableSorting</span>: <span className="text-yellow-400">true</span> {'}'},</div>
-                    <div>  {'{'} <span className="text-blue-400">id</span>: <span className="text-green-400">'price'</span>, <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'price'</span>, <span className="text-blue-400">header</span>: &lt;<span className="text-blue-300">DataGridColumnHeader</span> .../&gt;, <span className="text-blue-400">enableSorting</span>: <span className="text-yellow-400">true</span> {'}'},</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'name'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-gray-500">&lt;</span><span className="text-blue-300">DataGridColumnHeader</span> <span className="text-blue-400">id</span>=<span className="text-orange-300">"name"</span> <span className="text-blue-400">title</span>=<span className="text-orange-300">"Product"</span> <span className="text-gray-500">/&gt;</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">enableSorting</span>: <span className="text-orange-400">true</span>,</div>
+                    <div className="pl-4">{'}'},</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'category'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'category'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-gray-500">&lt;</span><span className="text-blue-300">DataGridColumnHeader</span> <span className="text-blue-400">id</span>=<span className="text-orange-300">"category"</span> <span className="text-blue-400">title</span>=<span className="text-orange-300">"Category"</span> <span className="text-gray-500">/&gt;</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">enableSorting</span>: <span className="text-orange-400">true</span>,</div>
+                    <div className="pl-4">{'}'},</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'price'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'price'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-gray-500">&lt;</span><span className="text-blue-300">DataGridColumnHeader</span> <span className="text-blue-400">id</span>=<span className="text-orange-300">"price"</span> <span className="text-blue-400">title</span>=<span className="text-orange-300">"Price"</span> <span className="text-gray-500">/&gt;</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">enableSorting</span>: <span className="text-orange-400">true</span>,</div>
+                    <div className="pl-4">{'}'},</div>
                     <div>];</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>={'{'}columns{'}'} <span className="text-blue-400">data</span>={'{'}data{'}'}  <span className="text-blue-400">getRowId</span>={'{'}(row) =&gt; row.id{'}'}  &gt;</div>
-                    <div>  &lt;<span className="text-green-400">DataGridTable</span> /&gt;</div>
-                    <div>  &lt;<span className="text-green-400">DataGridPagination</span> /&gt;</div>
-                    <div>&lt;/<span className="text-green-400">DataGrid</span>&gt;</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span></div>
+                    <div className="pl-4"><span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span></div>
+                    <div><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTable</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridPagination</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div><span className="text-gray-500">&lt;/</span><span className="text-green-400">DataGrid</span><span className="text-gray-500">&gt;</span></div>
                   </div>
                 </div>
               )}
@@ -470,40 +492,40 @@ export default function TablePage() {
 
               {showCode5 && (
                 <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
-                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto leading-relaxed font-mono">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
                     <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridTableRowSelect</span>, <span className="text-blue-300">DataGridTableRowSelectAll</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                    <div className="h-4"></div>
+                    <div className="my-3"></div>
                     <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataGridColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">id</span>: <span className="text-green-400">'select'</span>,</div>
-                    <div>    <span className="text-blue-400">header</span>: &lt;<span className="text-blue-300">DataGridTableRowSelectAll</span> /&gt;,</div>
-                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">row</span>) =&gt; &lt;<span className="text-blue-300">DataGridTableRowSelect</span> <span className="text-blue-400">row</span>={'{'}row{'}'} /&gt;,</div>
-                    <div>    <span className="text-blue-400">size</span>: <span className="text-orange-400">50</span>,</div>
-                    <div>    <span className="text-blue-400">align</span>: <span className="text-green-400">'center'</span>,</div>
-                    <div>  {'}'},</div>
-                    <div>  {'{'} <span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: &lt;<span className="text-blue-300">DataGridColumnHeader</span> .../&gt;, <span className="text-blue-400">enableSorting</span>: <span className="text-yellow-400">true</span> {'}'},</div>
-                    <div>  {'{'}</div>
-                    <div>    <span className="text-blue-400">id</span>: <span className="text-green-400">'actions'</span>,</div>
-                    <div>    <span className="text-blue-400">cell</span>: (<span className="text-blue-300">row</span>) =&gt; (</div>
-                    <div>      &lt;<span className="text-blue-300">DropdownMenu</span>&gt;</div>
-                    <div>        &lt;<span className="text-blue-300">DropdownMenuTrigger</span> <span className="text-blue-400">asChild</span>&gt;</div>
-                    <div>          &lt;<span className="text-blue-300">Button</span> <span className="text-blue-400">variant</span>=<span className="text-green-400">"ghost"</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"h-8 w-8 p-0"</span>&gt;</div>
-                    <div>            &lt;<span className="text-blue-300">MoreHorizontal</span> <span className="text-blue-400">className</span>=<span className="text-green-400">"h-4 w-4"</span> /&gt;</div>
-                    <div>          &lt;/<span className="text-blue-300">Button</span>&gt;</div>
-                    <div>        &lt;/<span className="text-blue-300">DropdownMenuTrigger</span>&gt;</div>
-                    <div>        &lt;<span className="text-blue-300">DropdownMenuContent</span>&gt;</div>
-                    <div>          &lt;<span className="text-blue-300">DropdownMenuItem</span>&gt;Edit&lt;/<span className="text-blue-300">DropdownMenuItem</span>&gt;</div>
-                    <div>        &lt;/<span className="text-blue-300">DropdownMenuContent</span>&gt;</div>
-                    <div>      &lt;/<span className="text-blue-300">DropdownMenu</span>&gt;</div>
-                    <div>    ),</div>
-                    <div>    <span className="text-blue-400">size</span>: <span className="text-orange-400">100</span>,</div>
-                    <div>  {'}'}</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'select'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTableRowSelectAll</span> <span className="text-gray-500">/&gt;</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">cell</span>: <span className="text-orange-300">{'('}</span><span className="text-blue-300">row</span><span className="text-orange-300">{')'} =&gt;</span> <span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTableRowSelect</span> <span className="text-blue-400">row</span>=<span className="text-orange-300">{'{'}row{'}'}</span> <span className="text-gray-500">/&gt;</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">size</span>: <span className="text-orange-400">50</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">align</span>: <span className="text-green-400">'center'</span>,</div>
+                    <div className="pl-4">{'}'},</div>
+                    <div className="pl-4">{'{'} <span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: <span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridColumnHeader</span> .../&gt;, <span className="text-blue-400">enableSorting</span>: <span className="text-orange-400">true</span> {'}'},</div>
+                    <div className="pl-4">{'{'}</div>
+                    <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'actions'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">cell</span>: <span className="text-orange-300">{'('}</span><span className="text-blue-300">row</span><span className="text-orange-300">{')'} =&gt; {'('}</span></div>
+                    <div className="pl-12"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenu</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-16"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenuTrigger</span> <span className="text-blue-400">asChild</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-20"><span className="text-gray-500">&lt;</span><span className="text-green-400">Button</span> <span className="text-blue-400">variant</span>=<span className="text-orange-300">"ghost"</span> <span className="text-blue-400">className</span>=<span className="text-orange-300">"h-8 w-8 p-0"</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-24"><span className="text-gray-500">&lt;</span><span className="text-green-400">MoreHorizontal</span> <span className="text-blue-400">className</span>=<span className="text-orange-300">"h-4 w-4"</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div className="pl-20"><span className="text-gray-500">&lt;/</span><span className="text-green-400">Button</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-16"><span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenuTrigger</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-16"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenuContent</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-20"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenuItem</span><span className="text-gray-500">&gt;</span>Edit<span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenuItem</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-16"><span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenuContent</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-12"><span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenu</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-8"><span className="text-orange-300">{')'}</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">size</span>: <span className="text-orange-400">100</span>,</div>
+                    <div className="pl-4">{'}'}</div>
                     <div>];</div>
-                    <div className="h-4"></div>
-                    <div>&lt;<span className="text-blue-300">DataGrid</span> <span className="text-blue-400">columns</span>={'{'}columns{'}'} <span className="text-blue-400">data</span>={'{'}data{'}'}  <span className="text-blue-400">getRowId</span>={'{'}(row) =&gt; row.id{'}'}  &gt;</div>
-                    <div>  &lt;<span className="text-blue-300">DataGridTable</span> /&gt;</div>
-                    <div>  &lt;<span className="text-blue-300">DataGridPagination</span> /&gt;</div>
-                    <div>&lt;/<span className="text-blue-300">DataGrid</span>&gt;</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span> <span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span>  <span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span>  <span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTable</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridPagination</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div><span className="text-gray-500">&lt;/</span><span className="text-green-400">DataGrid</span><span className="text-gray-500">&gt;</span></div>
                   </div>
                 </div>
               )}
