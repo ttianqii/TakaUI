@@ -1,6 +1,6 @@
 # DatePicker Component
 
-A date picker component with popover trigger and customizable formatting.
+A date picker component with popover trigger and customizable formatting. Supports both single date selection and date range selection.
 
 ## Import
 
@@ -9,6 +9,8 @@ import { DatePicker } from '@ttianqii/takaui'
 ```
 
 ## Basic Usage
+
+### Single Date Selection
 
 ```tsx
 import { DatePicker } from '@ttianqii/takaui'
@@ -26,10 +28,33 @@ function MyDatePicker() {
 }
 ```
 
+### Date Range Selection (NEW in v0.0.6!)
+
+```tsx
+import { DatePicker } from '@ttianqii/takaui'
+import { useState } from 'react'
+
+function MyDateRangePicker() {
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
+
+  return (
+    <DatePicker
+      mode="range"
+      dateRange={dateRange}
+      onDateRangeChange={setDateRange}
+      numberOfMonths={2}
+    />
+  )
+}
+```
+
 ## Props
+
+### Single Date Mode Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
+| `mode` | `'single'` | `'single'` | Selection mode (omit for single date) |
 | `date` | `Date \| undefined` | - | Selected date |
 | `onDateChange` | `(date: Date \| undefined) => void` | - | Callback when date changes |
 | `placeholder` | `string` | `'Pick a date'` | Placeholder text |
@@ -41,9 +66,27 @@ function MyDatePicker() {
 | `size` | `'sm' \| 'default' \| 'lg'` | `'default'` | Button size |
 | `className` | `string` | - | Additional CSS classes |
 
+### Range Mode Props (NEW!)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `mode` | `'range'` | - | Enable range selection mode |
+| `dateRange` | `{ from: Date; to?: Date } \| undefined` | - | Selected date range |
+| `onDateRangeChange` | `(range: { from: Date; to?: Date } \| undefined) => void` | - | Callback when range changes |
+| `numberOfMonths` | `1 \| 2` | `1` | Number of months to display |
+| `placeholder` | `string` | `'Pick a date range'` | Placeholder text |
+| `disabled` | `Date[] \| (date: Date) => boolean` | - | Disable specific dates |
+| `fromDate` | `Date` | - | Minimum selectable date |
+| `toDate` | `Date` | - | Maximum selectable date |
+| `variant` | `'default' \| 'outline' \| 'ghost'` | `'outline'` | Button variant |
+| `size` | `'sm' \| 'default' \| 'lg'` | `'default'` | Button size |
+| `className` | `string` | - | Additional CSS classes |
+
 ## Examples
 
-### With Custom Format
+### Single Date Examples
+
+#### With Custom Format
 
 ```tsx
 function FormattedDatePicker() {
@@ -59,7 +102,7 @@ function FormattedDatePicker() {
 }
 ```
 
-### With Date Range Limits
+#### With Date Range Limits
 
 ```tsx
 function LimitedDatePicker() {
@@ -77,7 +120,7 @@ function LimitedDatePicker() {
 }
 ```
 
-### Disable Past Dates
+#### Disable Past Dates
 
 ```tsx
 function FutureDatePicker() {
@@ -90,6 +133,88 @@ function FutureDatePicker() {
       disabled={{ before: new Date() }}
       placeholder="Select future date"
     />
+  )
+}
+```
+
+### Date Range Selection (NEW!)
+
+#### Basic Range Selection
+
+```tsx
+function BasicRangePicker() {
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
+
+  return (
+    <DatePicker
+      mode="range"
+      dateRange={dateRange}
+      onDateRangeChange={setDateRange}
+    />
+  )
+}
+```
+
+#### Range with Two Month View
+
+```tsx
+function TwoMonthRangePicker() {
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
+
+  return (
+    <DatePicker
+      mode="range"
+      dateRange={dateRange}
+      onDateRangeChange={setDateRange}
+      numberOfMonths={2}
+    />
+  )
+}
+```
+
+#### Range with Limits
+
+```tsx
+function LimitedRangePicker() {
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
+  const today = new Date()
+  const thirtyDaysLater = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000)
+
+  return (
+    <DatePicker
+      mode="range"
+      dateRange={dateRange}
+      onDateRangeChange={setDateRange}
+      fromDate={today}
+      toDate={thirtyDaysLater}
+      numberOfMonths={2}
+      placeholder="Select range (next 30 days)"
+    />
+  )
+}
+```
+
+#### Display Selected Range
+
+```tsx
+function RangeWithDisplay() {
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
+
+  return (
+    <div>
+      <DatePicker
+        mode="range"
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        numberOfMonths={2}
+      />
+      {dateRange?.from && (
+        <p className="mt-2 text-sm text-gray-600">
+          Selected: {dateRange.from.toLocaleDateString()}
+          {dateRange.to && ` - ${dateRange.to.toLocaleDateString()}`}
+        </p>
+      )}
+    </div>
   )
 }
 ```

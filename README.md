@@ -1,6 +1,20 @@
 # TakaUI
 
+[![npm version](https://img.shields.io/npm/v/@ttianqii/takaui.svg)](https://www.npmjs.com/package/@ttianqii/takaui)
+[![npm downloads](https://img.shields.io/npm/dm/@ttianqii/takaui.svg)](https://www.npmjs.com/package/@ttianqii/takaui)
+[![license](https://img.shields.io/npm/l/@ttianqii/takaui.svg)](https://github.com/ttianqii/takaui/blob/main/LICENSE)
+
 A modern, customizable React UI component library built with TypeScript, Tailwind CSS, and Radix UI primitives.
+
+**Current Version:** 0.0.6
+
+## ✨ What's New in 0.0.6
+
+- 🎯 **DatePicker Range Selection** - Select date ranges with 1 or 2 month views
+- 🎨 **Enhanced Hover States** - Improved visual feedback for range selection
+- 🔧 **DataGrid System** - New modular table components for better composition
+- 📅 **Schedule Component** - Now supports Date type in custom metadata fields
+- 🐛 **Bug Fixes** - Text alignment and various improvements
 
 ## 📦 Installation
 
@@ -66,12 +80,13 @@ import '@ttianqii/takaui/styles.css'
 ## 🚀 Quick Start
 
 ```tsx
-import { Calendar, TimePicker, DataTable } from '@ttianqii/takaui'
+import { DatePicker, TimePicker, DataTable } from '@ttianqii/takaui'
 import '@ttianqii/takaui/styles.css'
 import { useState } from 'react'
 
 function App() {
   const [date, setDate] = useState<Date | undefined>(new Date())
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
   
   // DataTable example - No TanStack required!
   const columns = [
@@ -95,10 +110,18 @@ function App() {
   
   return (
     <div>
-      <Calendar
-        mode="single"
-        selected={date}
-        onSelect={setDate}
+      {/* Single Date Picker */}
+      <DatePicker
+        date={date}
+        onDateChange={setDate}
+      />
+      
+      {/* Date Range Picker - NEW! */}
+      <DatePicker
+        mode="range"
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        numberOfMonths={2}
       />
       
       <DataTable 
@@ -120,18 +143,25 @@ TakaUI includes the following components:
 
 - **[Calendar](./docs/CALENDAR.md)** - Flexible date picker with multiple selection modes
 - **[DatePicker](./docs/DATEPICKER.md)** - Date picker with popover and custom formatting
+  - ✨ **NEW:** Range selection with dual month view
+  - ✨ **NEW:** Enhanced hover states for better UX
 - **[TimePicker](./docs/TIMEPICKER.md)** - Time picker with 12h/24h formats and timezone support
 - **[DropdownMenu](./docs/DROPDOWN.md)** - Accessible dropdown menu component
 
 ### Data Display Components
 
-- **[DataTable](./docs/DATATABLE_NEW.md)** - **NEW!** Independent table with sorting, filtering, and pagination (No TanStack!)
+- **[DataTable](./docs/DATATABLE_NEW.md)** - Independent table with sorting, filtering, and pagination (No TanStack!)
   - ✅ Zero external dependencies (except icons)
   - ✅ Built-in sorting, pagination, search
   - ✅ Custom cell rendering
   - ✅ Loading states
   - [Quick Reference](./DATATABLE_QUICKREF.md) - Cheat sheet
+- **DataGrid System** - ✨ **NEW!** Modular table components for custom layouts
+  - DataGrid, DataGridTable, DataGridPagination
+  - DataGridColumnHeader, DataGridRowSelect
+  - Perfect for complex table compositions
 - **[Schedule](./docs/SCHEDULE.md)** - Weekly schedule component with custom fields
+  - ✨ **NEW:** Supports Date type in metadata
 - **[WeekNavigator](./docs/WEEKNAVIGATOR.md)** - Week navigation with date range display
 
 ### Advanced Table System (Optional)
