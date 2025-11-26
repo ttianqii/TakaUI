@@ -38,6 +38,7 @@ export default function TablePage() {
   const [showCode2, setShowCode2] = useState(false);
   const [showCode3, setShowCode3] = useState(false);
   const [showCode5, setShowCode5] = useState(false);
+  const [showCode6, setShowCode6] = useState(false);
 
   const handleCopy = (text: string, type: 'install' | 'import') => {
     navigator.clipboard.writeText(text);
@@ -493,38 +494,98 @@ export default function TablePage() {
               {showCode5 && (
                 <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
                   <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
-                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridTableRowSelect</span>, <span className="text-blue-300">DataGridTableRowSelectAll</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span>, <span className="text-blue-300">DataGridColumnHeader</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGridTableRowSelect</span>, <span className="text-blue-300">DataGridTableRowSelectAll</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DropdownMenu</span>, <span className="text-blue-300">DropdownMenuContent</span>, <span className="text-blue-300">DropdownMenuItem</span>, <span className="text-blue-300">DropdownMenuTrigger</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
                     <div className="my-3"></div>
                     <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataGridColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
                     <div className="pl-4">{'{'}</div>
                     <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'select'</span>,</div>
                     <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTableRowSelectAll</span> <span className="text-gray-500">/&gt;</span>,</div>
                     <div className="pl-8"><span className="text-blue-400">cell</span>: <span className="text-orange-300">{'('}</span><span className="text-blue-300">row</span><span className="text-orange-300">{')'} =&gt;</span> <span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTableRowSelect</span> <span className="text-blue-400">row</span>=<span className="text-orange-300">{'{'}row{'}'}</span> <span className="text-gray-500">/&gt;</span>,</div>
-                    <div className="pl-8"><span className="text-blue-400">size</span>: <span className="text-orange-400">50</span>,</div>
-                    <div className="pl-8"><span className="text-blue-400">align</span>: <span className="text-green-400">'center'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">size</span>: <span className="text-orange-400">50</span>, <span className="text-blue-400">align</span>: <span className="text-green-400">'center'</span>,</div>
                     <div className="pl-4">{'}'},</div>
-                    <div className="pl-4">{'{'} <span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: <span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridColumnHeader</span> .../&gt;, <span className="text-blue-400">enableSorting</span>: <span className="text-orange-400">true</span> {'}'},</div>
+                    <div className="pl-4">{'{'} <span className="text-blue-400">id</span>: <span className="text-green-400">'name'</span>, <span className="text-blue-400">header</span>: <span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridColumnHeader</span> <span className="text-blue-400">id</span>=<span className="text-orange-300">"name"</span> <span className="text-blue-400">title</span>=<span className="text-orange-300">"Product"</span> <span className="text-gray-500">/&gt;</span>, <span className="text-blue-400">enableSorting</span>: <span className="text-orange-400">true</span> {'}'},</div>
+                    <div className="pl-4">{'{'} <span className="text-blue-400">id</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">accessorKey</span>: <span className="text-green-400">'category'</span>, <span className="text-blue-400">header</span>: <span className="text-green-400">'Category'</span>, <span className="text-blue-400">enableSorting</span>: <span className="text-orange-400">true</span> {'}'},</div>
                     <div className="pl-4">{'{'}</div>
                     <div className="pl-8"><span className="text-blue-400">id</span>: <span className="text-green-400">'actions'</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">header</span>: <span className="text-green-400">''</span>,</div>
                     <div className="pl-8"><span className="text-blue-400">cell</span>: <span className="text-orange-300">{'('}</span><span className="text-blue-300">row</span><span className="text-orange-300">{')'} =&gt; {'('}</span></div>
                     <div className="pl-12"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenu</span><span className="text-gray-500">&gt;</span></div>
                     <div className="pl-16"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenuTrigger</span> <span className="text-blue-400">asChild</span><span className="text-gray-500">&gt;</span></div>
-                    <div className="pl-20"><span className="text-gray-500">&lt;</span><span className="text-green-400">Button</span> <span className="text-blue-400">variant</span>=<span className="text-orange-300">"ghost"</span> <span className="text-blue-400">className</span>=<span className="text-orange-300">"h-8 w-8 p-0"</span><span className="text-gray-500">&gt;</span></div>
-                    <div className="pl-24"><span className="text-gray-500">&lt;</span><span className="text-green-400">MoreHorizontal</span> <span className="text-blue-400">className</span>=<span className="text-orange-300">"h-4 w-4"</span> <span className="text-gray-500">/&gt;</span></div>
-                    <div className="pl-20"><span className="text-gray-500">&lt;/</span><span className="text-green-400">Button</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-20"><span className="text-gray-500">&lt;</span><span className="text-green-400">Button</span> <span className="text-blue-400">variant</span>=<span className="text-orange-300">"ghost"</span><span className="text-gray-500">&gt;&lt;</span><span className="text-green-400">MoreHorizontal</span> <span className="text-gray-500">/&gt;&lt;/</span><span className="text-green-400">Button</span><span className="text-gray-500">&gt;</span></div>
                     <div className="pl-16"><span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenuTrigger</span><span className="text-gray-500">&gt;</span></div>
-                    <div className="pl-16"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenuContent</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-16"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenuContent</span> <span className="text-blue-400">align</span>=<span className="text-orange-300">"end"</span><span className="text-gray-500">&gt;</span></div>
                     <div className="pl-20"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenuItem</span><span className="text-gray-500">&gt;</span>Edit<span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenuItem</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-20"><span className="text-gray-500">&lt;</span><span className="text-green-400">DropdownMenuItem</span> <span className="text-blue-400">className</span>=<span className="text-orange-300">"text-red-600"</span><span className="text-gray-500">&gt;</span>Delete<span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenuItem</span><span className="text-gray-500">&gt;</span></div>
                     <div className="pl-16"><span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenuContent</span><span className="text-gray-500">&gt;</span></div>
                     <div className="pl-12"><span className="text-gray-500">&lt;/</span><span className="text-green-400">DropdownMenu</span><span className="text-gray-500">&gt;</span></div>
                     <div className="pl-8"><span className="text-orange-300">{')'}</span>,</div>
-                    <div className="pl-8"><span className="text-blue-400">size</span>: <span className="text-orange-400">100</span>,</div>
+                    <div className="pl-8"><span className="text-blue-400">size</span>: <span className="text-orange-400">100</span>, <span className="text-blue-400">align</span>: <span className="text-green-400">'center'</span>,</div>
                     <div className="pl-4">{'}'}</div>
                     <div>];</div>
                     <div className="my-3"></div>
-                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span> <span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span>  <span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span>  <span className="text-gray-500">&gt;</span></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span> <span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span> <span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span><span className="text-gray-500">&gt;</span></div>
                     <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTable</span> <span className="text-gray-500">/&gt;</span></div>
                     <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridPagination</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div><span className="text-gray-500">&lt;/</span><span className="text-green-400">DataGrid</span><span className="text-gray-500">&gt;</span></div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Example 6: Advanced Pagination */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-3 mb-4">
+                <h2 className="text-2xl font-bold text-slate-900">Advanced Pagination</h2>
+                <span className="px-3 py-1 text-xs font-medium bg-purple-100 text-purple-700 rounded-full">New</span>
+              </div>
+              <p className="text-slate-600 mb-6">
+                Use <code className="px-2 py-1 bg-slate-100 rounded text-sm">mode="advanced"</code> to enable page size selector and numbered page buttons.
+              </p>
+              
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setShowCode6(!showCode6)}
+                      className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+                    >
+                      <Code className="w-4 h-4" />
+                      {showCode6 ? 'Hide' : 'View'} Code
+                    </button>
+                    <span className="text-xs px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">Featured</span>
+                  </div>
+                </div>
+                
+                <DataGrid 
+                  columns={basicColumns} 
+                  data={sampleData}
+                  getRowId={(row) => row.id}
+                >
+                  <DataGridTable />
+                  <DataGridPagination mode="advanced" />
+                </DataGrid>
+              </div>
+
+              {showCode6 && (
+                <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-400">// Simple mode (default)</span></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span> <span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span> <span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTable</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridPagination</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div><span className="text-gray-500">&lt;/</span><span className="text-green-400">DataGrid</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-400">// Advanced mode with page size selector + numbered pages</span></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span> <span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span> <span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span><span className="text-gray-500">&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridTable</span> <span className="text-gray-500">/&gt;</span></div>
+                    <div className="pl-4"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGridPagination</span></div>
+                    <div className="pl-8"><span className="text-blue-400">mode</span>=<span className="text-orange-300">"advanced"</span></div>
+                    <div className="pl-8"><span className="text-blue-400">pageSizeOptions</span>=<span className="text-orange-300">{'{'}[5, 10, 15, 20, 50]{'}'}</span></div>
+                    <div className="pl-4"><span className="text-gray-500">/&gt;</span></div>
                     <div><span className="text-gray-500">&lt;/</span><span className="text-green-400">DataGrid</span><span className="text-gray-500">&gt;</span></div>
                   </div>
                 </div>
@@ -579,6 +640,36 @@ export default function TablePage() {
                     <td className="py-3 px-4 font-mono text-xs">number</td>
                     <td className="py-3 px-4 text-slate-500">-</td>
                     <td className="py-3 px-4 text-slate-600">Total record count for server-side pagination</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">DataGridPagination Props</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Prop</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Type</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Default</th>
+                    <th className="text-left py-3 px-4 font-semibold text-slate-900">Description</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">mode</td>
+                    <td className="py-3 px-4 font-mono text-xs">'simple' | 'advanced'</td>
+                    <td className="py-3 px-4 text-slate-500">'simple'</td>
+                    <td className="py-3 px-4 text-slate-600">Pagination mode: simple (prev/next) or advanced (with page size selector and numbered pages)</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-purple-600">pageSizeOptions</td>
+                    <td className="py-3 px-4 font-mono text-xs">number[]</td>
+                    <td className="py-3 px-4 text-slate-500">[5, 10, 15, 20]</td>
+                    <td className="py-3 px-4 text-slate-600">Available page sizes in advanced mode</td>
                   </tr>
                 </tbody>
               </table>

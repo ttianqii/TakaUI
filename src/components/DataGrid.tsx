@@ -34,6 +34,8 @@ interface DataGridContextValue<T = Record<string, unknown>> {
   canNextPage: boolean;
   previousPage: () => void;
   nextPage: () => void;
+  setPageSize: (size: number) => void;
+  goToPage: (page: number) => void;
   pageCount: number;
   
   // Sorting
@@ -113,7 +115,26 @@ export function DataGrid<T extends Record<string, unknown>>({
   const canPreviousPage = pagination.pageIndex > 0;
   const canNextPage = pagination.pageIndex < totalPages - 1;
   const previousPage = () => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex - 1 }));
-  const nextPage = () => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex + 1 }));
+  const nextPage = () => {
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: Math.min(prev.pageIndex + 1, pageCount - 1),
+    }));
+  };
+
+  const setPageSize = (size: number) => {
+    setPagination(() => ({
+      pageIndex: 0,
+      pageSize: size,
+    }));
+  };
+
+  const goToPage = (page: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: Math.max(0, Math.min(page, pageCount - 1)),
+    }));
+  };
 
   // Selection logic
   const toggleRow = (id: string) => {
@@ -149,6 +170,8 @@ export function DataGrid<T extends Record<string, unknown>>({
     canNextPage,
     previousPage,
     nextPage,
+    setPageSize,
+    goToPage,
     pageCount,
     sorting,
     setSorting,
