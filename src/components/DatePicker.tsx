@@ -1,7 +1,7 @@
 import * as React from "react"
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, isSameMonth, addMonths, subMonths } from "date-fns"
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
-import { mergeStyles } from "@/lib/mergeStyles"
+import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
@@ -217,177 +217,19 @@ export function DatePicker({
   const currentYear = currentMonth.getFullYear()
   const years = Array.from({ length: 20 }, (_, i) => currentYear - 10 + i)
 
-  // Inline Styles
-  const triggerButtonStyle: React.CSSProperties = mergeStyles(
-    {
-      justifyContent: 'flex-start',
-      textAlign: 'left',
-      fontWeight: 'normal',
-    },
-    !date && !rangeStart ? { color: '#6b7280' } : undefined,
-    fullWidth ? { width: '100%' } : undefined
-  )
-
-  const iconStyle: React.CSSProperties = {
-    marginRight: '0.5rem',
-    height: '1rem',
-    width: '1rem',
-  }
-
-  const popoverContentStyle: React.CSSProperties = {
-    padding: 0,
-    borderColor: '#e5e7eb',
-    width: numberOfMonths === 2 ? '640px' : '320px',
-  }
-
-  const containerStyle: React.CSSProperties = {
-    backgroundColor: '#ffffff',
-    borderRadius: '0.5rem',
-  }
-
-  const headerStyle: React.CSSProperties = {
-    borderBottom: '1px solid #f3f4f6',
-    paddingLeft: '1.5rem',
-    paddingRight: '1.5rem',
-    paddingTop: '1rem',
-    paddingBottom: '1rem',
-  }
-
-  const headerFlexStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }
-
-  const navButtonStyle: React.CSSProperties = {
-    height: '2.25rem',
-    width: '2.25rem',
-    padding: 0,
-  }
-
-  const monthHeaderFlexStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-  }
-
-  const monthButtonStyle: React.CSSProperties = {
-    height: '2.25rem',
-    paddingLeft: '0.75rem',
-    paddingRight: '0.75rem',
-    fontWeight: '600',
-    fontSize: '1rem',
-  }
-
-  const monthButtonLargeStyle: React.CSSProperties = {
-    height: '2.25rem',
-    paddingLeft: '1rem',
-    paddingRight: '1rem',
-    fontWeight: '600',
-    fontSize: '1.125rem',
-  }
-
-  const separatorStyle: React.CSSProperties = {
-    color: '#9ca3af',
-    fontSize: '0.875rem',
-  }
-
-  const bodyStyle: React.CSSProperties = {
-    padding: '1.5rem',
-  }
-
-  const backButtonStyle: React.CSSProperties = {
-    height: '2.25rem',
-    paddingLeft: '0.75rem',
-    paddingRight: '0.75rem',
-    fontSize: '0.875rem',
-    fontWeight: '500',
-    color: '#4b5563',
-  }
-
-  const viewTitleStyle: React.CSSProperties = {
-    fontSize: '1.125rem',
-    fontWeight: '600',
-    color: '#111827',
-  }
-
-  const yearGridStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '0.5rem',
-    maxHeight: '16rem',
-    overflowY: 'auto',
-  }
-
-  const monthGridStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '0.5rem',
-  }
-
-  const yearControlFlexStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-  }
-
-  const yearButtonStyle: React.CSSProperties = {
-    height: '2.25rem',
-    paddingLeft: '1rem',
-    paddingRight: '1rem',
-    fontSize: '1.125rem',
-    fontWeight: '600',
-    color: '#111827',
-  }
-
-  const monthsContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    gap: numberOfMonths === 2 ? '1.5rem' : '0',
-  }
-
-  const monthContainerStyle: React.CSSProperties = {
-    flex: 1,
-  }
-
-  const weekHeaderStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(7, 1fr)',
-    gap: '0.25rem',
-    marginBottom: '0.5rem',
-  }
-
-  const weekDayStyle: React.CSSProperties = {
-    height: '2rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-
-  const weekDayTextStyle: React.CSSProperties = {
-    fontSize: '0.75rem',
-    fontWeight: '500',
-    color: '#9ca3af',
-    textTransform: 'uppercase',
-  }
-
-  const daysGridStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(7, 1fr)',
-  }
-
-  const emptyDayStyle: React.CSSProperties = {
-    height: '2.5rem',
-  }
-
   const triggerContent = customTrigger || (
     <Button
       variant={variant}
       size={size}
-      style={triggerButtonStyle}
-      className={className}
+      className={cn(
+        "justify-start text-left font-normal",
+        !date && !rangeStart && "text-gray-500",
+        fullWidth && "w-full",
+        className
+      )}
       disabled={disabled}
     >
-      {showIcon && (icon || <CalendarIcon style={iconStyle} />)}
+      {showIcon && (icon || <CalendarIcon className="mr-2 h-4 w-4" />)}
       {mode === 'range' ? (
         rangeStart && rangeEnd ? (
           <span>{format(rangeStart, dateFormat)} - {format(rangeEnd, dateFormat)}</span>
@@ -412,58 +254,17 @@ export function DatePicker({
     const isRangeStartDay = isRangeStart(day)
     const isRangeEndDay = isRangeEnd(day)
 
-    const cellContainerStyle: React.CSSProperties = mergeStyles(
-      { position: 'relative', padding: '0.125rem' },
-      inRange ? { backgroundColor: '#f3f4f6' } : undefined,
-      inRange && dayOfWeek === 0 ? { borderTopLeftRadius: '0.375rem', borderBottomLeftRadius: '0.375rem' } : undefined,
-      inRange && dayOfWeek === 6 ? { borderTopRightRadius: '0.375rem', borderBottomRightRadius: '0.375rem' } : undefined,
-      inRange && isRangeStartDay ? { borderTopLeftRadius: '0.375rem', borderBottomLeftRadius: '0.375rem' } : undefined,
-      inRange && isRangeEndDay ? { borderTopRightRadius: '0.375rem', borderBottomRightRadius: '0.375rem' } : undefined
-    )
-
-    const dayCellButtonStyle: React.CSSProperties = mergeStyles(
-      {
-        height: '2.5rem',
-        width: '100%',
-        padding: 0,
-        fontSize: '0.875rem',
-        position: 'relative',
-        transition: 'all 0.2s ease',
-        borderRadius: '0.375rem',
-        color: '#111827', // Default text color
-      },
-      !isCurrentMonth ? { color: '#d1d5db' } : undefined,
-      isHolidayDay && !isSelectedDay ? {
-        color: '#dc2626',
-        fontWeight: '500',
-      } : undefined,
-      isTodayDay && !isSelectedDay && !inRange ? {
-        backgroundColor: '#f9fafb',
-        color: '#111827',
-        fontWeight: '500',
-        border: '1px solid #e5e7eb',
-      } : undefined,
-      isSelectedDay ? {
-        backgroundColor: '#2563eb',
-        color: '#ffffff',
-        fontWeight: '500',
-        boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-        zIndex: 10,
-      } : undefined,
-      inRange && !isSelectedDay ? {
-        color: '#111827',
-        backgroundColor: '#dbeafe',
-      } : undefined,
-      isDisabled ? {
-        opacity: 0.4,
-        cursor: 'not-allowed',
-      } : undefined
-    )
-
     return (
       <div
         key={day.toISOString()}
-        style={cellContainerStyle}
+        className={cn(
+          "relative p-0.5",
+          inRange && "bg-gray-100",
+          inRange && dayOfWeek === 0 && "rounded-l-md",
+          inRange && dayOfWeek === 6 && "rounded-r-md",
+          inRange && isRangeStartDay && "rounded-l-md",
+          inRange && isRangeEndDay && "rounded-r-md"
+        )}
         onMouseEnter={() => mode === 'range' && rangeStart && !rangeEnd && setHoverDate(day)}
         onMouseLeave={() => setHoverDate(undefined)}
       >
@@ -471,7 +272,15 @@ export function DatePicker({
           variant="ghost"
           size="sm"
           disabled={isDisabled || disabled}
-          style={dayCellButtonStyle}
+          className={cn(
+            "h-10 w-full p-0 text-sm relative transition-all duration-200 rounded-md text-gray-900",
+            !isCurrentMonth && "text-gray-300",
+            isHolidayDay && !isSelectedDay && "text-red-600 font-medium",
+            isTodayDay && !isSelectedDay && !inRange && "bg-gray-50 text-gray-900 font-medium border border-gray-200",
+            isSelectedDay && "bg-blue-600 text-white font-medium shadow-sm z-10",
+            inRange && !isSelectedDay && "text-gray-900 bg-blue-100",
+            isDisabled && "opacity-40 cursor-not-allowed"
+          )}
           onClick={() => !isDisabled && handleSelect(day)}
         >
           {formatDate(day, "d")}
@@ -485,36 +294,45 @@ export function DatePicker({
       <PopoverTrigger asChild>
         {triggerContent}
       </PopoverTrigger>
-      <PopoverContent style={popoverContentStyle} align={align} side="bottom" sideOffset={4} collisionPadding={8}>
-        <div style={containerStyle} data-takaui="datepicker">
+      <PopoverContent 
+        className={cn(
+          "p-0 border-gray-200",
+          numberOfMonths === 2 ? "w-[640px]" : "w-80"
+        )}
+        align={align} 
+        side="bottom" 
+        sideOffset={4} 
+        collisionPadding={8}
+      >
+        <div className="bg-white rounded-lg" data-takaui="datepicker">
           {/* Calendar Header */}
-          <div style={headerStyle}>
-            <div style={headerFlexStyle}>
+          <div className="border-b border-gray-100 px-6 py-4">
+            <div className="flex items-center justify-between">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={previousMonth}
-                style={navButtonStyle}
+                className="h-9 w-9 p-0"
               >
-                <ChevronLeft style={{ height: '1rem', width: '1rem' }} />
+                <ChevronLeft className="h-4 w-4" />
               </Button>
 
               {numberOfMonths === 2 ? (
-                <div style={monthHeaderFlexStyle}>
+                <div className="flex items-center gap-1">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setView('months')}
-                    style={monthButtonStyle}
+                    className="h-9 px-3 font-semibold text-base"
                   >
                     {formatDate(currentMonth, "MMMM")}
                   </Button>
-                  <span style={separatorStyle}>-</span>
+                  <span className="text-gray-400 text-sm">-</span>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setView('months')}
-                    style={monthButtonStyle}
+                    className="h-9 px-3 font-semibold text-base"
                   >
                     {formatDate(nextMonthDate, "MMMM yyyy")}
                   </Button>
@@ -524,7 +342,7 @@ export function DatePicker({
                   variant="ghost"
                   size="sm"
                   onClick={() => setView('months')}
-                  style={monthButtonLargeStyle}
+                  className="h-9 px-4 font-semibold text-lg"
                 >
                   {formatDate(currentMonth, "MMMM yyyy")}
                 </Button>
@@ -534,91 +352,75 @@ export function DatePicker({
                 variant="outline"
                 size="sm"
                 onClick={nextMonth}
-                style={navButtonStyle}
+                className="h-9 w-9 p-0"
               >
-                <ChevronRight style={{ height: '1rem', width: '1rem' }} />
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
           {/* Calendar Body */}
-          <div style={bodyStyle}>
+          <div className="p-6">
             {view === 'years' && (
               <>
-                <div style={headerFlexStyle}>
+                <div className="flex items-center justify-between">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setView('months')}
-                    style={backButtonStyle}
+                    className="h-9 px-3 text-sm font-medium text-gray-600"
                   >
                     ← Back
                   </Button>
-                  <h3 style={viewTitleStyle}>Select Year</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Select Year</h3>
                 </div>
-                <div style={yearGridStyle}>
-                  {years.map((year) => {
-                    const yearButtonStyle: React.CSSProperties = mergeStyles(
-                      {
-                        height: '2.75rem',
-                        width: '100%',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        borderRadius: '0.375rem',
-                        transition: 'all 0.2s ease',
-                      },
-                      year === currentYear ? {
-                        backgroundColor: '#2563eb',
-                        color: '#ffffff',
-                        boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-                      } : {
-                        color: '#111827',
-                        backgroundColor: 'transparent',
-                      }
-                    )
-                    
-                    return (
-                      <Button
-                        key={year}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => selectYear(year)}
-                        style={yearButtonStyle}
-                      >
-                        {year}
-                      </Button>
-                    )
-                  })}
+                <div className="grid grid-cols-4 gap-2 max-h-64 overflow-y-auto">
+                  {years.map((year) => (
+                    <Button
+                      key={year}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => selectYear(year)}
+                      className={cn(
+                        "h-11 w-full text-sm font-medium rounded-md transition-all duration-200",
+                        year === currentYear
+                          ? "bg-blue-600 text-white shadow-sm"
+                          : "text-gray-900 bg-transparent"
+                      )}
+                    >
+                      {year}
+                    </Button>
+                  ))}
                 </div>
               </>
             )}
 
             {view === 'months' && (
               <>
-                <div style={headerFlexStyle}>
+                <div className="flex items-center justify-between">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setView('calendar')}
-                    style={backButtonStyle}
+                    className="h-9 px-3 text-sm font-medium text-gray-600"
                   >
                     ← Back
                   </Button>
                   
-                  <div style={yearControlFlexStyle}>
+                  <div className="flex items-center gap-1">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={previousYear}
-                      style={navButtonStyle}
+                      className="h-9 w-9 p-0"
                     >
-                      <ChevronLeft style={{ height: '1rem', width: '1rem' }} />
+                      <ChevronLeft className="h-4 w-4" />
                     </Button>
                     
                     <Button
                       variant="ghost"
                       onClick={() => setView('years')}
-                      style={yearButtonStyle}
+                      className="h-9 px-4 text-lg font-semibold text-gray-900"
                     >
                       {currentYear}
                     </Button>
@@ -627,58 +429,42 @@ export function DatePicker({
                       variant="outline"
                       size="sm"
                       onClick={nextYear}
-                      style={navButtonStyle}
+                      className="h-9 w-9 p-0"
                     >
-                      <ChevronRight style={{ height: '1rem', width: '1rem' }} />
+                      <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
-                <div style={monthGridStyle}>
-                  {monthNames.map((month, index) => {
-                    const monthButtonSelStyle: React.CSSProperties = mergeStyles(
-                      {
-                        height: '2.75rem',
-                        width: '100%',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        borderRadius: '0.375rem',
-                        transition: 'all 0.2s ease',
-                      },
-                      index === currentMonth.getMonth() ? {
-                        backgroundColor: '#2563eb',
-                        color: '#ffffff',
-                        boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-                      } : {
-                        color: '#111827',
-                        backgroundColor: 'transparent',
-                      }
-                    )
-                    
-                    return (
-                      <Button
-                        key={month}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => selectMonth(index)}
-                        style={monthButtonSelStyle}
-                      >
-                        {month}
-                      </Button>
-                    )
-                  })}
+                <div className="grid grid-cols-3 gap-2">
+                  {monthNames.map((month, index) => (
+                    <Button
+                      key={month}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => selectMonth(index)}
+                      className={cn(
+                        "h-11 w-full text-sm font-medium rounded-md transition-all duration-200",
+                        index === currentMonth.getMonth()
+                          ? "bg-blue-600 text-white shadow-sm"
+                          : "text-gray-900 bg-transparent"
+                      )}
+                    >
+                      {month}
+                    </Button>
+                  ))}
                 </div>
               </>
             )}
 
             {view === 'calendar' && (
-              <div style={monthsContainerStyle}>
+              <div className={cn("flex", numberOfMonths === 2 ? "gap-6" : "gap-0")}>
                 {/* Current Month */}
-                <div style={monthContainerStyle}>
+                <div className="flex-1">
                   {/* Weekday headers */}
-                  <div style={weekHeaderStyle}>
+                  <div className="grid grid-cols-7 gap-1 mb-2">
                     {dayNames.map((day, index) => (
-                      <div key={index} style={weekDayStyle}>
-                        <span style={weekDayTextStyle}>
+                      <div key={index} className="h-8 flex items-center justify-center">
+                        <span className="text-xs font-medium text-gray-400 uppercase">
                           {day}
                         </span>
                       </div>
@@ -686,9 +472,9 @@ export function DatePicker({
                   </div>
 
                   {/* Calendar grid */}
-                  <div style={daysGridStyle}>
+                  <div className="grid grid-cols-7">
                     {Array.from({ length: monthStart.getDay() }).map((_, index) => (
-                      <div key={`empty-${index}`} style={emptyDayStyle} />
+                      <div key={`empty-${index}`} className="h-10" />
                     ))}
                     {days.map((day) => renderDayCell(day, isSameMonth(day, currentMonth)))}
                   </div>
@@ -696,12 +482,12 @@ export function DatePicker({
 
                 {/* Next Month */}
                 {numberOfMonths === 2 && (
-                  <div style={monthContainerStyle}>
+                  <div className="flex-1">
                     {/* Weekday headers */}
-                    <div style={weekHeaderStyle}>
+                    <div className="grid grid-cols-7 gap-1 mb-2">
                       {dayNames.map((day, index) => (
-                        <div key={index} style={weekDayStyle}>
-                          <span style={weekDayTextStyle}>
+                        <div key={index} className="h-8 flex items-center justify-center">
+                          <span className="text-xs font-medium text-gray-400 uppercase">
                             {day}
                           </span>
                         </div>
@@ -709,9 +495,9 @@ export function DatePicker({
                     </div>
 
                     {/* Calendar grid */}
-                    <div style={daysGridStyle}>
+                    <div className="grid grid-cols-7">
                       {Array.from({ length: nextMonthStart.getDay() }).map((_, index) => (
-                        <div key={`next-empty-${index}`} style={emptyDayStyle} />
+                        <div key={`next-empty-${index}`} className="h-10" />
                       ))}
                       {nextMonthDays.map((day) => renderDayCell(day, isSameMonth(day, nextMonthDate)))}
                     </div>

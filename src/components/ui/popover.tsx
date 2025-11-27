@@ -1,5 +1,6 @@
 import * as React from "react"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
+import { cn } from "@/lib/utils"
 
 const Popover = PopoverPrimitive.Root
 
@@ -10,29 +11,22 @@ const PopoverAnchor = PopoverPrimitive.Anchor
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
->(({ className, align = "center", sideOffset = 4, style, ...props }, ref) => {
-  const popoverStyle: React.CSSProperties = {
-    zIndex: 50,
-    width: 'auto',
-    borderRadius: '0.375rem',
-    border: '1px solid #e5e7eb',
-    backgroundColor: '#ffffff',
-    padding: '0.75rem',
-    color: '#030712',
-    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    outline: 'none',
-    ...style,
-  }
-
+>(({ className, align = "center", sideOffset = 4, ...props }, ref) => {
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
         ref={ref}
         align={align}
         sideOffset={sideOffset}
-        data-takaui="popover"
-        className={className}
-        style={popoverStyle}
+        className={cn(
+          "z-50 w-auto rounded-md border border-gray-200 bg-white p-3 text-gray-950 shadow-lg outline-none",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
+          "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          className
+        )}
         {...props}
       />
     </PopoverPrimitive.Portal>
