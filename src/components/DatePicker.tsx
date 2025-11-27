@@ -430,6 +430,7 @@ export function DatePicker({
         position: 'relative',
         transition: 'all 0.2s ease',
         borderRadius: '0.375rem',
+        color: '#111827', // Default text color
       },
       !isCurrentMonth ? { color: '#d1d5db' } : undefined,
       isHolidayDay && !isSelectedDay ? {
@@ -443,7 +444,7 @@ export function DatePicker({
         border: '1px solid #e5e7eb',
       } : undefined,
       isSelectedDay ? {
-        backgroundColor: '#111827',
+        backgroundColor: '#2563eb',
         color: '#ffffff',
         fontWeight: '500',
         boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
@@ -451,6 +452,7 @@ export function DatePicker({
       } : undefined,
       inRange && !isSelectedDay ? {
         color: '#111827',
+        backgroundColor: '#dbeafe',
       } : undefined,
       isDisabled ? {
         opacity: 0.4,
@@ -566,11 +568,12 @@ export function DatePicker({
                         transition: 'all 0.2s ease',
                       },
                       year === currentYear ? {
-                        backgroundColor: '#111827',
+                        backgroundColor: '#2563eb',
                         color: '#ffffff',
                         boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
                       } : {
-                        color: '#4b5563',
+                        color: '#111827',
+                        backgroundColor: 'transparent',
                       }
                     )
                     
@@ -642,11 +645,12 @@ export function DatePicker({
                         transition: 'all 0.2s ease',
                       },
                       index === currentMonth.getMonth() ? {
-                        backgroundColor: '#111827',
+                        backgroundColor: '#2563eb',
                         color: '#ffffff',
                         boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
                       } : {
-                        color: '#4b5563',
+                        color: '#111827',
+                        backgroundColor: 'transparent',
                       }
                     )
                     
