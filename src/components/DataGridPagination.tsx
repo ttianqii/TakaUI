@@ -104,26 +104,24 @@ export function DataGridPagination({
 
   // Advanced mode
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 py-4">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600 hidden sm:inline">Rows per page:</span>
-          <Select
-            value={String(pagination.pageSize)}
-            onValueChange={(value) => setPageSize(Number(value))}
-          >
-            <SelectTrigger className="h-8 w-16">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {pageSizeOptions.map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+    <div className="flex items-center justify-between gap-3 px-2 py-4">
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-gray-600 hidden sm:inline">Rows per page:</span>
+        <Select
+          value={String(pagination.pageSize)}
+          onValueChange={(value) => setPageSize(Number(value))}
+        >
+          <SelectTrigger className="h-8 w-16">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {pageSizeOptions.map((size) => (
+              <SelectItem key={size} value={String(size)}>
+                {size}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex items-center gap-2">
