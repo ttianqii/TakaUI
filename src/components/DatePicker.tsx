@@ -258,7 +258,7 @@ export function DatePicker({
         {triggerContent}
       </PopoverTrigger>
       <PopoverContent className={cn("p-0 border-gray-200", numberOfMonths === 2 ? "w-[640px]" : "w-[320px]")} align={align} side="bottom" sideOffset={4} collisionPadding={8}>
-        <div className="bg-white rounded-lg">
+        <div className="bg-white rounded-lg" data-takaui="datepicker">
           {/* Calendar Header */}
           <div className="border-b border-gray-100 px-6 py-4">
             <div className="flex items-center justify-between">
