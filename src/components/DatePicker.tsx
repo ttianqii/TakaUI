@@ -277,8 +277,8 @@ export function DatePicker({
             !isCurrentMonth && "text-gray-300",
             isHolidayDay && !isSelectedDay && "text-red-600 font-medium",
             isTodayDay && !isSelectedDay && !inRange && "bg-gray-50 text-gray-900 font-medium border border-gray-200",
-            isSelectedDay && "bg-blue-600 text-white font-medium shadow-sm z-10",
-            inRange && !isSelectedDay && "text-gray-900 bg-blue-100",
+            isSelectedDay && "bg-gray-900 text-white font-medium shadow-sm z-10 hover:bg-gray-800",
+            inRange && !isSelectedDay && "text-gray-900 bg-gray-100",
             isDisabled && "opacity-40 cursor-not-allowed"
           )}
           onClick={() => !isDisabled && handleSelect(day)}
@@ -384,7 +384,7 @@ export function DatePicker({
                       className={cn(
                         "h-11 w-full text-sm font-medium rounded-md transition-all duration-200",
                         year === currentYear
-                          ? "bg-blue-600 text-white shadow-sm"
+                          ? "bg-gray-900 text-white shadow-sm hover:bg-gray-800"
                           : "text-gray-900 bg-transparent"
                       )}
                     >
@@ -445,7 +445,7 @@ export function DatePicker({
                       className={cn(
                         "h-11 w-full text-sm font-medium rounded-md transition-all duration-200",
                         index === currentMonth.getMonth()
-                          ? "bg-blue-600 text-white shadow-sm"
+                          ? "bg-gray-900 text-white shadow-sm hover:bg-gray-800"
                           : "text-gray-900 bg-transparent"
                       )}
                     >
