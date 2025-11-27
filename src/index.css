@@ -1,3 +1,37 @@
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Essential base styles scoped to TakaUI components only */
+[data-takaui] {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[data-takaui] *,
+[data-takaui] *::before,
+[data-takaui] *::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+}
+
+/* Reset button styles within TakaUI */
+[data-takaui] button,
+[data-takaui] [role="button"] {
+  background-color: transparent;
+  background-image: none;
+}
+
+/* Reset form elements within TakaUI */
+[data-takaui] input,
+[data-takaui] select,
+[data-takaui] textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}

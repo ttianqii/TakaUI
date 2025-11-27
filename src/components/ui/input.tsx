@@ -6,6 +6,7 @@ const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLI
     return (
       <input
         type={type}
+        data-takaui="input"
         className={cn(
           "flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus:outline-none focus:border-gray-500 hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
           className
