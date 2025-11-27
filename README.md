@@ -6,15 +6,16 @@
 
 A modern, customizable React UI component library built with TypeScript, Tailwind CSS, and Radix UI primitives.
 
-**Current Version:** 0.0.6
+**Current Version:** 0.0.9
 
-## ✨ What's New in 0.0.6
+## ✨ What's New in 0.0.9
 
-- 🎯 **DatePicker Range Selection** - Select date ranges with 1 or 2 month views
-- 🎨 **Enhanced Hover States** - Improved visual feedback for range selection
-- 🔧 **DataGrid System** - New modular table components for better composition
-- 📅 **Schedule Component** - Now supports Date type in custom metadata fields
-- 🐛 **Bug Fixes** - Text alignment and various improvements
+- 🎨 **No CSS Imports Needed!** - Works like shadcn/ui with pure Tailwind CSS
+- ⚡ **Zero Bundle Bloat** - No CSS bundled with components
+- 🔧 **Converted to Tailwind** - All components use Tailwind classes (Button, DatePicker, Popover)
+- 🎯 **Original Design Preserved** - Black selected states, all original styling maintained
+- 📦 **Better Tree Shaking** - Set `sideEffects: false` for optimal bundle size
+- 🧹 **Cleaner API** - Removed inline styles and data attributes
 
 ## 📦 Installation
 
@@ -29,8 +30,9 @@ npx takaui-setup
 
 This will:
 - ✅ Configure your Tailwind config automatically
-- ✅ Add CSS import to your main file
 - ✅ Verify your setup is correct
+
+**No CSS imports needed!** Components work with pure Tailwind CSS.
 
 ### Manual Installation
 
@@ -49,6 +51,8 @@ pnpm add @ttianqii/takaui
 # bun
 bun add @ttianqii/takaui
 ```
+
+**That's it!** Just make sure you have Tailwind CSS configured in your project.
 
 ### Peer Dependencies
 
