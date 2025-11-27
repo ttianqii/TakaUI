@@ -6,16 +6,13 @@
 
 A modern, customizable React UI component library built with TypeScript, Tailwind CSS, and Radix UI primitives.
 
-**Current Version:** 0.0.9
+**Current Version:** 0.1.0
 
-## ✨ What's New in 0.0.9
+## ✨ What's New in 0.1.0
 
-- 🎨 **No CSS Imports Needed!** - Works like shadcn/ui with pure Tailwind CSS
-- ⚡ **Zero Bundle Bloat** - No CSS bundled with components
-- 🔧 **Converted to Tailwind** - All components use Tailwind classes (Button, DatePicker, Popover)
-- 🎯 **Original Design Preserved** - Black selected states, all original styling maintained
-- 📦 **Better Tree Shaking** - Set `sideEffects: false` for optimal bundle size
-- 🧹 **Cleaner API** - Removed inline styles and data attributes
+- 🎯 **Table Alignment Fixed** - Table cells now properly align horizontally with headers
+- 📐 **Consistent Padding** - Checkbox columns and all table content use matching padding (px-3 py-2)
+- ✨ **Previous Features** - All v0.0.9 features (no CSS imports, pure Tailwind, original design preserved)
 
 ## 📦 Installation
 
