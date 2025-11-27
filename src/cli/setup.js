@@ -77,59 +77,47 @@ try {
   console.log('⚠️  Could not update Tailwind config:', error.message);
 }
 
-// 3. Check for CSS import
-const possibleEntryPoints = [
-  'src/main.tsx',
-  'src/main.ts',
-  'src/main.jsx',
-  'src/main.js',
-  'src/index.tsx',
-  'src/index.ts',
-  'src/index.jsx',
-  'src/index.js',
-  'src/App.tsx',
-  'src/App.ts',
-  'src/App.jsx',
-  'src/App.js',
+// 3. Check for Tailwind directives in CSS
+const possibleCssFiles = [
+  'src/index.css',
+  'src/styles.css',
+  'src/App.css',
+  'src/global.css',
 ];
 
-let entryPoint = null;
-for (const file of possibleEntryPoints) {
+let cssFile = null;
+for (const file of possibleCssFiles) {
   if (existsSync(join(cwd, file))) {
-    entryPoint = file;
+    cssFile = file;
     break;
   }
 }
 
-console.log('\n📝 Next Steps:\n');
+console.log('\n📝 Final Steps:\n');
 
-if (entryPoint) {
-  const entryContent = readFileSync(join(cwd, entryPoint), 'utf-8');
+if (cssFile) {
+  const cssContent = readFileSync(join(cwd, cssFile), 'utf-8');
   
-  if (entryContent.includes("@ttianqii/takaui/styles.css")) {
-    console.log(`✅ CSS already imported in ${entryPoint}`);
+  if (cssContent.includes('@tailwind base') && 
+      cssContent.includes('@tailwind components') && 
+      cssContent.includes('@tailwind utilities')) {
+    console.log(`✅ Tailwind directives found in ${cssFile}`);
   } else {
-    console.log(`Add this import to your ${entryPoint}:`);
-    console.log(`  import '@ttianqii/takaui/styles.css'`);
-    
-    // Auto-add if it's a simple case
-    if (entryContent.includes('import')) {
-      const lines = entryContent.split('\n');
-      const lastImportIndex = lines.findLastIndex(line => line.trim().startsWith('import'));
-      
-      if (lastImportIndex !== -1) {
-        lines.splice(lastImportIndex + 1, 0, "import '@ttianqii/takaui/styles.css'");
-        writeFileSync(join(cwd, entryPoint), lines.join('\n'), 'utf-8');
-        console.log(`  ✅ Auto-added CSS import to ${entryPoint}`);
-      }
-    }
+    console.log(`⚠️  Add Tailwind directives to ${cssFile}:`);
+    console.log(`  @tailwind base;`);
+    console.log(`  @tailwind components;`);
+    console.log(`  @tailwind utilities;`);
   }
 } else {
-  console.log('Add this import to your main entry file (e.g., main.tsx or App.tsx):');
-  console.log("  import '@ttianqii/takaui/styles.css'");
+  console.log('⚠️  Create a CSS file (e.g., src/index.css) with:');
+  console.log('  @tailwind base;');
+  console.log('  @tailwind components;');
+  console.log('  @tailwind utilities;');
 }
 
 console.log('\n✨ Setup Complete!\n');
+console.log('🎉 TakaUI works like shadcn/ui - no CSS imports needed!');
+console.log('   Just use the components and Tailwind handles the styling.\n');
 console.log('You can now use TakaUI components:');
 console.log("  import { DatePicker, DataTable, Calendar } from '@ttianqii/takaui'\n");
 console.log('📚 Documentation: https://github.com/ttianqii/takaui\n');

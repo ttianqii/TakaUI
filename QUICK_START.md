@@ -16,17 +16,20 @@ TakaUI requires React and TanStack Table:
 npm install react react-dom @tanstack/react-table
 ```
 
-## Step 3: Import Styles
+## Step 3: Set Up Tailwind CSS
 
-In your main entry file (e.g., `main.tsx` or `App.tsx`), import the CSS:
+**Important:** TakaUI uses Tailwind CSS for styling (just like shadcn/ui - no CSS imports needed!)
 
-```tsx
-import '@ttianqii/takaui/styles.css'
+### Install Tailwind (if not already installed)
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
 ```
 
-## Step 4: Set Up Tailwind CSS
+### Configure Tailwind
 
-TakaUI uses Tailwind CSS. Add this to your `tailwind.config.js`:
+Add TakaUI to your `tailwind.config.js`:
 
 ```js
 /** @type {import('tailwindcss').Config} */
@@ -34,7 +37,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@ttianqii/takaui/**/*.{js,jsx,ts,tsx}", // Add this line
+    "./node_modules/@ttianqii/takaui/dist/**/*.{js,mjs,cjs}", // Add this
   ],
   theme: {
     extend: {},
@@ -43,7 +46,19 @@ export default {
 }
 ```
 
-## Step 5: Create Your First Table
+### Add Tailwind Directives
+
+In your `src/index.css`:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+**That's it!** No need to import TakaUI CSS files. 🎉
+
+## Step 4: Create Your First Table
 
 ```tsx
 import { DataTable } from '@ttianqii/takaui'
@@ -93,7 +108,7 @@ function App() {
 export default App
 ```
 
-## Step 6: Run Your App
+## Step 5: Run Your App
 
 ```bash
 npm run dev
@@ -146,13 +161,18 @@ That's it! 🎉 You now have a working data table.
 ## Troubleshooting
 
 **Styles not loading?**
-- Make sure you imported `@ttianqii/takaui/styles.css`
-- Check that Tailwind is configured correctly
+
+- Make sure Tailwind CSS is properly configured
+- Verify `@ttianqii/takaui/dist/**/*.{js,mjs,cjs}` is in your Tailwind content paths
+- Check that you have `@tailwind base`, `@tailwind components`, and `@tailwind utilities` in your CSS
 
 **TypeScript errors?**
+
 - Install `@types/react` and `@types/react-dom`
 - Make sure TypeScript version is >= 5.0
 
 **Need help?**
+
 - Open an issue on GitHub
 - Check the full documentation
+

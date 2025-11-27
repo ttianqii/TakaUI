@@ -1,7 +1,7 @@
 {
   "name": "@ttianqii/takaui",
   "private": false,
-  "version": "0.0.61",
+  "version": "0.0.7",
   "type": "module",
   "main": "./dist/takaui.cjs",
   "module": "./dist/takaui.js",
@@ -11,8 +11,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/takaui.js",
       "require": "./dist/takaui.cjs"
-    },
-    "./styles.css": "./dist/takaui.css"
+    }
   },
   "files": [
     "dist",
@@ -21,9 +20,7 @@
   "bin": {
     "takaui-setup": "./src/cli/setup.js"
   },
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

@@ -70,7 +70,18 @@ bun add react react-dom
 
 ### Tailwind CSS Setup
 
-TakaUI uses Tailwind CSS for styling. Add the TakaUI paths to your `tailwind.config.js`:
+**Important:** TakaUI uses Tailwind CSS for styling (no CSS imports needed!). You must have Tailwind CSS configured in your project.
+
+#### 1. Install Tailwind CSS (if not already installed)
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+#### 2. Configure Tailwind
+
+Add TakaUI to your `tailwind.config.js` content paths:
 
 ```js
 /** @type {import('tailwindcss').Config} */
@@ -87,15 +98,17 @@ export default {
 }
 ```
 
-### Import Styles
+#### 3. Add Tailwind directives
 
-Import the TakaUI styles in your main entry file (e.g., `main.tsx` or `App.tsx`):
+In your main CSS file (e.g., `src/index.css`):
 
-```tsx
-import '@ttianqii/takaui/styles.css'
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 ```
 
-**💡 Tip:** Run `npx takaui-setup` to automatically add this import!
+**That's it!** No CSS imports needed from TakaUI. 🎉
 
 ## 🚀 Quick Start
 
