@@ -50,7 +50,7 @@ export { SortableHeader, type SortableHeaderProps } from './ui/data-table-column
 
 // TakaUI Components
 export { Calendar } from './Calendar';
-export { DatePicker, type DatePickerProps } from './DatePicker';
+export { DatePicker, type DatePickerProps, type Holiday } from './DatePicker';
 export { TimePicker } from './TimePicker';
 export { Schedule, type ScheduleEvent, type ScheduleProps, type CustomField } from './Schedule';
 export { WeekNavigator, type WeekNavigatorProps } from './WeekNavigator';

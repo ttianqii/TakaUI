@@ -1,7 +1,29 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { DatePicker } from '../components';
+import { DatePicker, type Holiday } from '../components';
 import { ArrowLeft, Copy, Check, Code } from 'lucide-react';
+
+// Thai National Holidays 2025
+const thaiHolidays: Holiday[] = [
+  { date: new Date(2025, 0, 1), name: "New Year's Day", country: 'TH' },
+  { date: new Date(2025, 1, 12), name: 'Makha Bucha Day', country: 'TH' },
+  { date: new Date(2025, 3, 6), name: 'Chakri Memorial Day', country: 'TH' },
+  { date: new Date(2025, 3, 13), name: 'Songkran Festival (Day 1)', country: 'TH' },
+  { date: new Date(2025, 3, 14), name: 'Songkran Festival (Day 2)', country: 'TH' },
+  { date: new Date(2025, 3, 15), name: 'Songkran Festival (Day 3)', country: 'TH' },
+  { date: new Date(2025, 4, 1), name: 'Labour Day', country: 'TH' },
+  { date: new Date(2025, 4, 5), name: 'Coronation Day', country: 'TH' },
+  { date: new Date(2025, 4, 11), name: 'Visakha Bucha Day', country: 'TH' },
+  { date: new Date(2025, 5, 3), name: "Queen Suthida's Birthday", country: 'TH' },
+  { date: new Date(2025, 6, 28), name: "King Vajiralongkorn's Birthday", country: 'TH' },
+  { date: new Date(2025, 6, 29), name: 'Asanha Bucha Day', country: 'TH' },
+  { date: new Date(2025, 7, 12), name: "Queen Sirikit's Birthday", country: 'TH' },
+  { date: new Date(2025, 9, 13), name: 'King Bhumibol Memorial Day', country: 'TH' },
+  { date: new Date(2025, 9, 23), name: 'Chulalongkorn Day', country: 'TH' },
+  { date: new Date(2025, 11, 5), name: "King Bhumibol's Birthday", country: 'TH' },
+  { date: new Date(2025, 11, 10), name: 'Constitution Day', country: 'TH' },
+  { date: new Date(2025, 11, 31), name: "New Year's Eve", country: 'TH' },
+];
 
 export default function DatePickerPage() {
   const [selectedDate1, setSelectedDate1] = useState<Date | undefined>(new Date());
@@ -9,6 +31,7 @@ export default function DatePickerPage() {
   const [selectedDate3, setSelectedDate3] = useState<Date | undefined>(new Date());
   const [dateRange1, setDateRange1] = useState<{ from?: Date; to?: Date } | undefined>();
   const [dateRange2, setDateRange2] = useState<{ from?: Date; to?: Date } | undefined>();
+  const [selectedDate4, setSelectedDate4] = useState<Date | undefined>();
   const [copiedInstall, setCopiedInstall] = useState(false);
   const [copiedImport, setCopiedImport] = useState(false);
   const [showCode1, setShowCode1] = useState(false);
@@ -16,6 +39,7 @@ export default function DatePickerPage() {
   const [showCode3, setShowCode3] = useState(false);
   const [showCode4, setShowCode4] = useState(false);
   const [showCode5, setShowCode5] = useState(false);
+  const [showCode6, setShowCode6] = useState(false);
 
   const copyToClipboard = (text: string, setter: (val: boolean) => void) => {
     navigator.clipboard.writeText(text);
@@ -297,6 +321,67 @@ export default function DatePickerPage() {
                 </div>
               )}
             </div>
+
+            {/* Example 6: With Thai Holidays */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 hover:shadow-md transition-shadow lg:col-span-2">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-slate-900">With Thai National Holidays</h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowCode6(!showCode6)}
+                    className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+                  >
+                    <Code className="w-4 h-4" />
+                    {showCode6 ? 'Hide' : 'View'} Code
+                  </button>
+                  <span className="text-xs px-3 py-1 bg-red-100 text-red-700 rounded-full font-medium">Holidays</span>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <DatePicker 
+                  date={selectedDate4}
+                  onDateChange={setSelectedDate4}
+                  holidays={thaiHolidays}
+                  placeholder="Pick a date with holidays..."
+                />
+              </div>
+              {selectedDate4 && (
+                <p className="mt-4 text-sm text-slate-600 p-3 bg-slate-50 rounded-lg text-center">
+                  Selected: <span className="font-medium">{selectedDate4.toLocaleDateString()}</span>
+                  {thaiHolidays.find(h => h.date.toDateString() === selectedDate4.toDateString()) && (
+                    <span className="ml-2 text-red-600 font-medium">
+                      ({thaiHolidays.find(h => h.date.toDateString() === selectedDate4.toDateString())?.name})
+                    </span>
+                  )}
+                </p>
+              )}
+              <p className="mt-4 text-xs text-slate-500 text-center">
+                Holidays are displayed in red. Includes all Thai national holidays for 2025.
+              </p>
+              {showCode6 && (
+                <div className="mt-4 rounded-lg overflow-hidden border border-slate-200">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-400">DatePicker</span>, <span className="text-blue-400">Holiday</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'@ttianqii/takaui'</span>;</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-500">// Define holidays</span></div>
+                    <div><span className="text-purple-400">const</span> <span className="text-blue-300">thaiHolidays</span>: <span className="text-blue-400">Holiday</span>[] = [</div>
+                    <div className="pl-4">{'{'} <span className="text-blue-400">date</span>: <span className="text-purple-400">new</span> <span className="text-yellow-400">Date</span>(<span className="text-orange-300">2025</span>, <span className="text-orange-300">0</span>, <span className="text-orange-300">1</span>), <span className="text-blue-400">name</span>: <span className="text-green-400">"New Year's Day"</span>, <span className="text-blue-400">country</span>: <span className="text-green-400">'TH'</span> {'}'},</div>
+                    <div className="pl-4">{'{'} <span className="text-blue-400">date</span>: <span className="text-purple-400">new</span> <span className="text-yellow-400">Date</span>(<span className="text-orange-300">2025</span>, <span className="text-orange-300">3</span>, <span className="text-orange-300">13</span>), <span className="text-blue-400">name</span>: <span className="text-green-400">'Songkran Festival'</span>, <span className="text-blue-400">country</span>: <span className="text-green-400">'TH'</span> {'}'},</div>
+                    <div className="pl-4"><span className="text-gray-500">// ... more holidays</span></div>
+                    <div>];</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-purple-400">const</span> [<span className="text-blue-300">date</span>, <span className="text-blue-300">setDate</span>] = <span className="text-yellow-400">useState</span>&lt;<span className="text-blue-400">Date</span> | <span className="text-blue-400">undefined</span>&gt;();</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DatePicker</span></div>
+                    <div className="pl-4"><span className="text-blue-400">date</span>=<span className="text-orange-300">{'{'}date{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">onDateChange</span>=<span className="text-orange-300">{'{'}setDate{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">holidays</span>=<span className="text-orange-300">{'{'}thaiHolidays{'}'}</span></div>
+                    <div className="pl-4"><span className="text-blue-400">placeholder</span>=<span className="text-green-400">"Pick a date with holidays..."</span></div>
+                    <div><span className="text-gray-500">/&gt;</span></div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -373,6 +458,12 @@ export default function DatePickerPage() {
                   <td className="py-3 px-4 text-slate-600">string</td>
                   <td className="py-3 px-4 text-slate-500">-</td>
                   <td className="py-3 px-4 text-slate-600">Additional CSS classes</td>
+                </tr>
+                <tr className="border-b border-slate-100">
+                  <td className="py-3 px-4 font-mono text-purple-600">holidays</td>
+                  <td className="py-3 px-4 text-slate-600">Holiday[]</td>
+                  <td className="py-3 px-4 text-slate-500">[]</td>
+                  <td className="py-3 px-4 text-slate-600">Array of holidays to display in red</td>
                 </tr>
               </tbody>
             </table>
