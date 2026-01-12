@@ -1,7 +1,7 @@
 {
   "name": "@ttianqii/takaui",
   "private": false,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "main": "./dist/takaui.cjs",
   "module": "./dist/takaui.js",
