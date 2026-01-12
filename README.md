@@ -1,88 +1,33 @@
 # TakaUI
 
-[![npm version](https://img.shields.io/npm/v/@ttianqii/takaui.svg)](https://www.npmjs.com/package/@ttianqii/takaui)
-[![npm downloads](https://img.shields.io/npm/dm/@ttianqii/takaui.svg)](https://www.npmjs.com/package/@ttianqii/takaui)
-[![license](https://img.shields.io/npm/l/@ttianqii/takaui.svg)](https://github.com/ttianqii/takaui/blob/main/LICENSE)
+Modern, accessible React component library built with TypeScript, Tailwind CSS, and Radix UI primitives.
 
-A modern, customizable React UI component library built with TypeScript, Tailwind CSS, and Radix UI primitives.
-
-**Current Version:** 0.1.0
-
-## ✨ What's New in 0.1.0
-
-- 🎯 **Table Alignment Fixed** - Table cells now properly align horizontally with headers
-- 📐 **Consistent Padding** - Checkbox columns and all table content use matching padding (px-3 py-2)
-- ✨ **Previous Features** - All v0.0.9 features (no CSS imports, pure Tailwind, original design preserved)
-
-## 📦 Installation
-
-### Quick Setup (Recommended)
-
-Run the automatic setup wizard:
+## Installation
 
 ```bash
 npm install @ttianqii/takaui
-npx takaui-setup
 ```
-
-This will:
-- ✅ Configure your Tailwind config automatically
-- ✅ Verify your setup is correct
-
-**No CSS imports needed!** Components work with pure Tailwind CSS.
-
-### Manual Installation
-
-If you prefer manual setup:
-
-```bash
-# npm
-npm install @ttianqii/takaui
-
-# yarn
-yarn add @ttianqii/takaui
-
-# pnpm
-pnpm add @ttianqii/takaui
-
-# bun
-bun add @ttianqii/takaui
-```
-
-**That's it!** Just make sure you have Tailwind CSS configured in your project.
 
 ### Peer Dependencies
 
-TakaUI requires React 18+ or React 19+:
-
 ```bash
-# npm
 npm install react react-dom
-
-# yarn
-yarn add react react-dom
-
-# pnpm
-pnpm add react react-dom
-
-# bun
-bun add react react-dom
 ```
 
-### Tailwind CSS Setup
+## Setup
 
-**Important:** TakaUI uses Tailwind CSS for styling (no CSS imports needed!). You must have Tailwind CSS configured in your project.
+TakaUI uses Tailwind CSS. Configure your project:
 
-#### 1. Install Tailwind CSS (if not already installed)
+### 1. Install Tailwind CSS
 
 ```bash
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 ```
 
-#### 2. Configure Tailwind
+### 2. Configure Tailwind
 
-Add TakaUI to your `tailwind.config.js` content paths:
+Update your `tailwind.config.js`:
 
 ```js
 /** @type {import('tailwindcss').Config} */
@@ -90,7 +35,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@ttianqii/takaui/dist/**/*.{js,mjs,cjs}"
+    "./node_modules/@ttianqii/takaui/dist/**/*.{js,cjs}"
   ],
   theme: {
     extend: {},
@@ -99,7 +44,7 @@ export default {
 }
 ```
 
-#### 3. Add Tailwind directives
+### 3. Add Tailwind Directives
 
 In your main CSS file (e.g., `src/index.css`):
 
@@ -109,206 +54,308 @@ In your main CSS file (e.g., `src/index.css`):
 @tailwind utilities;
 ```
 
-**That's it!** No CSS imports needed from TakaUI. 🎉
+## Components
 
-## 🚀 Quick Start
+### Calendar
+
+Interactive calendar with holiday support and customizable styling.
 
 ```tsx
-import { DatePicker, TimePicker, DataTable } from '@ttianqii/takaui'
-import '@ttianqii/takaui/styles.css'
+import { Calendar } from '@ttianqii/takaui'
 import { useState } from 'react'
 
 function App() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
-  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date }>()
-  
-  // DataTable example - No TanStack required!
-  const columns = [
-    { key: 'name', header: 'Name', sortable: true },
-    { key: 'email', header: 'Email' },
-    { 
-      key: 'status', 
-      header: 'Status',
-      cell: (value) => (
-        <span className="px-2 py-1 bg-green-100 text-green-800 rounded">
-          {value}
-        </span>
-      )
-    },
-  ]
-  
-  const data = [
-    { id: 1, name: 'John', email: 'john@example.com', status: 'Active' },
-    { id: 2, name: 'Jane', email: 'jane@example.com', status: 'Active' },
-  ]
-  
+  const [date, setDate] = useState(new Date())
+
   return (
-    <div>
-      {/* Single Date Picker */}
-      <DatePicker
-        date={date}
-        onDateChange={setDate}
-      />
-      
-      {/* Date Range Picker - NEW! */}
-      <DatePicker
-        mode="range"
-        dateRange={dateRange}
-        onDateRangeChange={setDateRange}
-        numberOfMonths={2}
-      />
-      
-      <DataTable 
-        data={data} 
-        columns={columns}
-        showSearch
-        searchPlaceholder="Search users..."
-      />
-    </div>
+    <Calendar
+      selectedDate={date}
+      onDateChange={setDate}
+      holidays={['US']}
+      showWeekNumbers
+    />
   )
 }
 ```
 
-## 📚 Components
-
-TakaUI includes the following components:
-
-### Form & Input Components
-
-- **[Calendar](./docs/CALENDAR.md)** - Flexible date picker with multiple selection modes
-- **[DatePicker](./docs/DATEPICKER.md)** - Date picker with popover and custom formatting
-  - ✨ **NEW:** Range selection with dual month view
-  - ✨ **NEW:** Enhanced hover states for better UX
-- **[TimePicker](./docs/TIMEPICKER.md)** - Time picker with 12h/24h formats and timezone support
-- **[DropdownMenu](./docs/DROPDOWN.md)** - Accessible dropdown menu component
-
-### Data Display Components
-
-- **[DataTable](./docs/DATATABLE_NEW.md)** - Independent table with sorting, filtering, and pagination (No TanStack!)
-  - ✅ Zero external dependencies (except icons)
-  - ✅ Built-in sorting, pagination, search
-  - ✅ Custom cell rendering
-  - ✅ Loading states
-  - [Quick Reference](./DATATABLE_QUICKREF.md) - Cheat sheet
-- **DataGrid System** - ✨ **NEW!** Modular table components for custom layouts
-  - DataGrid, DataGridTable, DataGridPagination
-  - DataGridColumnHeader, DataGridRowSelect
-  - Perfect for complex table compositions
-- **[Schedule](./docs/SCHEDULE.md)** - Weekly schedule component with custom fields
-  - ✨ **NEW:** Supports Date type in metadata
-- **[WeekNavigator](./docs/WEEKNAVIGATOR.md)** - Week navigation with date range display
-
-### Advanced Table System (Optional)
-
-For advanced users who need TanStack Table features:
-
-- **[TableRoot, TableContent, TableNavigator](./docs/DATATABLE.md)** - Modular table components
-  - Requires: `npm install @tanstack/react-table`
-  - [Modular Structure](./docs/DATATABLE_MODULAR.md)
-  - [Architecture](./DATATABLE_ARCHITECTURE.md)
-
-### Base UI Components
-
-All components are built on top of shadcn/ui primitives:
-
-- Button
-- Input
-- Label
-- Select
-- Popover
-- Dialog/Modal
-- Checkbox
-- Card
-
-## 📖 Documentation
-
-Detailed documentation for each component:
-
-- [Calendar Documentation](./docs/CALENDAR.md)
-- [DatePicker Documentation](./docs/DATEPICKER.md)
-- [TimePicker Documentation](./docs/TIMEPICKER.md)
-- [DataTable Documentation](./docs/DATATABLE.md)
-- [Schedule Documentation](./docs/SCHEDULE.md)
-- [WeekNavigator Documentation](./docs/WEEKNAVIGATOR.md)
-- [DropdownMenu Documentation](./docs/DROPDOWN.md)
-
-## 🎨 Customization
-
-### Styling with Tailwind
-
-All components accept a `className` prop for custom styling:
-
-```tsx
-<Calendar 
-  className="rounded-lg shadow-lg border-2 border-blue-500"
-  mode="single"
-  selected={date}
-  onSelect={setDate}
-/>
-```
-
-### Theming
-
-TakaUI components use CSS variables for theming. You can customize colors in your global CSS:
-
-```css
-:root {
-  --primary: 220 90% 56%;
-  --primary-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
-  /* Add more custom variables */
-}
-```
-
-## 🔧 TypeScript Support
-
-TakaUI is built with TypeScript and includes full type definitions. All props are fully typed for excellent IDE support.
-
-```tsx
-import type { CalendarProps, DatePickerProps } from '@ttianqii/takaui'
-```
-
-## 📦 Tree Shaking
-
-TakaUI supports tree shaking. Import only the components you need:
-
-```tsx
-// Good - Only imports Calendar
-import { Calendar } from '@ttianqii/takaui'
-
-// Also works - Named imports
-import { Calendar, TimePicker, DataTable } from '@ttianqii/takaui'
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-MIT
-
-## 🔗 Links
-
-- [GitHub Repository](https://github.com/ttianqii/takaui)
-- [npm Package](https://www.npmjs.com/package/@ttianqii/takaui)
-
-## 📞 Support
-
-For issues and questions:
-
-- Open an issue on [GitHub](https://github.com/ttianqii/takaui/issues)
-- Check the [documentation](./docs/)
-
-## 🎯 Roadmap
-
-- [ ] Additional form components (Switch, Radio, Slider)
-- [ ] Chart components
-- [ ] Toast notifications
-- [ ] Command palette
-- [ ] Theme switcher
-- [ ] More data display components
+**Props:**
+- `selectedDate`: Current selected date
+- `onDateChange`: Callback when date changes
+- `holidays`: Array of country codes for holiday display
+- `showWeekNumbers`: Show week numbers (default: false)
 
 ---
 
-Made with ❤️ by [@ttianqii](https://github.com/ttianqii)
+### DatePicker
+
+Dropdown date selector with calendar popup.
+
+```tsx
+import { DatePicker } from '@ttianqii/takaui'
+
+function App() {
+  const [date, setDate] = useState<Date>()
+
+  return (
+    <DatePicker
+      selected={date}
+      onSelect={setDate}
+      placeholder="Select a date"
+    />
+  )
+}
+```
+
+**Props:**
+- `selected`: Selected date
+- `onSelect`: Callback when date is selected
+- `placeholder`: Input placeholder text
+
+---
+
+### TimePicker
+
+Time selection input with hour/minute controls.
+
+```tsx
+import { TimePicker } from '@ttianqii/takaui'
+
+function App() {
+  const [time, setTime] = useState('09:00')
+
+  return (
+    <TimePicker
+      value={time}
+      onChange={setTime}
+    />
+  )
+}
+```
+
+**Props:**
+- `value`: Time string in HH:MM format
+- `onChange`: Callback when time changes
+
+---
+
+### WeekNavigator
+
+Week-based navigation component.
+
+```tsx
+import { WeekNavigator } from '@ttianqii/takaui'
+
+function App() {
+  const [date, setDate] = useState(new Date())
+
+  return (
+    <WeekNavigator
+      currentDate={date}
+      onDateChange={setDate}
+      onWeekChange={(start, end) => {
+        console.log('Week:', start, 'to', end)
+      }}
+    />
+  )
+}
+```
+
+**Props:**
+- `currentDate`: Current date in view
+- `onDateChange`: Callback when date changes
+- `onWeekChange`: Callback with week start/end dates
+
+---
+
+### Schedule
+
+Weekly schedule view with time slots.
+
+```tsx
+import { Schedule } from '@ttianqii/takaui'
+
+function App() {
+  return (
+    <Schedule
+      events={[
+        {
+          id: '1',
+          title: 'Meeting',
+          start: new Date('2024-01-15T10:00:00'),
+          end: new Date('2024-01-15T11:00:00'),
+        }
+      ]}
+      onEventClick={(event) => console.log(event)}
+    />
+  )
+}
+```
+
+**Props:**
+- `events`: Array of event objects
+- `onEventClick`: Callback when event is clicked
+
+---
+
+### DataTable
+
+Powerful data table with sorting, filtering, and pagination.
+
+```tsx
+import { DataTable } from '@ttianqii/takaui'
+import { ColumnDef } from '@tanstack/react-table'
+
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+const columns: ColumnDef<User>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+  },
+]
+
+function App() {
+  const data: User[] = [
+    { id: '1', name: 'John Doe', email: 'john@example.com' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com' },
+  ]
+
+  return <DataTable columns={columns} data={data} />
+}
+```
+
+**Required peer dependency:**
+```bash
+npm install @tanstack/react-table
+```
+
+**Props:**
+- `columns`: Column definitions (TanStack Table format)
+- `data`: Array of data objects
+- `enableSorting`: Enable column sorting (default: true)
+- `enableFiltering`: Enable filtering (default: true)
+
+---
+
+### DropdownMenu
+
+Accessible dropdown menu component.
+
+```tsx
+import { DropdownMenu } from '@ttianqii/takaui'
+
+function App() {
+  return (
+    <DropdownMenu
+      trigger={<button>Options</button>}
+      items={[
+        { label: 'Edit', onClick: () => console.log('Edit') },
+        { label: 'Delete', onClick: () => console.log('Delete') },
+        { type: 'separator' },
+        { label: 'Archive', onClick: () => console.log('Archive') },
+      ]}
+    />
+  )
+}
+```
+
+**Props:**
+- `trigger`: Trigger element
+- `items`: Array of menu items
+
+---
+
+## UI Components
+
+TakaUI also exports low-level UI primitives:
+
+```tsx
+import {
+  Button,
+  Card,
+  Checkbox,
+  Input,
+  Label,
+  Modal,
+  Popover,
+  Select,
+  Separator,
+  Table,
+} from '@ttianqii/takaui'
+```
+
+### Button
+
+```tsx
+<Button variant="default" size="default">
+  Click me
+</Button>
+```
+
+**Variants:** `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`  
+**Sizes:** `default`, `sm`, `lg`, `icon`
+
+### Card
+
+```tsx
+<Card>
+  <Card.Header>
+    <Card.Title>Card Title</Card.Title>
+  </Card.Header>
+  <Card.Content>
+    Content goes here
+  </Card.Content>
+</Card>
+```
+
+### Input
+
+```tsx
+<Input
+  type="email"
+  placeholder="Email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+/>
+```
+
+### Modal
+
+```tsx
+<Modal
+  open={isOpen}
+  onOpenChange={setIsOpen}
+  title="Modal Title"
+>
+  <p>Modal content</p>
+</Modal>
+```
+
+## Utilities
+
+```tsx
+import { cn } from '@ttianqii/takaui'
+
+// Merge Tailwind classes
+const className = cn('text-red-500', isActive && 'font-bold')
+```
+
+## TypeScript
+
+TakaUI is built with TypeScript and includes full type definitions.
+
+## License
+
+MIT
+
+## Support
+
+For issues and questions, visit [GitHub](https://github.com/ttianqii/takaui)
