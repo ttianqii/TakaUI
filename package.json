@@ -22,7 +22,7 @@
   },
   "sideEffects": false,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port=15177",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

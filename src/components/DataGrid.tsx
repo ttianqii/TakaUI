@@ -137,7 +137,7 @@ export function DataGrid<T extends Record<string, unknown>>({
   };
 
   // Selection logic
-  const toggleRow = (id: string) => {
+  const toggleRow = (id: string) => {do
     setSelectedRows((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
