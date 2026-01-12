@@ -5,13 +5,46 @@ Modern, accessible React component library built with TypeScript, Tailwind CSS, 
 ## Installation
 
 ```bash
+# npm
 npm install @ttianqii/takaui
+
+# yarn
+yarn add @ttianqii/takaui
+
+# pnpm
+pnpm add @ttianqii/takaui
+
+# bun
+bun add @ttianqii/takaui
 ```
 
 ### Peer Dependencies
 
 ```bash
-npm install react react-dom
+# npm
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+# yarn
+yarn add -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+# pnpm
+pnpm add -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+# bun
+bun add -d tailwindcss postcss autoprefixer
+bunm install react react-dom
+
+# yarn
+yarn add react react-dom
+
+# pnpm
+pnpm add react react-dom
+
+# bun
+bun add react react-dom
 ```
 
 ## Setup
