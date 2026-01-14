@@ -156,8 +156,8 @@ interface User {
 }
 
 const columns: DataTableColumn<User>[] = [
-  { id: 'name', accessorKey: 'name', header: 'Name' },
-  { id: 'email', accessorKey: 'email', header: 'Email' },
+  { key: 'name', header: 'Name', sortable: true },
+  { key: 'email', header: 'Email', sortable: true },
 ]
 
 const data: User[] = [

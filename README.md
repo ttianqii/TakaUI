@@ -98,12 +98,22 @@ import { Calendar } from '@ttianqii/takaui'
 ```tsx
 import { DataTable, DataTableColumn } from '@ttianqii/takaui'
 
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
 const columns: DataTableColumn<User>[] = [
-  { id: 'name', accessorKey: 'name', header: 'Name' },
-  { id: 'email', accessorKey: 'email', header: 'Email' },
+  { key: 'name', header: 'Name', sortable: true },
+  { key: 'email', header: 'Email', sortable: true },
 ]
 
-<DataTable columns={columns} data={users} />
+const data: User[] = [
+  { id: '1', name: 'John Doe', email: 'john@example.com' },
+]
+
+<DataTable columns={columns} data={data} />
 ```
 
 ### Time Picker

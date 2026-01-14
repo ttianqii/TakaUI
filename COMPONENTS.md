@@ -163,43 +163,67 @@ interface Product {
 
 const columns: DataTableColumn<Product>[] = [
   {
-    id: 'name',
-    accessorKey: 'name',
+    key: 'name',
     header: 'Product Name',
-    enableSorting: true,
+    sortable: true,
   },
   {
-    id: 'price',
-    accessorKey: 'price',
+    key: 'price',
     header: 'Price',
-    cell: (row) => `$${row.price.toFixed(2)}`,
-    enableSorting: true,
+    cell: (value, row) => `$${row.price.toFixed(2)}`,
+    sortable: true,
   },
   {
-    id: 'stock',
-    accessorKey: 'stock',
+    key: 'stock',
     header: 'Stock',
-    enableSorting: true,
+    sortable: true,
   },
 ]
 
 const data: Product[] = [
-  { id: '1', name: 'Widget', price: 29.99, stock: 100 },
-  { id: '2', name: 'Gadget', price: 49.99, stock: 50 },
+  { id: '1', name: 'Wireless Mouse', price: 29.99, stock: 150 },
+  { id: '2', name: 'Keyboard', price: 89.99, stock: 45 },
 ]
 
-<DataTable columns={columns} data={data} />
+function MyTable() {
+  return (
+    <DataTable 
+      columns={columns} 
+      data={data}
+      showSearch={true}
+      showPagination={true}
+      pageSize={10}
+    />
+  )
+}
 ```
 
 **Props:**
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `columns` | `DataTableColumn<T>[]` | - | Column definitions |
-| `data` | `T[]` | - | Array of data |
-| `enableSorting` | `boolean` | `true` | Enable sorting |
-| `enableFiltering` | `boolean` | `true` | Enable filtering |
+| `columns` | `DataTableColumn<T>[]` | **required** | Column definitions |
+| `data` | `T[]` | **required** | Array of data |
+| `showSearch` | `boolean` | `true` | Show search input |
+| `showPagination` | `boolean` | `true` | Show pagination |
 | `pageSize` | `number` | `10` | Rows per page |
+| `searchPlaceholder` | `string` | `"Search..."` | Search input placeholder |
+| `onRowClick` | `(row: T) => void` | - | Row click handler |
+| `variant` | `"default" \| "clean"` | `"default"` | Table style variant |
+
+**Column Definition:**
+
+```tsx
+interface DataTableColumn<T> {
+  key: string                          // Required: unique identifier
+  header: string | ReactNode           // Column header
+  accessor?: (row: T) => unknown       // Custom accessor function
+  cell?: (value, row, index) => ReactNode  // Custom cell renderer
+  sortable?: boolean                   // Enable sorting
+  width?: string                       // Column width
+  align?: 'left' | 'center' | 'right' // Text alignment
+}
+```
 
 ---
 
@@ -212,31 +236,135 @@ import {
   DataGrid, 
   DataGridTable,
   DataGridPagination,
-  DataGridColumn 
+  DataGridColumn,
+  DataGridColumnHeader
 } from '@ttianqii/takaui'
 
+interface User {
+  id: string
+  name: string
+  email: string
+  status: string
+}
+
 const columns: DataGridColumn<User>[] = [
-  { id: 'name', accessorKey: 'name', header: 'Name' },
-  { id: 'email', accessorKey: 'email', header: 'Email' },
+  { 
+    id: 'name', 
+    accessorKey: 'name', 
+    header: 'Name',
+    enableSorting: true 
+  },
+  { 
+    id: 'email', 
+    accessorKey: 'email', 
+    header: 'Email' 
+  },
+  {
+    id: 'status',
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (row) => (
+      <span className={
+        row.status === 'Active' 
+          ? 'text-green-600' 
+          : 'text-gray-500'
+      }>
+        {row.status}
+      </span>
+    )
+  }
 ]
 
-<DataGrid
-  columns={columns}
-  data={users}
-  getRowId={(row) => row.id}
->
-  <DataGridTable />
-  <DataGridPagination />
-</DataGrid>
+const data: User[] = [
+  { id: '1', name: 'John Doe', email: 'john@example.com', status: 'Active' },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com', status: 'Active' },
+]
+
+function MyDataGrid() {
+  return (
+    <DataGrid
+      columns={columns}
+      data={data}
+      getRowId={(row) => row.id}
+    >
+      <DataGridTable />
+      <DataGridPagination />
+    </DataGrid>
+  )
+}
 ```
 
-**Components:**
-- `DataGrid` - Container component
-- `DataGridTable` - Table display
-- `DataGridPagination` - Pagination controls
-- `DataGridColumnHeader` - Sortable column header
-- `DataGridTableRowSelect` - Row selection checkbox
-- `DataGridTableRowSelectAll` - Select all checkbox
+**With Row Selection:**
+
+```tsx
+import { 
+  DataGrid, 
+  DataGridTable,
+  DataGridPagination,
+  DataGridTableRowSelect,
+  DataGridTableRowSelectAll,
+  useDataGrid
+} from '@ttianqii/takaui'
+
+function CustomTable() {
+  const columns: DataGridColumn<User>[] = [
+    {
+      id: 'select',
+      header: () => <DataGridTableRowSelectAll />,
+      cell: (row) => <DataGridTableRowSelect row={row} />,
+      size: 40,
+    },
+    { id: 'name', accessorKey: 'name', header: 'Name' },
+    { id: 'email', accessorKey: 'email', header: 'Email' },
+  ]
+
+  return (
+    <DataGrid columns={columns} data={data} getRowId={(row) => row.id}>
+      <DataGridTable />
+      <DataGridPagination />
+    </DataGrid>
+  )
+}
+```
+
+**With Sortable Headers:**
+
+```tsx
+const columns: DataGridColumn<User>[] = [
+  {
+    id: 'name',
+    accessorKey: 'name',
+    header: () => <DataGridColumnHeader id="name" title="Name" />,
+    enableSorting: true,
+  },
+  {
+    id: 'email',
+    accessorKey: 'email',
+    header: () => <DataGridColumnHeader id="email" title="Email" />,
+    enableSorting: true,
+  },
+]
+```
+
+**Available Components:**
+- `DataGrid` - Container component with state management
+- `DataGridTable` - Table display with rows
+- `DataGridPagination` - Pagination controls (prev/next/page size)
+- `DataGridColumnHeader` - Sortable column header with icons
+- `DataGridTableRowSelect` - Individual row selection checkbox
+- `DataGridTableRowSelectAll` - Select all rows checkbox
+- `useDataGrid()` - Hook to access grid state
+
+**DataGrid Props:**
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `columns` | `DataGridColumn<T>[]` | ✅ | Column definitions |
+| `data` | `T[]` | ✅ | Array of data |
+| `children` | `ReactNode` | ✅ | Child components |
+| `getRowId` | `(row: T) => string` | - | Extract unique row ID |
+| `onRowClick` | `(row: T) => void` | - | Row click handler |
+| `recordCount` | `number` | - | Total records (for server pagination) |
 
 ---
 
