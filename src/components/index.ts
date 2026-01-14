@@ -42,11 +42,13 @@ export { DataGridColumnHeader } from './DataGridColumnHeader';
 export { DataGridTableRowSelect, DataGridTableRowSelectAll } from './DataGridRowSelect';
 
 // TakaUI Advanced Table System (requires @tanstack/react-table - optional)
-export { TableRoot } from './ui/data-table';
-export { TableWrapper } from './ui/data-table-container';
-export { TableContent } from './ui/data-table-view';
-export { TableNavigator, type TableNavigatorProps } from './ui/data-table-pagination';
-export { SortableHeader, type SortableHeaderProps } from './ui/data-table-column-header';
+// NOTE: These components require @tanstack/react-table to be installed
+// Uncomment if you need advanced table features with TanStack
+// export { TableRoot } from './ui/data-table';
+// export { TableWrapper } from './ui/data-table-container';
+// export { TableContent } from './ui/data-table-view';
+// export { TableNavigator, type TableNavigatorProps } from './ui/data-table-pagination';
+// export { SortableHeader, type SortableHeaderProps } from './ui/data-table-column-header';
 
 // TakaUI Components
 export { Calendar } from './Calendar';
