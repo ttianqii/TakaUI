@@ -293,10 +293,10 @@ export default function TablePage() {
               <p className="text-sm text-slate-600 mb-2">Install the package (no extra dependencies needed!):</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 bg-slate-900 text-slate-100 px-4 py-3 rounded-lg text-sm">
-                  npm install takaui
+                  npm install @ttianqii/takaui
                 </code>
                 <button
-                  onClick={() => handleCopy('npm install takaui', 'install')}
+                  onClick={() => handleCopy('npm install @ttianqii/takaui', 'install')}
                   className="p-3 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                 >
                   {copiedInstall ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5 text-slate-600" />}
@@ -307,10 +307,10 @@ export default function TablePage() {
               <p className="text-sm text-slate-600 mb-2">Import the components:</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 bg-slate-900 text-slate-100 px-4 py-3 rounded-lg text-sm">
-                  import &#123; DataGrid, DataGridTable, DataGridPagination &#125; from 'takaui';
+                  import &#123; DataGrid, DataGridTable, DataGridPagination &#125; from '@ttianqii/takaui';
                 </code>
                 <button
-                  onClick={() => handleCopy("import { DataGrid, DataGridTable, DataGridPagination } from 'takaui';", 'import')}
+                  onClick={() => handleCopy("import { DataGrid, DataGridTable, DataGridPagination } from '@ttianqii/takaui';", 'import')}
                   className="p-3 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                 >
                   {copiedImport ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5 text-slate-600" />}
@@ -470,7 +470,7 @@ export default function TablePage() {
               {showCode3 && (
                 <div className="mt-6 rounded-lg overflow-hidden border border-slate-200">
                   <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
-                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span>, <span className="text-blue-300">DataGridColumnHeader</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span>, <span className="text-blue-300">DataGridColumnHeader</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'@ttianqii/takaui'</span>;</div>
                     <div className="my-3"></div>
                     <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataGridColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
                     <div className="pl-4">{'{'}</div>
@@ -543,9 +543,9 @@ export default function TablePage() {
               {showCode5 && (
                 <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
                   <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
-                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span>, <span className="text-blue-300">DataGridColumnHeader</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGridTableRowSelect</span>, <span className="text-blue-300">DataGridTableRowSelectAll</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
-                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DropdownMenu</span>, <span className="text-blue-300">DropdownMenuContent</span>, <span className="text-blue-300">DropdownMenuItem</span>, <span className="text-blue-300">DropdownMenuTrigger</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span>, <span className="text-blue-300">DataGridColumnHeader</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'@ttianqii/takaui'</span>;</div>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGridTableRowSelect</span>, <span className="text-blue-300">DataGridTableRowSelectAll</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'@ttianqii/takaui'</span>;</div>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DropdownMenu</span>, <span className="text-blue-300">DropdownMenuContent</span>, <span className="text-blue-300">DropdownMenuItem</span>, <span className="text-blue-300">DropdownMenuTrigger</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'@ttianqii/takaui'</span>;</div>
                     <div className="my-3"></div>
                     <div><span className="text-purple-400">const</span> <span className="text-blue-300">columns</span>: <span className="text-blue-400">DataGridColumn</span>&lt;<span className="text-blue-400">Product</span>&gt;[] = [</div>
                     <div className="pl-4">{'{'}</div>
@@ -620,7 +620,7 @@ export default function TablePage() {
               {showCode6 && (
                 <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
                   <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
-                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'takaui'</span>;</div>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataGrid</span>, <span className="text-blue-300">DataGridTable</span>, <span className="text-blue-300">DataGridPagination</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'@ttianqii/takaui'</span>;</div>
                     <div className="my-3"></div>
                     <div><span className="text-gray-400">// Simple mode (default)</span></div>
                     <div><span className="text-gray-500">&lt;</span><span className="text-green-400">DataGrid</span> <span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span> <span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span> <span className="text-blue-400">getRowId</span>=<span className="text-orange-300">{'{'}(row) =&gt; row.id{'}'}</span><span className="text-gray-500">&gt;</span></div>
