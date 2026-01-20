@@ -5,6 +5,39 @@ All notable changes to TakaUI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.8] - 2026-01-20
+
+### Added
+- **DataTable Advanced Pagination**: Dynamic page size selection
+  - `pageSizeOptions` prop - Define available page sizes (default: [5, 10, 20, 50])
+  - `onPaginationChange` callback - Get pagination state for API calls
+  - `PaginationState` interface - TypeScript support for pagination state
+  - Visual page size selector in UI (dropdown)
+  - Auto-reset to page 1 when page size changes
+- **Pagination State Callback**: Perfect for server-side pagination
+  - Returns `{ page, limit, total, totalPages }`
+  - Enables real-time API synchronization
+  - Support for URL query parameter sync
+- **New Documentation**: [Pagination Guide](./DATATABLE_PAGINATION.md)
+  - Comprehensive examples and API reference
+  - Server-side pagination patterns
+  - Best practices and migration guide
+
+### Changed
+- DataTable pagination layout - Now responsive (flex-col on mobile, flex-row on desktop)
+- Pagination controls - Enhanced layout with page size selector on left
+
+### Fixed
+- Infinite loop in DataTable pagination useEffect
+- Maximum update depth exceeded error when using onPaginationChange
+- Dependency array optimization (removed onPaginationChange from deps)
+
+### Documentation
+- Added DATATABLE_PAGINATION.md with complete pagination guide
+- Updated README with "What's New in v0.1.8" section
+- Added TablePage example demonstrating pagination callback
+- Enhanced code examples with TypeScript types
+
 ## [0.0.6] - 2025-11-26
 
 ### Added

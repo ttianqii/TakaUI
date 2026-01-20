@@ -7,7 +7,10 @@ import {
   DataGridColumnHeader,
   DataGridTableRowSelect,
   DataGridTableRowSelectAll,
-  type DataGridColumn 
+  type DataGridColumn,
+  DataTable,
+  type DataTableColumn,
+  type PaginationState
 } from '../components';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Button } from '../components/ui/button';
@@ -88,6 +91,8 @@ export default function TablePage() {
   const [showCode3, setShowCode3] = useState(false);
   const [showCode5, setShowCode5] = useState(false);
   const [showCode6, setShowCode6] = useState(false);
+  const [showCode7, setShowCode7] = useState(false);
+  const [paginationInfo, setPaginationInfo] = useState<PaginationState | null>(null);
 
   const handleCopy = (text: string, type: 'install' | 'import') => {
     navigator.clipboard.writeText(text);
@@ -204,6 +209,24 @@ export default function TablePage() {
           </span>
         );
       },
+    },
+  ];
+
+  // DataTable columns for pagination callback example
+  const dataTableColumns: DataTableColumn<Product>[] = [
+    { key: 'name', header: 'Product', sortable: true },
+    { key: 'category', header: 'Category', sortable: true },
+    { 
+      key: 'price', 
+      header: 'Price', 
+      accessor: (row) => row.price,
+      cell: (value) => `$${(value as number).toFixed(2)}`,
+      sortable: true 
+    },
+    { 
+      key: 'stock', 
+      header: 'Stock',
+      cell: (value) => `${value} units`
     },
   ];
 
@@ -583,7 +606,89 @@ export default function TablePage() {
               )}
             </div>
 
-            {/* Example 6: Advanced Pagination */}
+            {/* Example 6: DataTable with Pagination Callback (NEW) */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-3 mb-4">
+                <h2 className="text-2xl font-bold text-slate-900">DataTable with Pagination Callback</h2>
+                <span className="px-3 py-1 text-xs font-medium bg-gradient-to-r from-green-100 to-green-200 text-green-800 rounded-full">NEW</span>
+              </div>
+              <p className="text-slate-600 mb-6">
+                Get pagination state changes to sync with your API. Perfect for server-side pagination with custom page sizes.
+              </p>
+
+              {paginationInfo && (
+                <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-semibold text-slate-800 mb-2">Current Pagination State:</p>
+                  <code className="block text-xs bg-white p-3 rounded border border-blue-200">
+                    {JSON.stringify(paginationInfo, null, 2)}
+                  </code>
+                </div>
+              )}
+              
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setShowCode7(!showCode7)}
+                      className="flex items-center gap-2 text-sm px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+                    >
+                      <Code className="w-4 h-4" />
+                      {showCode7 ? 'Hide' : 'View'} Code
+                    </button>
+                    <span className="text-xs px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium">API Ready</span>
+                  </div>
+                </div>
+                
+                <DataTable
+                  data={extendedSampleData}
+                  columns={dataTableColumns}
+                  pageSize={10}
+                  pageSizeOptions={[5, 10, 20, 50]}
+                  showPagination={true}
+                  showSearch={true}
+                  onPaginationChange={(pagination) => {
+                    setPaginationInfo(pagination);
+                    console.log('Pagination changed:', pagination);
+                    // Here you would typically fetch data from your API:
+                    // fetchData(pagination.page, pagination.limit);
+                  }}
+                />
+              </div>
+
+              {showCode7 && (
+                <div className="mb-6 rounded-lg overflow-hidden border border-slate-200">
+                  <div className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto font-mono" style={{ lineHeight: '1.6' }}>
+                    <div><span className="text-purple-400">import</span> {'{'} <span className="text-blue-300">DataTable</span>, <span className="text-blue-300">PaginationState</span> {'}'} <span className="text-purple-400">from</span> <span className="text-green-400">'@ttianqii/takaui'</span>;</div>
+                    <div className="my-3"></div>
+                    <div><span className="text-purple-400">function</span> <span className="text-yellow-400">MyTable</span>() {'{'}</div>
+                    <div className="pl-4"><span className="text-purple-400">const</span> [<span className="text-blue-300">paginationInfo</span>, <span className="text-blue-300">setPaginationInfo</span>] = <span className="text-yellow-400">useState</span>&lt;<span className="text-blue-400">PaginationState</span>&gt;();</div>
+                    <div className="my-3"></div>
+                    <div className="pl-4"><span className="text-purple-400">const</span> <span className="text-blue-300">handlePaginationChange</span> = (<span className="text-blue-300">pagination</span>: <span className="text-blue-400">PaginationState</span>) <span className="text-purple-400">=&gt;</span> {'{'}</div>
+                    <div className="pl-8"><span className="text-gray-400">// Receives: {`{ page: 1, limit: 10, total: 50, totalPages: 5 }`}</span></div>
+                    <div className="pl-8"><span className="text-yellow-400">setPaginationInfo</span>(pagination);</div>
+                    <div className="my-3"></div>
+                    <div className="pl-8"><span className="text-gray-400">// Send to your API</span></div>
+                    <div className="pl-8"><span className="text-yellow-400">fetch</span>(<span className="text-orange-300">`/api/data?page=$</span><span className="text-orange-300">${'{'}</span>pagination.page<span className="text-orange-300">{'}'}</span>&limit=<span className="text-orange-300">${'{'}</span>pagination.limit<span className="text-orange-300">{'}'}`</span>)</div>
+                    <div className="pl-12">.<span className="text-yellow-400">then</span>(<span className="text-blue-300">res</span> <span className="text-purple-400">=&gt;</span> res.<span className="text-yellow-400">json</span>())</div>
+                    <div className="pl-12">.<span className="text-yellow-400">then</span>(<span className="text-blue-300">data</span> <span className="text-purple-400">=&gt;</span> <span className="text-yellow-400">setTableData</span>(data));</div>
+                    <div className="pl-4">{'}'};</div>
+                    <div className="my-3"></div>
+                    <div className="pl-4"><span className="text-purple-400">return</span> (</div>
+                    <div className="pl-8"><span className="text-gray-500">&lt;</span><span className="text-green-400">DataTable</span></div>
+                    <div className="pl-12"><span className="text-blue-400">data</span>=<span className="text-orange-300">{'{'}data{'}'}</span></div>
+                    <div className="pl-12"><span className="text-blue-400">columns</span>=<span className="text-orange-300">{'{'}columns{'}'}</span></div>
+                    <div className="pl-12"><span className="text-blue-400">pageSize</span>=<span className="text-orange-300">{'{'}10{'}'}</span></div>
+                    <div className="pl-12"><span className="text-blue-400">pageSizeOptions</span>=<span className="text-orange-300">{'{'}[5, 10, 20, 50, 100]{'}'}</span></div>
+                    <div className="pl-12"><span className="text-blue-400">onPaginationChange</span>=<span className="text-orange-300">{'{'}handlePaginationChange{'}'}</span></div>
+                    <div className="pl-8"><span className="text-gray-500">/&gt;</span></div>
+                    <div className="pl-4">);</div>
+                    <div>{'}'}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Example 7: Advanced Pagination */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
               <div className="flex items-center gap-3 mb-4">
                 <h2 className="text-2xl font-bold text-slate-900">Advanced Pagination</h2>

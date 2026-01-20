@@ -20,6 +20,14 @@ export interface DataTableColumn<T = Record<string, unknown>> {
   sortable?: boolean;
   width?: string;
   align?: 'left' | 'center' | 'right';
+  headerClassName?: string;
+}
+
+export interface PaginationState {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
 export interface DataTableProps<T = Record<string, unknown>> {
@@ -31,8 +39,12 @@ export interface DataTableProps<T = Record<string, unknown>> {
   showPagination?: boolean;
   showSearch?: boolean;
   pageSize?: number;
+  pageSizeOptions?: number[];
   renderToolbar?: () => React.ReactNode;
   variant?: 'default' | 'clean';
+  onPaginationChange?: (pagination: PaginationState) => void;
+  onSearchChange?: (search: string) => void;
+  onSortChange?: (sort: string, order: 'asc' | 'desc') => void;
 }
 
 export function DataTable<T = Record<string, unknown>>({
@@ -44,11 +56,15 @@ export function DataTable<T = Record<string, unknown>>({
   showPagination = true,
   showSearch = true,
   pageSize: initialPageSize = 10,
+  pageSizeOptions = [5, 10, 20, 50],
   renderToolbar,
   variant = 'default',
+  onPaginationChange,
+  onSearchChange,
+  onSortChange,
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(initialPageSize);
+  const [pageSize, setPageSize] = useState(initialPageSize);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -88,14 +104,40 @@ export function DataTable<T = Record<string, unknown>>({
     return sortedData.slice(start, start + pageSize);
   }, [sortedData, currentPage, pageSize, showPagination]);
 
-  React.useEffect(() => setCurrentPage(1), [searchQuery]);
+  // Notify parent component when pagination changes
+  React.useEffect(() => {
+    if (onPaginationChange) {
+      const totalPages = Math.ceil(sortedData.length / pageSize);
+      onPaginationChange({
+        page: currentPage,
+        limit: pageSize,
+        total: sortedData.length,
+        totalPages: totalPages,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, sortedData.length]);
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+    if (onSearchChange) {
+      onSearchChange(searchQuery);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
   const handleSort = (columnKey: string) => {
+    let newOrder: 'asc' | 'desc' = 'asc';
     if (sortKey === columnKey) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+      setSortOrder(newOrder);
     } else {
       setSortKey(columnKey);
       setSortOrder('asc');
+    }
+    
+    if (onSortChange) {
+      onSortChange(columnKey, sortKey === columnKey ? newOrder : 'asc');
     }
   };
 
@@ -141,17 +183,17 @@ export function DataTable<T = Record<string, unknown>>({
                         {typeof column.header !== 'string' ? (
                           column.header
                         ) : (
-                          <span className="text-xs font-normal text-gray-500 uppercase tracking-widest">{column.header}</span>
+                          <span className={cn("text-xs font-normal text-gray-500 uppercase tracking-widest", column.headerClassName)}>{column.header}</span>
                         )}
                       </div>
                     ) : (
-                      <div className="h-10 flex items-center text-xs font-normal text-gray-500 uppercase tracking-widest">
+                      <div className={cn("h-10 flex items-center text-xs font-normal text-gray-500 uppercase tracking-widest", column.headerClassName)}>
                         {typeof column.header !== 'string' ? (
                           <div>{column.header}</div>
                         ) : column.sortable !== false ? (
                           <Button
                             variant="ghost"
-                            className="h-auto px-3 py-1.5 font-normal hover:bg-transparent hover:text-gray-900"
+                            className={cn("h-auto px-3 py-1.5 text-xs font-normal hover:bg-transparent hover:text-gray-900", column.headerClassName)}
                             onClick={() => handleSort(column.key)}
                           >
                             {column.header}
@@ -217,7 +259,27 @@ export function DataTable<T = Record<string, unknown>>({
 
       {/* Pagination */}
       {showPagination && (
-        <div className="flex items-center justify-between px-2 py-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 py-4">
+          {/* Page size selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-700">Rows per page:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                const newSize = Number(e.target.value);
+                setPageSize(newSize);
+                setCurrentPage(1);
+              }}
+              className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {pageSizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="text-sm text-gray-600">
             Showing {paginatedData.length} of {sortedData.length} row(s)
           </div>

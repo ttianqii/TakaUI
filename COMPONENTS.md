@@ -151,8 +151,10 @@ import { Schedule } from '@ttianqii/takaui'
 
 Powerful data table with sorting, filtering, and pagination. **No external dependencies required.**
 
+> **New in v0.1.8**: [Advanced pagination with page size selector and state callbacks →](./DATATABLE_PAGINATION.md)
+
 ```tsx
-import { DataTable, DataTableColumn } from '@ttianqii/takaui'
+import { DataTable, DataTableColumn, PaginationState } from '@ttianqii/takaui'
 
 interface Product {
   id: string
@@ -186,6 +188,8 @@ const data: Product[] = [
 ]
 
 function MyTable() {
+  const [paginationState, setPaginationState] = useState<PaginationState>();
+
   return (
     <DataTable 
       columns={columns} 
@@ -193,6 +197,11 @@ function MyTable() {
       showSearch={true}
       showPagination={true}
       pageSize={10}
+      pageSizeOptions={[5, 10, 20, 50]}
+      onPaginationChange={(pagination) => {
+        setPaginationState(pagination);
+        // Fetch data from API: fetchData(pagination.page, pagination.limit)
+      }}
     />
   )
 }
@@ -206,10 +215,23 @@ function MyTable() {
 | `data` | `T[]` | **required** | Array of data |
 | `showSearch` | `boolean` | `true` | Show search input |
 | `showPagination` | `boolean` | `true` | Show pagination |
-| `pageSize` | `number` | `10` | Rows per page |
+| `pageSize` | `number` | `10` | Initial rows per page |
+| `pageSizeOptions` | `number[]` | `[5, 10, 20, 50]` | Available page sizes ✨ |
+| `onPaginationChange` | `(state: PaginationState) => void` | - | Pagination callback ✨ |
 | `searchPlaceholder` | `string` | `"Search..."` | Search input placeholder |
 | `onRowClick` | `(row: T) => void` | - | Row click handler |
 | `variant` | `"default" \| "clean"` | `"default"` | Table style variant |
+
+**PaginationState Interface:** ✨ New
+
+```tsx
+interface PaginationState {
+  page: number        // Current page (1-indexed)
+  limit: number       // Rows per page
+  total: number       // Total rows (after filtering)
+  totalPages: number  // Total pages
+}
+```
 
 **Column Definition:**
 
@@ -224,6 +246,8 @@ interface DataTableColumn<T> {
   align?: 'left' | 'center' | 'right' // Text alignment
 }
 ```
+
+📖 **[See Pagination Guide](./DATATABLE_PAGINATION.md)** for server-side pagination examples
 
 ---
 

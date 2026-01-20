@@ -5,6 +5,33 @@ Modern, accessible React component library built with TypeScript, Tailwind CSS, 
 [![npm version](https://img.shields.io/npm/v/@ttianqii/takaui.svg)](https://www.npmjs.com/package/@ttianqii/takaui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+## 🎉 What's New in v0.1.8
+
+**🔥 Advanced DataTable Pagination**
+- ✨ Dynamic page size selection (5, 10, 20, 50, 100...)
+- 📡 Pagination state callback for API integration
+- 🎯 Perfect for server-side pagination
+- ⚡ Customizable page size options
+
+```tsx
+import { DataTable, PaginationState } from '@ttianqii/takaui';
+
+<DataTable
+  data={products}
+  columns={columns}
+  pageSize={10}
+  pageSizeOptions={[5, 10, 20, 50, 100]}
+  onPaginationChange={(pagination: PaginationState) => {
+    // { page: 1, limit: 10, total: 50, totalPages: 5 }
+    fetchData(pagination.page, pagination.limit);
+  }}
+/>
+```
+
+👉 See **[Pagination Guide](./DATATABLE_PAGINATION.md)** for complete documentation
+
+---
+
 ## 📚 Documentation
 
 - **[Getting Started Guide](./GETTING_STARTED.md)** - Complete installation and setup instructions
@@ -96,7 +123,7 @@ import { Calendar } from '@ttianqii/takaui'
 ### Data Table
 
 ```tsx
-import { DataTable, DataTableColumn } from '@ttianqii/takaui'
+import { DataTable, DataTableColumn, PaginationState } from '@ttianqii/takaui'
 
 interface User {
   id: string
@@ -113,8 +140,18 @@ const data: User[] = [
   { id: '1', name: 'John Doe', email: 'john@example.com' },
 ]
 
-<DataTable columns={columns} data={data} />
+<DataTable 
+  columns={columns} 
+  data={data}
+  pageSize={10}
+  pageSizeOptions={[5, 10, 20, 50]}
+  onPaginationChange={(pagination: PaginationState) => {
+    console.log('Page:', pagination.page, 'Limit:', pagination.limit);
+  }}
+/>
 ```
+
+👉 See **[Pagination Guide](./DATATABLE_PAGINATION.md)** for server-side pagination examples
 
 ### Time Picker
 
@@ -160,8 +197,17 @@ import type {
   ButtonProps,
   DatePickerProps,
   DataTableColumn,
+  PaginationState,
 } from '@ttianqii/takaui'
 ```
+
+## 📖 Additional Documentation
+
+- **[Getting Started Guide](./GETTING_STARTED.md)** - Installation and setup
+- **[Components Reference](./COMPONENTS.md)** - All components with examples
+- **[Pagination Guide](./DATATABLE_PAGINATION.md)** - Advanced pagination features
+- **[DataTable Architecture](./DATATABLE_ARCHITECTURE.md)** - DataGrid system overview
+- **[Changelog](./CHANGELOG.md)** - Version history and updates
 
 ## 🤝 Contributing
 
