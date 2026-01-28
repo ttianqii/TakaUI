@@ -5,6 +5,16 @@ All notable changes to TakaUI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-01-28
+
+### Fixed
+- **DataGrid TypeScript Generic Type Support** (Critical Bug Fix)
+  - Fixed context provider type casting that prevented proper generic type inference
+  - `DataGrid<T>` now correctly propagates types to all child components and callbacks
+  - Resolves build errors when using custom types with DataGridColumn
+  - Full TypeScript IntelliSense support for row data in cell renderers, `getRowId`, and `onRowClick`
+  - **Impact**: No more `Type 'T[]' is not assignable to 'Record<string, unknown>[]'` errors
+
 ## [0.2.1] - 2026-01-20
 
 ### Fixed

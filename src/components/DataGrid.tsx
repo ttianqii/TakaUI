@@ -245,7 +245,7 @@ export function DataGrid<T extends Record<string, unknown>>({
     recordCount: total,
   };
 
-  return <DataGridContext.Provider value={value as DataGridContextValue}>{children}</DataGridContext.Provider>;
+  return <DataGridContext.Provider value={value as unknown as DataGridContextValue}>{children}</DataGridContext.Provider>;
 }
 
 export default DataGrid;
