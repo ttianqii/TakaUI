@@ -5,6 +5,50 @@ All notable changes to TakaUI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-01-20
+
+### Fixed
+- **DataTable & DataGrid**: Page size now defaults to first value in `pageSizeOptions` array
+  - If `pageSizeOptions={[10, 20, 50]}`, default is now 10 (not hardcoded 5)
+  - If `pageSizeOptions={[5, 10, 20]}`, default is 5
+  - Flexible and intuitive behavior
+- **DataGridPagination**: Removed duplicate useEffect code
+
+### Changed
+- **DataTable**: `pageSize` prop now optional, defaults to `pageSizeOptions[0] ?? 10`
+- **DataGrid**: Initial page size syncs with `DataGridPagination` options
+
+## [0.2.0] - 2026-01-21
+
+### Added
+- **DataGrid Controlled Pagination**: Full server-side pagination support
+  - `currentPage` prop - Control current page externally (1-indexed)
+  - `pageSize` prop - Control page size externally
+  - `onPaginationChange` callback - Get notified of pagination changes
+  - `PaginationState` interface - Exported for TypeScript support
+  - **Backward Compatible**: Works in both controlled and uncontrolled modes
+  - **New Documentation**: [DataGrid Controlled Pagination Guide](./DATAGRID_CONTROLLED_PAGINATION.md)
+    - Complete examples for controlled and uncontrolled modes
+    - Server-side pagination with Express + Prisma
+    - Migration guide and best practices
+    - TypeScript usage examples
+
+### Changed
+- DataGrid internal state management - Now supports external control
+- DataGrid pagination logic - Unified controlled/uncontrolled pattern
+- Component exports - Added `PaginationState` to public exports
+
+## [0.1.9] - 2026-01-20
+
+### Added
+- **DataTable Search Callback**: `onSearchChange` prop for server-side search
+- **DataTable Sort Callback**: `onSortChange` prop for server-side sorting
+- **Complete Server-Side Support**: Full API integration with pagination, search, and sort
+- **New Documentation**: SERVER_SIDE_EXAMPLE.md with Express + Prisma examples
+
+### Fixed
+- Corrected handleSort function implementation
+
 ## [0.1.8] - 2026-01-20
 
 ### Added

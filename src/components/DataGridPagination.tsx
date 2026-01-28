@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
 import { useDataGrid } from './DataGrid';
 import { Button } from './ui/button';
 import {
@@ -28,6 +29,13 @@ export function DataGridPagination({
     setPageSize,
     goToPage,
   } = useDataGrid();
+
+  // Set initial page size to first option if current size is not in options
+  React.useEffect(() => {
+    if (!pageSizeOptions.includes(pagination.pageSize)) {
+      setPageSize(pageSizeOptions[0]);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Generate page numbers to display
   const getPageNumbers = () => {

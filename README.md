@@ -5,30 +5,37 @@ Modern, accessible React component library built with TypeScript, Tailwind CSS, 
 [![npm version](https://img.shields.io/npm/v/@ttianqii/takaui.svg)](https://www.npmjs.com/package/@ttianqii/takaui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## 🎉 What's New in v0.1.8
+## 🎉 What's New in v0.2.0
 
-**🔥 Advanced DataTable Pagination**
-- ✨ Dynamic page size selection (5, 10, 20, 50, 100...)
-- 📡 Pagination state callback for API integration
-- 🎯 Perfect for server-side pagination
-- ⚡ Customizable page size options
+**🔥 DataGrid Controlled Pagination**
+- ✨ Full server-side pagination support
+- 🎛️ Controlled and uncontrolled modes
+- 📡 `onPaginationChange` callback for API integration
+- ⚙️ `currentPage` and `pageSize` props for external control
+- 🔄 Backward compatible - existing code works without changes
 
 ```tsx
-import { DataTable, PaginationState } from '@ttianqii/takaui';
+import { DataGrid, DataGridTable, DataGridPagination, type PaginationState } from '@ttianqii/takaui';
 
-<DataTable
-  data={products}
+const [pagination, setPagination] = useState<PaginationState>({
+  page: 1, limit: 10, total: 0, totalPages: 0
+});
+
+<DataGrid
+  data={courses}
   columns={columns}
-  pageSize={10}
-  pageSizeOptions={[5, 10, 20, 50, 100]}
-  onPaginationChange={(pagination: PaginationState) => {
-    // { page: 1, limit: 10, total: 50, totalPages: 5 }
-    fetchData(pagination.page, pagination.limit);
-  }}
-/>
+  currentPage={pagination.page}
+  pageSize={pagination.limit}
+  recordCount={pagination.total}
+  onPaginationChange={setPagination}
+>
+  <DataGridTable />
+  <DataGridPagination pageSizeOptions={[10, 20, 50]} />
+</DataGrid>
 ```
 
-👉 See **[Pagination Guide](./DATATABLE_PAGINATION.md)** for complete documentation
+👉 See **[DataGrid Controlled Pagination Guide](./DATAGRID_CONTROLLED_PAGINATION.md)** for complete documentation  
+👉 Quick Example: **[DATAGRID_CONTROLLED_EXAMPLE.md](./DATAGRID_CONTROLLED_EXAMPLE.md)**
 
 ---
 

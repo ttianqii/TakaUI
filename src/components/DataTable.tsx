@@ -55,7 +55,7 @@ export function DataTable<T = Record<string, unknown>>({
   className = '',
   showPagination = true,
   showSearch = true,
-  pageSize: initialPageSize = 10,
+  pageSize: initialPageSize,
   pageSizeOptions = [5, 10, 20, 50],
   renderToolbar,
   variant = 'default',
@@ -63,8 +63,11 @@ export function DataTable<T = Record<string, unknown>>({
   onSearchChange,
   onSortChange,
 }: DataTableProps<T>) {
+  // Use provided pageSize, or first value from pageSizeOptions, or 10 as fallback
+  const defaultPageSize = initialPageSize ?? pageSizeOptions[0] ?? 10;
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(initialPageSize);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');

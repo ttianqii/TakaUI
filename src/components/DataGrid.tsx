@@ -12,6 +12,13 @@ export interface DataGridColumn<T = Record<string, unknown>> {
   align?: 'left' | 'center' | 'right';
 }
 
+export interface PaginationState {
+  page: number;        // Current page number (1-indexed)
+  limit: number;       // Current page size
+  total: number;       // Total number of records
+  totalPages: number;  // Total number of pages
+}
+
 export interface DataGridProps<T = Record<string, unknown>> {
   columns: DataGridColumn<T>[];
   data: T[];
@@ -19,6 +26,9 @@ export interface DataGridProps<T = Record<string, unknown>> {
   onRowClick?: (row: T) => void;
   children: ReactNode;
   recordCount?: number;
+  currentPage?: number;              // Control current page externally (1-indexed)
+  pageSize?: number;                 // Control page size externally
+  onPaginationChange?: (pagination: PaginationState) => void;
 }
 
 interface DataGridContextValue<T = Record<string, unknown>> {
@@ -73,8 +83,19 @@ export function DataGrid<T extends Record<string, unknown>>({
   onRowClick,
   children,
   recordCount,
+  currentPage: externalPage,
+  pageSize: externalPageSize,
+  onPaginationChange,
 }: DataGridProps<T>) {
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
+  // Internal state for uncontrolled mode
+  const [internalPage, setInternalPage] = useState(0); // 0-indexed internally
+  // Note: Initial pageSize will be set by DataGridPagination based on pageSizeOptions
+  const [internalPageSize, setInternalPageSize] = useState(10);
+  
+  // Use external values if provided (convert 1-indexed to 0-indexed), otherwise use internal state
+  const pageIndex = externalPage !== undefined ? externalPage - 1 : internalPage;
+  const pageSize = externalPageSize ?? internalPageSize;
+  
   const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([]);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
 
@@ -103,37 +124,76 @@ export function DataGrid<T extends Record<string, unknown>>({
 
   // Pagination logic
   const paginatedData = useMemo(() => {
-    const start = pagination.pageIndex * pagination.pageSize;
-    const end = start + pagination.pageSize;
+    const start = pageIndex * pageSize;
+    const end = start + pageSize;
     return sortedData.slice(start, end);
-  }, [sortedData, pagination]);
+  }, [sortedData, pageIndex, pageSize]);
 
-  const totalPages = Math.ceil(sortedData.length / pagination.pageSize);
+  const total = recordCount ?? sortedData.length;
+  const totalPages = Math.ceil(total / pageSize);
   const pageCount = totalPages;
 
+  // Notify parent of pagination changes
+  const notifyPaginationChange = (newPageIndex: number, newPageSize: number) => {
+    const paginationState: PaginationState = {
+      page: newPageIndex + 1, // Convert 0-indexed to 1-indexed
+      limit: newPageSize,
+      total: total,
+      totalPages: Math.ceil(total / newPageSize),
+    };
+    
+    onPaginationChange?.(paginationState);
+  };
+
   // Pagination helpers
-  const canPreviousPage = pagination.pageIndex > 0;
-  const canNextPage = pagination.pageIndex < totalPages - 1;
-  const previousPage = () => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex - 1 }));
+  const canPreviousPage = pageIndex > 0;
+  const canNextPage = pageIndex < totalPages - 1;
+  
+  const previousPage = () => {
+    const newPageIndex = pageIndex - 1;
+    if (externalPage === undefined) {
+      setInternalPage(newPageIndex);
+    }
+    notifyPaginationChange(newPageIndex, pageSize);
+  };
+  
   const nextPage = () => {
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: Math.min(prev.pageIndex + 1, pageCount - 1),
-    }));
+    const newPageIndex = Math.min(pageIndex + 1, pageCount - 1);
+    if (externalPage === undefined) {
+      setInternalPage(newPageIndex);
+    }
+    notifyPaginationChange(newPageIndex, pageSize);
   };
 
   const setPageSize = (size: number) => {
-    setPagination(() => ({
-      pageIndex: 0,
-      pageSize: size,
-    }));
+    if (externalPageSize === undefined) {
+      setInternalPageSize(size);
+    }
+    if (externalPage === undefined) {
+      setInternalPage(0);
+    }
+    notifyPaginationChange(0, size);
   };
 
   const goToPage = (page: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: Math.max(0, Math.min(page, pageCount - 1)),
-    }));
+    const newPageIndex = Math.max(0, Math.min(page, pageCount - 1));
+    if (externalPage === undefined) {
+      setInternalPage(newPageIndex);
+    }
+    notifyPaginationChange(newPageIndex, pageSize);
+  };
+
+  // Create pagination object for backward compatibility
+  const pagination = { pageIndex, pageSize };
+  const setPagination = (updater: React.SetStateAction<{ pageIndex: number; pageSize: number }>) => {
+    const newValue = typeof updater === 'function' ? updater(pagination) : updater;
+    if (externalPage === undefined) {
+      setInternalPage(newValue.pageIndex);
+    }
+    if (externalPageSize === undefined) {
+      setInternalPageSize(newValue.pageSize);
+    }
+    notifyPaginationChange(newValue.pageIndex, newValue.pageSize);
   };
 
   // Selection logic
@@ -182,7 +242,7 @@ export function DataGrid<T extends Record<string, unknown>>({
     paginatedData,
     sortedData,
     totalPages,
-    recordCount: recordCount ?? data.length,
+    recordCount: total,
   };
 
   return <DataGridContext.Provider value={value as DataGridContextValue}>{children}</DataGridContext.Provider>;

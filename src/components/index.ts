@@ -35,7 +35,7 @@ export {
 export { DataTable, type DataTableColumn, type DataTableProps } from './DataTable';
 
 // TakaUI DataGrid System (No dependencies - fully independent)
-export { DataGrid, useDataGrid, type DataGridColumn, type DataGridProps } from './DataGrid';
+export { DataGrid, useDataGrid, type DataGridColumn, type DataGridProps, type PaginationState } from './DataGrid';
 export { DataGridTable } from './DataGridTable';
 export { DataGridPagination } from './DataGridPagination';
 export { DataGridColumnHeader } from './DataGridColumnHeader';
