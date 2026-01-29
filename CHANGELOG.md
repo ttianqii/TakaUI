@@ -5,6 +5,16 @@ All notable changes to TakaUI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-01-28
+
+### Fixed
+- **DataGrid Generic Type Constraint Removed** (Critical Flexibility Fix)
+  - Removed overly restrictive `extends Record<string, unknown>` constraint from DataGrid
+  - Changed default type parameter from `Record<string, unknown>` to `any` for maximum flexibility
+  - Users no longer need to add `[key: string]: unknown` index signatures to their interfaces
+  - Now works like @tanstack/react-table, ag-grid, and MUI DataGrid (no type constraints)
+  - **Impact**: Clean interfaces work without modification - just use `DataGrid<YourType>`
+
 ## [0.2.2] - 2026-01-28
 
 ### Fixed

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
-export interface DataGridColumn<T = Record<string, unknown>> {
+export interface DataGridColumn<T = any> {
   id: string;
   accessorKey?: keyof T;
   header: string | React.ReactNode;
@@ -19,7 +19,7 @@ export interface PaginationState {
   totalPages: number;  // Total number of pages
 }
 
-export interface DataGridProps<T = Record<string, unknown>> {
+export interface DataGridProps<T = any> {
   columns: DataGridColumn<T>[];
   data: T[];
   getRowId?: (row: T) => string;
@@ -31,7 +31,7 @@ export interface DataGridProps<T = Record<string, unknown>> {
   onPaginationChange?: (pagination: PaginationState) => void;
 }
 
-interface DataGridContextValue<T = Record<string, unknown>> {
+interface DataGridContextValue<T = any> {
   columns: DataGridColumn<T>[];
   data: T[];
   getRowId: (row: T) => string;
@@ -68,7 +68,7 @@ interface DataGridContextValue<T = Record<string, unknown>> {
 const DataGridContext = createContext<DataGridContextValue | null>(null);
 
 // eslint-disable-next-line react-refresh/only-export-components
-export function useDataGrid<T = Record<string, unknown>>() {
+export function useDataGrid<T = any>() {
   const context = useContext(DataGridContext);
   if (!context) {
     throw new Error('useDataGrid must be used within DataGrid');
@@ -76,10 +76,10 @@ export function useDataGrid<T = Record<string, unknown>>() {
   return context as DataGridContextValue<T>;
 }
 
-export function DataGrid<T extends Record<string, unknown>>({
+export function DataGrid<T>({
   columns,
   data,
-  getRowId = (row: T) => (row as { id?: string }).id || String(Math.random()),
+  getRowId = (row: T) => (row as any)?.id || String(Math.random()),
   onRowClick,
   children,
   recordCount,
