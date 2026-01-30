@@ -1,5 +1,9 @@
 # TakaUI DataGrid Server-Side Pagination Enhancement
 
+**Version**: 0.2.4  
+**Last Updated**: January 29, 2026  
+**Status**: Implementation Required
+
 ## Problem Statement
 
 The current TakaUI DataGrid component has issues with server-side pagination when handling loading states and empty states. Specifically:
@@ -7,128 +11,374 @@ The current TakaUI DataGrid component has issues with server-side pagination whe
 1. **Empty State During Loading**: When switching pages, the DataGrid shows "No result found" even when `loading=true` and data is being fetched
 2. **Loading State Conflicts**: The loading overlay doesn't prevent the empty state from appearing
 3. **Server-Side Pagination UX**: Users see confusing empty states during normal pagination operations
+4. **Missing Loading Prop**: The DataGrid component doesn't accept a `loading` prop despite being critical for server-side pagination
+
+## Current Implementation Status
+
+### ✅ Already Implemented (v0.2.3)
+
+1. **Controlled Pagination**: `currentPage` and `pageSize` props work correctly
+2. **Server-Side Integration**: `onPaginationChange` callback exists and works
+3. **Debounced Limit Changes**: Already implemented in CoursesTable.tsx and working
+4. **External Record Count**: `recordCount` prop for total records from server
+
+### ❌ Missing Features
+
+1. **Loading Prop**: No `loading` prop in DataGridProps
+2. **Loading State in Context**: DataGridContextValue doesn't include loading state
+3. **Loading Indicator UI**: No loading spinner component
+4. **Empty State Logic**: No distinction between loading vs truly empty data
+5. **Manual Pagination Flag**: No `manualPagination` flag to skip client-side slicing
+6. **Disabled State During Loading**: Pagination buttons don't disable when loading
 
 ## Current Behavior
 
 ```tsx
+// Current implementation in CoursesTable.tsx
 <DataGrid<Course>
   data={courses}           // Empty array during fetch
-  loading={true}           // Loading is true
-  manualPagination={true}  // Server-side pagination
-  // ... other props
+  currentPage={page}
+  pageSize={limit}
+  recordCount={totalCourses}
+  onPaginationChange={handlePaginationChange}
+  // loading={true}        ← THIS PROP DOESN'T EXIST YET!
+  // manualPagination={true} ← THIS PROP DOESN'T EXIST YET!
 >
   <DataGridTable />
   <DataGridPagination />
 </DataGrid>
 
-// Shows: "No result found" instead of loading indicator
+// Result: Shows "No result found" instead of loading indicator
 ```
 
 ## Required Changes
 
-### 1. Enhanced Empty State Logic
+### 1. Update DataGrid Props Interface
 
-**File**: `TakaUI/src/components/DataGrid.tsx`
+**File**: `TakaUI/src/components/DataGrid.tsx` (Lines 20-31)
 
-**Current Approach**:
-- The DataGrid component doesn't currently handle loading states
-- Empty state is shown in DataGridTable when data array is empty
-- No distinction between loading and truly empty data
-
-**Required Enhancement**:
-Add `loading` prop to DataGridProps and pass it through context:
-
+**Current Code**:
 ```tsx
 export interface DataGridProps<T = any> {
-  // ... existing props
-  loading?: boolean;  // Add this
-  emptyMessage?: string; // Custom empty message
+  columns: DataGridColumn<T>[];
+  data: T[];
+  getRowId?: (row: T) => string;
+  onRowClick?: (row: T) => void;
+  children: ReactNode;
+  recordCount?: number;
+  currentPage?: number;
+  pageSize?: number;
+  onPaginationChange?: (pagination: PaginationState) => void;
 }
 ```
 
-Update DataGridContextValue to include loading state:
+**Add These Props**:
+```tsx
+export interface DataGridProps<T = any> {
+  columns: DataGridColumn<T>[];
+  data: T[];
+  getRowId?: (row: T) => string;
+  onRowClick?: (row: T) => void;
+  children: ReactNode;
+  recordCount?: number;
+  currentPage?: number;
+  pageSize?: number;
+  onPaginationChange?: (pagination: PaginationState) => void;
+  
+  // NEW PROPS FOR v0.2.4
+  loading?: boolean;           // Loading state for server-side operations
+  emptyMessage?: string;       // Custom empty state message
+  manualPagination?: boolean;  // Skip client-side data slicing
+}
+```
 
+### 2. Update DataGrid Context Interface
+
+**File**: `TakaUI/src/components/DataGrid.tsx` (Lines 33-61)
+
+**Current Code**:
 ```tsx
 interface DataGridContextValue<T = any> {
-  // ... existing properties
-  loading: boolean;
-  emptyMessage: string;
+  columns: DataGridColumn<T>[];
+  data: T[];
+  getRowId: (row: T) => string;
+  onRowClick?: (row: T) => void;
+  
+  // Pagination
+  pagination: { pageIndex: number; pageSize: number };
+  setPagination: React.Dispatch<React.SetStateAction<{ pageIndex: number; pageSize: number }>>;
+  canPreviousPage: boolean;
+  canNextPage: boolean;
+  previousPage: () => void;
+  nextPage: () => void;
+  setPageSize: (size: number) => void;
+  goToPage: (page: number) => void;
+  pageCount: number;
+  
+  // Sorting
+  sorting: { id: string; desc: boolean }[];
+  setSorting: React.Dispatch<React.SetStateAction<{ id: string; desc: boolean }[]>>;
+  
+  // Selection
+  selectedRows: Set<string>;
+  toggleRow: (id: string) => void;
+  toggleAllRows: () => void;
+  isAllRowsSelected: boolean;
+  
+  // Computed data
+  paginatedData: T[];
+  sortedData: T[];
+  totalPages: number;
+  recordCount: number;
 }
 ```
 
-### 2. DataGridTable Component Updates
+**Add These Properties**:
+```tsx
+interface DataGridContextValue<T = any> {
+  columns: DataGridColumn<T>[];
+  data: T[];
+  getRowId: (row: T) => string;
+  onRowClick?: (row: T) => void;
+  
+  // Pagination
+  pagination: { pageIndex: number; pageSize: number };
+  setPagination: React.Dispatch<React.SetStateAction<{ pageIndex: number; pageSize: number }>>;
+  canPreviousPage: boolean;
+  canNextPage: boolean;
+  previousPage: () => void;
+  nextPage: () => void;
+  setPageSize: (size: number) => void;
+  goToPage: (page: number) => void;
+  pageCount: number;
+  
+  // Sorting
+  sorting: { id: string; desc: boolean }[];
+  setSorting: React.Dispatch<React.SetStateAction<{ id: string; desc: boolean }[]>>;
+  
+  // Selection
+  selectedRows: Set<string>;
+  toggleRow: (id: string) => void;
+  toggleAllRows: () => void;
+  isAllRowsSelected: boolean;
+  
+  // Computed data
+  paginatedData: T[];
+  sortedData: T[];
+  totalPages: number;
+  recordCount: number;
+  
+  // NEW PROPERTIES FOR v0.2.4
+  loading: boolean;            // Loading state
+  emptyMessage: string;        // Empty state message
+  manualPagination: boolean;   // Server-side pagination flag
+}
+```
 
-**File**: `TakaUI/src/components/DataGridTable.tsx`
+### 3. Update DataGrid Component Implementation
 
-Add loading indicator and respect empty state logic:
+**File**: `TakaUI/src/components/DataGrid.tsx` (Lines 74-95)
+
+### 3. Update DataGrid Component Implementation
+
+**File**: `TakaUI/src/components/DataGrid.tsx` (Lines 74-95)
+
+**Add to Function Signature**:
+```tsx
+export function DataGrid<T>({
+  columns,
+  data,
+  getRowId = (row: T) => (row as any)?.id || String(Math.random()),
+  onRowClick,
+  children,
+  recordCount,
+  currentPage: externalPage,
+  pageSize: externalPageSize,
+  onPaginationChange,
+  
+  // NEW PARAMETERS FOR v0.2.4
+  loading = false,
+  emptyMessage = 'No data found',
+  manualPagination = false,
+}: DataGridProps<T>) {
+  // ... existing implementation
+}
+```
+
+**Find the paginatedData useMemo** (around line 150-160) and update it:
+
+**Current Code**:
+```tsx
+const paginatedData = useMemo(() => {
+  const start = pageIndex * pageSize;
+  const end = start + pageSize;
+  return sortedData.slice(start, end);
+}, [sortedData, pageIndex, pageSize]);
+```
+
+**Replace With**:
+```tsx
+// Handle pagination - skip slicing for server-side pagination
+const paginatedData = useMemo(() => {
+  if (manualPagination) {
+    // For server-side pagination, data is already paginated by the server
+    return data;
+  }
+  // For client-side pagination, slice the sorted data
+  const start = pageIndex * pageSize;
+  const end = start + pageSize;
+  return sortedData.slice(start, end);
+}, [manualPagination, data, sortedData, pageIndex, pageSize]);
+```
+
+**Update the context value** (around line 200-220):
+
+**Add to the value object**:
+```tsx
+const value: DataGridContextValue<T> = {
+  // ... existing properties
+  
+  // ADD THESE NEW PROPERTIES
+  loading,
+  emptyMessage,
+  manualPagination,
+};
+```
+
+### 4. Create Loading Spinner Component
+
+**File**: `TakaUI/src/components/DataGridLoadingSpinner.tsx` (NEW FILE)
 
 ```tsx
-export function DataGridTable() {
-  const { paginatedData, loading, emptyMessage } = useDataGrid();
+import React from 'react';
 
-  // Show loading state
-  if (loading && paginatedData.length === 0) {
-    return (
-      <div className="data-grid-loading">
-        <div className="loading-spinner" />
-        <span className="loading-text">Loading data...</span>
-      </div>
-    );
-  }
-
-  // Show empty state only when not loading
-  if (!loading && paginatedData.length === 0) {
-    return (
-      <div className="data-grid-empty">
-        <div className="empty-icon">📊</div>
-        <div className="empty-message">{emptyMessage}</div>
-      </div>
-    );
-  }
-
-  // Render table with data
+export function DataGridLoadingSpinner() {
   return (
-    <table className="data-grid-table">
-      {/* ... existing table implementation */}
-    </table>
+    <div className="data-grid-loading">
+      <div className="loading-spinner" />
+      <span className="loading-text">Loading data...</span>
+    </div>
   );
 }
 ```
 
-### 3. DataGridPagination Component Updates
+### 5. Create Empty State Component
+
+**File**: `TakaUI/src/components/DataGridEmptyState.tsx` (NEW FILE)
+
+```tsx
+import React from 'react';
+
+interface DataGridEmptyStateProps {
+  message: string;
+}
+
+export function DataGridEmptyState({ message }: DataGridEmptyStateProps) {
+  return (
+    <div className="data-grid-empty">
+      <div className="empty-icon">📊</div>
+      <div className="empty-message">{message}</div>
+    </div>
+  );
+}
+```
+
+### 6. Update DataGridTable Component
+
+**File**: `TakaUI/src/components/DataGridTable.tsx`
+
+**Import the new components at the top**:
+```tsx
+import { DataGridLoadingSpinner } from './DataGridLoadingSpinner';
+import { DataGridEmptyState } from './DataGridEmptyState';
+```
+
+**Update the component logic** (add at the very beginning of the component, before the table rendering):
+
+```tsx
+export function DataGridTable() {
+  const { 
+    columns, 
+    paginatedData, 
+    getRowId, 
+    onRowClick,
+    loading,        // NEW: Get loading state
+    emptyMessage    // NEW: Get empty message
+  } = useDataGrid();
+
+  // NEW: Show loading state when loading and no data
+  if (loading && paginatedData.length === 0) {
+    return <DataGridLoadingSpinner />;
+  }
+
+  // NEW: Show empty state only when NOT loading and no data
+  if (!loading && paginatedData.length === 0) {
+    return <DataGridEmptyState message={emptyMessage} />;
+  }
+
+  // Render table with data (existing code)
+  return (
+    <div className="data-grid-table-wrapper">
+      <table className="data-grid-table">
+        {/* ... existing table implementation ... */}
+      </table>
+    </div>
+  );
+}
+```
+
+### 7. Update DataGridPagination Component
 
 **File**: `TakaUI/src/components/DataGridPagination.tsx`
 
-Add loading state support to disable pagination controls during data fetching:
+**Update the component to access loading state**:
 
 ```tsx
 export function DataGridPagination() {
   const { 
-    loading,
+    pagination,
     canPreviousPage,
     canNextPage,
     previousPage,
     nextPage,
-    // ... other context values
+    goToPage,
+    setPageSize,
+    pageCount,
+    loading,  // NEW: Get loading state from context
   } = useDataGrid();
+
+  // ... existing logic ...
 
   return (
     <div className="pagination-container">
+      {/* Previous button */}
       <button
         onClick={previousPage}
-        disabled={!canPreviousPage || loading}
-        className={loading ? "pagination-button loading" : "pagination-button"}
+        disabled={!canPreviousPage || loading}  // NEW: Disable when loading
+        className={`pagination-button ${loading ? 'loading' : ''}`}
       >
         Previous
       </button>
 
       {/* Page numbers */}
-      {/* ... existing page number implementation ... */}
+      {Array.from({ length: pageCount }, (_, i) => i).map((pageNum) => (
+        <button
+          key={pageNum}
+          onClick={() => goToPage(pageNum)}
+          disabled={loading}  // NEW: Disable when loading
+          className={`page-button ${
+            pageNum === pagination.pageIndex ? 'active' : ''
+          } ${loading ? 'loading' : ''}`}
+        >
+          {pageNum + 1}
+        </button>
+      ))}
 
+      {/* Next button */}
       <button
         onClick={nextPage}
-        disabled={!canNextPage || loading}
-        className={loading ? "pagination-button loading" : "pagination-button"}
+        disabled={!canNextPage || loading}  // NEW: Disable when loading
+        className={`pagination-button ${loading ? 'loading' : ''}`}
       >
         Next
       </button>
@@ -137,111 +387,22 @@ export function DataGridPagination() {
 }
 ```
 
-### 4. Server-Side Pagination Support
+### 8. Add CSS Styles
 
-**File**: `TakaUI/src/components/DataGrid.tsx`
-
-The current implementation already supports controlled pagination through `currentPage` and `pageSize` props. To improve server-side pagination, add:
-
-1. **Manual pagination flag**: Disable client-side data slicing when using server-side pagination
-2. **Loading state**: Pass loading state through context
-
-```tsx
-export interface DataGridProps<T = any> {
-  // ... existing props
-  loading?: boolean;
-  emptyMessage?: string;
-  manualPagination?: boolean; // Add this flag
-}
-
-export function DataGrid<T>({
-  columns,
-  data,
-  // ... existing props
-  loading = false,
-  emptyMessage = 'No data found',
-  manualPagination = false, // Server-side pagination mode
-}: DataGridProps<T>) {
-  // ... existing state and logic
-
-  // Pagination logic - skip slicing for server-side pagination
-  const paginatedData = useMemo(() => {
-    if (manualPagination) {
-      // For server-side pagination, data is already paginated
-      return data;
-    }
-    // For client-side pagination, slice the data
-    const start = pageIndex * pageSize;
-    const end = start + pageSize;
-    return sortedData.slice(start, end);
-  }, [manualPagination, data, sortedData, pageIndex, pageSize]);
-
-  // Update context value to include loading state
-  const value: DataGridContextValue<T> = {
-    // ... existing values
-    loading,
-    emptyMessage,
-    manualPagination,
-  };
-
-  // ... rest of component
-}
-```
-
-### 5. Debounced Page Size Changes
-
-**Implementation**: Handle debouncing at the parent component level in your application code.
-
-The DataGrid component already notifies pagination changes through `onPaginationChange`. For server-side pagination, implement debouncing in your parent component:
-
-```tsx
-// In your CoursesTable or parent component
-const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-const handlePaginationChange = (pagination: PaginationState) => {
-  // Handle page changes immediately
-  if (pagination.page !== page) {
-    onPageChange(pagination.page);
-  }
-
-  // Debounce page size (limit) changes
-  if (pagination.limit !== limit) {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    
-    debounceTimerRef.current = setTimeout(() => {
-      onLimitChange(pagination.limit);
-    }, 300); // 300ms debounce
-  }
-};
-
-// Cleanup on unmount
-useEffect(() => {
-  return () => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-  };
-}, []);
-```
-
-### 6. CSS Styles for Loading and Empty States
-
-**File**: `TakaUI/src/components/DataGrid.css` (or add to your existing styles)
-
-Add CSS for loading and empty states:
+**File**: `TakaUI/src/components/DataGrid.css` (or your main styles file)
 
 ```css
-/* Loading State */
+/* Loading State Styles */
 .data-grid-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 1rem;
-  min-height: 200px;
-  color: var(--text-secondary, #6b7280);
+  padding: 4rem 1.5rem;
+  min-height: 300px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  color: #6b7280;
 }
 
 .loading-spinner {
@@ -251,7 +412,7 @@ Add CSS for loading and empty states:
   border-top-color: #3b82f6;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 @keyframes spin {
@@ -261,48 +422,76 @@ Add CSS for loading and empty states:
 .loading-text {
   font-size: 0.875rem;
   font-weight: 500;
+  color: #374151;
 }
 
-/* Empty State */
+/* Empty State Styles */
 .data-grid-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 1rem;
-  min-height: 200px;
-  color: var(--text-secondary, #6b7280);
+  padding: 4rem 1.5rem;
+  min-height: 300px;
+  color: #6b7280;
 }
 
 .empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.4;
+  font-size: 3.5rem;
+  margin-bottom: 1.25rem;
+  opacity: 0.3;
+  filter: grayscale(100%);
 }
 
 .empty-message {
-  font-size: 0.875rem;
+  font-size: 1rem;
   text-align: center;
-  color: var(--text-muted, #9ca3af);
+  color: #9ca3af;
+  font-weight: 500;
 }
 
-/* Disabled/Loading Pagination Buttons */
+/* Disabled/Loading Button States */
 .pagination-button.loading,
 .page-button.loading {
   opacity: 0.5;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
-/* Optional: Add a subtle loading indicator to pagination */
+.pagination-button:disabled,
+.page-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Optional: Loading indicator on pagination container */
 .pagination-container.loading {
-  pointer-events: none;
   opacity: 0.7;
+  pointer-events: none;
 }
 ```
 
-### 7. Usage Example with Server-Side Pagination
+### 9. Export New Components
 
-Update your CoursesTable or similar components to use the enhanced DataGrid:
+**File**: `TakaUI/src/components/index.ts` (or wherever you export from)
+
+```tsx
+// Existing exports
+export { DataGrid } from './DataGrid';
+export { DataGridTable } from './DataGridTable';
+export { DataGridPagination } from './DataGridPagination';
+export type { DataGridColumn, PaginationState } from './DataGrid';
+
+// NEW EXPORTS FOR v0.2.4
+export { DataGridLoadingSpinner } from './DataGridLoadingSpinner';
+export { DataGridEmptyState } from './DataGridEmptyState';
+```
+
+## Usage Example (Updated for v0.2.4)
+
+**File**: `web/src/components/CoursesTable.tsx`
+
+Your current CoursesTable already has most of the logic! Just add the two new props:
 
 ```tsx
 import { DataGrid, DataGridTable, DataGridPagination } from '@ttianqii/takaui';
@@ -314,9 +503,10 @@ function CoursesTable() {
   const [limit, setLimit] = useState(10);
   const [totalCourses, setTotalCourses] = useState(0);
   
+  // ✅ You already have debouncing implemented!
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch data whenever page or limit changes
+  // ✅ You already fetch data correctly!
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true);
@@ -334,13 +524,12 @@ function CoursesTable() {
     fetchCourses();
   }, [page, limit]);
 
+  // ✅ You already handle pagination changes with debouncing!
   const handlePaginationChange = (pagination: PaginationState) => {
-    // Handle page change immediately
     if (pagination.page !== page) {
       setPage(pagination.page);
     }
 
-    // Debounce limit changes to avoid excessive API calls
     if (pagination.limit !== limit) {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
@@ -348,12 +537,12 @@ function CoursesTable() {
       
       debounceTimerRef.current = setTimeout(() => {
         setLimit(pagination.limit);
-        setPage(1); // Reset to first page when changing limit
+        setPage(1);
       }, 300);
     }
   };
 
-  // Cleanup debounce timer
+  // ✅ You already have cleanup!
   useEffect(() => {
     return () => {
       if (debounceTimerRef.current) {
@@ -366,13 +555,15 @@ function CoursesTable() {
     <DataGrid
       columns={courseColumns}
       data={courses}
-      loading={loading}
-      manualPagination={true}
       currentPage={page}
       pageSize={limit}
       recordCount={totalCourses}
       onPaginationChange={handlePaginationChange}
-      emptyMessage="No courses found"
+      
+      {/* 🆕 ONLY ADD THESE TWO NEW PROPS! */}
+      loading={loading}
+      manualPagination={true}
+      emptyMessage="No courses found. Try adjusting your filters."
     >
       <DataGridTable />
       <DataGridPagination />
@@ -381,107 +572,308 @@ function CoursesTable() {
 }
 ```
 
-## Implementation Checklist
+## Implementation Checklist for v0.2.4
 
-### DataGrid Component (`TakaUI/src/components/DataGrid.tsx`)
-- [ ] Add `loading?: boolean` prop to DataGridProps
-- [ ] Add `emptyMessage?: string` prop to DataGridProps
-- [ ] Add `manualPagination?: boolean` prop to DataGridProps
-- [ ] Update DataGridContextValue interface to include these new props
-- [ ] Modify paginatedData logic to skip slicing when manualPagination is true
-- [ ] Pass loading, emptyMessage, and manualPagination through context
+### Core DataGrid Changes
 
-### DataGridTable Component (`TakaUI/src/components/DataGridTable.tsx`)
-- [ ] Access loading and emptyMessage from context via useDataGrid()
-- [ ] Add loading state check: if loading and no data, show loading indicator
-- [ ] Add empty state check: if not loading and no data, show empty message
-- [ ] Add CSS classes for loading-spinner and empty states
+#### DataGrid.tsx
+- [ ] Add `loading?: boolean` to DataGridProps (line ~29)
+- [ ] Add `emptyMessage?: string` to DataGridProps (line ~30)
+- [ ] Add `manualPagination?: boolean` to DataGridProps (line ~31)
+- [ ] Add loading, emptyMessage, manualPagination to DataGridContextValue interface (lines ~58-60)
+- [ ] Update function parameters with default values: loading = false, emptyMessage = 'No data found', manualPagination = false (line ~80)
+- [ ] Update paginatedData useMemo to check manualPagination flag (lines ~150-160)
+- [ ] Add loading, emptyMessage, manualPagination to context value object (lines ~200-220)
 
-### DataGridPagination Component (`TakaUI/src/components/DataGridPagination.tsx`)
-- [ ] Access loading from context via useDataGrid()
-- [ ] Disable pagination buttons when loading is true
-- [ ] Add loading class to buttons when loading
+#### DataGridLoadingSpinner.tsx (NEW FILE)
+- [ ] Create new component file
+- [ ] Export DataGridLoadingSpinner component
+- [ ] Include loading spinner div and loading text
+
+#### DataGridEmptyState.tsx (NEW FILE)
+- [ ] Create new component file
+- [ ] Export DataGridEmptyState component with message prop
+- [ ] Include empty icon and message display
+
+#### DataGridTable.tsx
+- [ ] Import DataGridLoadingSpinner and DataGridEmptyState
+- [ ] Extract loading and emptyMessage from useDataGrid() hook
+- [ ] Add loading state check before table render
+- [ ] Add empty state check before table render
+- [ ] Keep existing table render as fallback
+
+#### DataGridPagination.tsx
+- [ ] Extract loading from useDataGrid() hook
+- [ ] Add loading to disabled conditions on Previous button
+- [ ] Add loading class to Previous button
+- [ ] Add loading to disabled conditions on page number buttons
+- [ ] Add loading class to page number buttons
+- [ ] Add loading to disabled conditions on Next button
+- [ ] Add loading class to Next button
 
 ### Styling
-- [ ] Add CSS for .data-grid-loading, .loading-spinner, .loading-text
-- [ ] Add CSS for .data-grid-empty, .empty-icon, .empty-message
-- [ ] Add CSS for .pagination-button.loading and disabled states
 
-### Application Usage (e.g., CoursesTable.tsx in web/)
-- [ ] Add loading state to parent component
-- [ ] Pass loading prop to DataGrid
-- [ ] Add manualPagination={true} for server-side pagination
-- [ ] Implement debounced limit changes in handlePaginationChange
-- [ ] Clean up debounce timers on unmount
+#### DataGrid.css (or main styles file)
+- [ ] Add .data-grid-loading styles
+- [ ] Add .loading-spinner styles with @keyframes spin
+- [ ] Add .loading-text styles
+- [ ] Add .data-grid-empty styles
+- [ ] Add .empty-icon styles
+- [ ] Add .empty-message styles
+- [ ] Add .pagination-button.loading styles
+- [ ] Add .page-button.loading styles
+- [ ] Add disabled button styles
 
-## Benefits
+### Exports
 
-1. **No More Empty States During Loading**: Users won't see "No result found" when switching pages - they'll see a loading indicator instead
-2. **Better UX**: Clear visual feedback during data fetching with loading spinners
-3. **Server-Side Pagination Support**: Full support for server-side pagination with `manualPagination` flag
-4. **Debounced Limit Changes**: Prevents excessive API calls when user adjusts page size
-5. **Customizable Messages**: Custom empty state messages via `emptyMessage` prop
-6. **Backward Compatible**: Existing implementations continue to work without changes (all new props are optional)
-7. **Disabled State Management**: Pagination controls are automatically disabled during loading
+#### index.ts (or main export file)
+- [ ] Export DataGridLoadingSpinner
+- [ ] Export DataGridEmptyState
+- [ ] Ensure DataGrid, DataGridTable, DataGridPagination are exported
+- [ ] Ensure types (DataGridColumn, PaginationState, DataGridProps) are exported
 
-## Project Structure Reference
+### Package Updates
+
+#### package.json
+- [ ] Update version from "0.2.3" to "0.2.4"
+- [ ] Add to keywords if needed: "loading", "server-side", "pagination"
+
+#### CHANGELOG.md (if exists)
+- [ ] Document new features for v0.2.4
+- [ ] List breaking changes (none - all new props are optional)
+- [ ] Add migration guide from v0.2.3
+
+### Application Updates (web/)
+
+#### CoursesTable.tsx
+- [ ] Add `loading={loading}` prop to DataGrid
+- [ ] Add `manualPagination={true}` prop to DataGrid
+- [ ] Optional: Add custom `emptyMessage` prop
+
+#### Other Tables (UsersTable, DepartmentsTable, etc.)
+- [ ] Apply same updates to all tables using server-side pagination
+
+### Testing
+
+- [ ] Test loading state with empty data array
+- [ ] Test empty state when not loading and no data
+- [ ] Test table renders when data exists
+- [ ] Test pagination buttons disabled during loading
+- [ ] Test server-side pagination doesn't slice data
+- [ ] Test client-side pagination still works (without manualPagination)
+- [ ] Test page changes trigger immediately
+- [ ] Test limit changes are still debounced
+- [ ] Test custom empty messages display correctly
+- [ ] Test loading spinner animation works
+
+## Benefits of v0.2.4
+
+1. ✅ **No More Empty States During Loading**: Users see a loading spinner instead of "No result found" when switching pages
+2. ✅ **Better UX**: Clear visual feedback during data fetching with animated loading spinners
+3. ✅ **Full Server-Side Pagination Support**: `manualPagination` flag prevents unwanted client-side data slicing
+4. ✅ **Debounced Limit Changes**: Already working in your app - prevents excessive API calls
+5. ✅ **Customizable Messages**: Custom empty state messages via `emptyMessage` prop
+6. ✅ **100% Backward Compatible**: All new props are optional - existing implementations work without changes
+7. ✅ **Disabled State Management**: Pagination controls automatically disable during loading
+8. ✅ **Smooth Integration**: Minimal changes needed in your existing CoursesTable and other components
+
+## Quick Migration Guide
+
+### For Existing Projects Using TakaUI v0.2.3
+
+**Step 1**: Update TakaUI package
+```bash
+cd TakaUI
+npm version patch  # Updates to 0.2.4
+npm run build
+```
+
+**Step 2**: Update your app's package.json
+```bash
+cd web
+npm install @ttianqii/takaui@0.2.4
+```
+
+**Step 3**: Add two props to your DataGrid components
+```tsx
+<DataGrid
+  {/* ... existing props ... */}
+  loading={loading}         // ← Add this
+  manualPagination={true}  // ← Add this
+>
+```
+
+**That's it!** Your server-side pagination will now show loading states correctly.
+
+## Before vs After
+
+### Before (v0.2.3)
+```tsx
+// User clicks page 2
+<DataGrid data={[]} currentPage={2} pageSize={10}>  // Empty array
+  ❌ Shows "No result found" immediately
+  ❌ Confusing user experience
+  ❌ Pagination buttons still clickable during fetch
+</DataGrid>
+```
+
+### After (v0.2.4)
+```tsx
+// User clicks page 2
+<DataGrid 
+  data={[]} 
+  loading={true}
+  manualPagination={true}
+  currentPage={2} 
+  pageSize={10}
+>
+  ✅ Shows loading spinner with "Loading data..."
+  ✅ Clear feedback that data is being fetched
+  ✅ Pagination buttons disabled during fetch
+</DataGrid>
+```
+
+## Project Structure Reference (v0.2.4)
 
 ```
 TakaUI/
+  package.json                           ← Update version to 0.2.4
   src/
     components/
-      DataGrid.tsx              ← Main DataGrid component (add loading, manualPagination props)
-      DataGridTable.tsx         ← Table renderer (add loading/empty state logic)
-      DataGridPagination.tsx    ← Pagination controls (disable during loading)
-      DataGrid.css              ← Styles (add loading/empty state styles)
+      DataGrid.tsx                       ← Add loading, emptyMessage, manualPagination props
+      DataGridTable.tsx                  ← Add loading/empty state logic
+      DataGridPagination.tsx             ← Disable controls during loading
+      DataGridLoadingSpinner.tsx         ← 🆕 NEW FILE
+      DataGridEmptyState.tsx             ← 🆕 NEW FILE
+      DataGrid.css                       ← Add loading/empty styles
+      index.ts                           ← Export new components
 
 web/
   src/
     components/
-      CoursesTable.tsx          ← Example usage (implement debounced pagination)
-      UsersTable.tsx
-      DepartmentsTable.tsx
-      ... other tables
+      CoursesTable.tsx                   ← Add loading & manualPagination props
+      UsersTable.tsx                     ← Add loading & manualPagination props
+      DepartmentsTable.tsx               ← Add loading & manualPagination props
+      ... (apply to all tables using server-side pagination)
 ```
 
-## Testing Checklist
+## API Reference (v0.2.4)
 
-Add tests to verify:
-- [ ] Loading state displays correctly when data is empty and loading=true
-- [ ] Empty state displays correctly when data is empty and loading=false
-- [ ] Table renders data when loading=false and data exists
-- [ ] Pagination buttons are disabled during loading
-- [ ] Server-side pagination doesn't slice data (manualPagination=true)
-- [ ] Client-side pagination still works correctly (manualPagination=false or undefined)
-- [ ] Page changes trigger immediate callbacks
-- [ ] Limit changes are debounced (300ms delay)
-- [ ] Custom empty messages display correctly
-- [ ] Debounce timers are cleaned up on unmount
-
-## Quick Start
-
-To implement this enhancement:
-
-1. **Update TakaUI DataGrid Component**: Add the new props and context values
-2. **Update DataGridTable**: Add loading/empty state rendering logic
-3. **Update DataGridPagination**: Add loading state to disable controls
-4. **Add Styles**: Include CSS for loading spinner and empty states
-5. **Update Your Tables**: Pass `loading` and `manualPagination` props to DataGrid
-
-Example minimal change to your existing CoursesTable:
+### DataGrid Props
 
 ```tsx
-<DataGrid
-  columns={columns}
-  data={courses}
-  loading={loading}              // ← Add this
-  manualPagination={true}        // ← Add this
-  currentPage={page}
-  pageSize={limit}
-  recordCount={totalCourses}
-  onPaginationChange={handlePaginationChange}
->
-  <DataGridTable />
-  <DataGridPagination />
-</DataGrid>
+interface DataGridProps<T> {
+  // Core props
+  columns: DataGridColumn<T>[];
+  data: T[];
+  children: ReactNode;
+  
+  // Row configuration
+  getRowId?: (row: T) => string;
+  onRowClick?: (row: T) => void;
+  
+  // Pagination (controlled)
+  currentPage?: number;              // 1-indexed page number
+  pageSize?: number;                 // Items per page
+  recordCount?: number;              // Total records from server
+  onPaginationChange?: (pagination: PaginationState) => void;
+  
+  // 🆕 NEW IN v0.2.4
+  loading?: boolean;                 // Show loading spinner when true
+  emptyMessage?: string;             // Custom message when no data (default: "No data found")
+  manualPagination?: boolean;        // Skip client-side slicing (default: false)
+}
 ```
+
+### Context Values (Exposed via useDataGrid())
+
+```tsx
+interface DataGridContextValue<T> {
+  // Data
+  columns: DataGridColumn<T>[];
+  data: T[];
+  paginatedData: T[];
+  sortedData: T[];
+  
+  // Row handlers
+  getRowId: (row: T) => string;
+  onRowClick?: (row: T) => void;
+  
+  // Pagination
+  pagination: { pageIndex: number; pageSize: number };
+  setPagination: (pagination) => void;
+  canPreviousPage: boolean;
+  canNextPage: boolean;
+  previousPage: () => void;
+  nextPage: () => void;
+  goToPage: (page: number) => void;
+  setPageSize: (size: number) => void;
+  pageCount: number;
+  totalPages: number;
+  recordCount: number;
+  
+  // Sorting
+  sorting: { id: string; desc: boolean }[];
+  setSorting: (sorting) => void;
+  
+  // Selection
+  selectedRows: Set<string>;
+  toggleRow: (id: string) => void;
+  toggleAllRows: () => void;
+  isAllRowsSelected: boolean;
+  
+  // 🆕 NEW IN v0.2.4
+  loading: boolean;                  // Loading state
+  emptyMessage: string;              // Empty message
+  manualPagination: boolean;         // Server-side pagination flag
+}
+```
+
+---
+
+## Summary for v0.2.4 Release
+
+### What's New
+- ✅ `loading` prop to show loading spinner during data fetching
+- ✅ `emptyMessage` prop for customizable empty state messages
+- ✅ `manualPagination` prop to disable client-side data slicing for server-side pagination
+- ✅ Loading spinner component (DataGridLoadingSpinner)
+- ✅ Empty state component (DataGridEmptyState)
+- ✅ Automatic button disabling during loading states
+- ✅ Complete CSS styling for loading and empty states
+
+### Breaking Changes
+None! All new props are optional with sensible defaults.
+
+### Migration from v0.2.3 to v0.2.4
+1. Update TakaUI package to v0.2.4
+2. Add `loading={loading}` to your DataGrid components
+3. Add `manualPagination={true}` for server-side pagination
+4. (Optional) Customize with `emptyMessage="Your custom message"`
+
+### Files Changed
+- ✏️ `TakaUI/src/components/DataGrid.tsx` - Added 3 new props
+- ✏️ `TakaUI/src/components/DataGridTable.tsx` - Added loading/empty state logic
+- ✏️ `TakaUI/src/components/DataGridPagination.tsx` - Added button disabling
+- 🆕 `TakaUI/src/components/DataGridLoadingSpinner.tsx` - New component
+- 🆕 `TakaUI/src/components/DataGridEmptyState.tsx` - New component
+- ✏️ `TakaUI/src/components/DataGrid.css` - Added new styles
+- ✏️ `TakaUI/src/components/index.ts` - Export new components
+- ✏️ `TakaUI/package.json` - Version bump to 0.2.4
+
+### Recommended Next Steps
+1. Follow the implementation checklist above
+2. Update all table components in your web app
+3. Test loading states thoroughly
+4. Publish v0.2.4 to npm
+5. Update documentation and README
+
+### Support
+This enhancement fully supports your existing CoursesTable implementation and requires minimal changes to integrate. The debouncing logic you already have continues to work perfectly!
+
+---
+
+**Document Version**: 1.0  
+**TakaUI Target Version**: 0.2.4  
+**Author**: GitHub Copilot  
+**Last Updated**: January 29, 2026

@@ -29,6 +29,9 @@ export interface DataGridProps<T = any> {
   currentPage?: number;              // Control current page externally (1-indexed)
   pageSize?: number;                 // Control page size externally
   onPaginationChange?: (pagination: PaginationState) => void;
+  loading?: boolean;                 // Loading state for server-side operations
+  emptyMessage?: string;             // Custom empty state message
+  manualPagination?: boolean;        // Skip client-side data slicing for server-side pagination
 }
 
 interface DataGridContextValue<T = any> {
@@ -63,6 +66,11 @@ interface DataGridContextValue<T = any> {
   sortedData: T[];
   totalPages: number;
   recordCount: number;
+  
+  // Loading and empty states (v0.2.4)
+  loading: boolean;
+  emptyMessage: string;
+  manualPagination: boolean;
 }
 
 const DataGridContext = createContext<DataGridContextValue | null>(null);
@@ -86,6 +94,9 @@ export function DataGrid<T>({
   currentPage: externalPage,
   pageSize: externalPageSize,
   onPaginationChange,
+  loading = false,
+  emptyMessage = 'No data found',
+  manualPagination = false,
 }: DataGridProps<T>) {
   // Internal state for uncontrolled mode
   const [internalPage, setInternalPage] = useState(0); // 0-indexed internally
@@ -122,12 +133,17 @@ export function DataGrid<T>({
     return sorted;
   }, [data, sorting, columns]);
 
-  // Pagination logic
+  // Pagination logic - skip slicing for server-side pagination
   const paginatedData = useMemo(() => {
+    if (manualPagination) {
+      // For server-side pagination, data is already paginated by the server
+      return data;
+    }
+    // For client-side pagination, slice the sorted data
     const start = pageIndex * pageSize;
     const end = start + pageSize;
     return sortedData.slice(start, end);
-  }, [sortedData, pageIndex, pageSize]);
+  }, [manualPagination, data, sortedData, pageIndex, pageSize]);
 
   const total = recordCount ?? sortedData.length;
   const totalPages = Math.ceil(total / pageSize);
@@ -243,6 +259,9 @@ export function DataGrid<T>({
     sortedData,
     totalPages,
     recordCount: total,
+    loading,
+    emptyMessage,
+    manualPagination,
   };
 
   return <DataGridContext.Provider value={value as unknown as DataGridContextValue}>{children}</DataGridContext.Provider>;

@@ -1,8 +1,24 @@
 import { useDataGrid } from './DataGrid';
+import { DataGridLoadingSpinner } from './DataGridLoadingSpinner';
+import { DataGridEmptyState } from './DataGridEmptyState';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 
 export function DataGridTable() {
-  const { columns, paginatedData, getRowId, onRowClick } = useDataGrid();
+  const { columns, paginatedData, getRowId, onRowClick, loading, emptyMessage } = useDataGrid();
+
+  // Show loading state when loading and no data
+  if (loading && paginatedData.length === 0) {
+    return <DataGridLoadingSpinner />;
+  }
+
+  // Show empty state only when NOT loading and no data
+  if (!loading && paginatedData.length === 0) {
+    return (
+      <div className="border border-gray-200 rounded-lg overflow-hidden">
+        <DataGridEmptyState message={emptyMessage} />
+      </div>
+    );
+  }
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
@@ -38,44 +54,36 @@ export function DataGridTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="text-center py-8 text-gray-500">
-                  No results found.
-                </TableCell>
-              </TableRow>
-            ) : (
-              paginatedData.map((row, rowIndex) => (
-                <TableRow
-                  key={getRowId(row)}
-                  className="hover:bg-gray-50 cursor-pointer"
-                  onClick={() => onRowClick?.(row)}
-                >
-                  {columns.map((column) => {
-                    const shouldCenter = column.align === 'center';
-                    const cellValue = column.cell
-                      ? column.cell(row, rowIndex)
-                      : column.accessorKey
-                      ? row[column.accessorKey]
-                      : null;
+            {paginatedData.map((row, rowIndex) => (
+              <TableRow
+                key={getRowId(row)}
+                className="hover:bg-gray-50 cursor-pointer"
+                onClick={() => onRowClick?.(row)}
+              >
+                {columns.map((column) => {
+                  const shouldCenter = column.align === 'center';
+                  const cellValue = column.cell
+                    ? column.cell(row, rowIndex)
+                    : column.accessorKey
+                    ? row[column.accessorKey]
+                    : null;
 
-                    return (
-                      <TableCell
-                        key={column.id}
-                        className={shouldCenter ? 'px-0 py-4' : 'px-3 py-4'}
-                        style={{ width: column.size ? `${column.size}px` : undefined }}
-                      >
-                        {shouldCenter ? (
-                          <div className="flex items-center justify-center h-full">{cellValue as React.ReactNode}</div>
-                        ) : (
-                          (cellValue as React.ReactNode)
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))
-            )}
+                  return (
+                    <TableCell
+                      key={column.id}
+                      className={shouldCenter ? 'px-0 py-4' : 'px-3 py-4'}
+                      style={{ width: column.size ? `${column.size}px` : undefined }}
+                    >
+                      {shouldCenter ? (
+                        <div className="flex items-center justify-center h-full">{cellValue as React.ReactNode}</div>
+                      ) : (
+                        (cellValue as React.ReactNode)
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

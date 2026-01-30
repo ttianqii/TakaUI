@@ -40,6 +40,8 @@ export { DataGridTable } from './DataGridTable';
 export { DataGridPagination } from './DataGridPagination';
 export { DataGridColumnHeader } from './DataGridColumnHeader';
 export { DataGridTableRowSelect, DataGridTableRowSelectAll } from './DataGridRowSelect';
+export { DataGridLoadingSpinner } from './DataGridLoadingSpinner';
+export { DataGridEmptyState } from './DataGridEmptyState';
 
 // TakaUI Advanced Table System (requires @tanstack/react-table - optional)
 // NOTE: These components require @tanstack/react-table to be installed

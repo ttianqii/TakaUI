@@ -28,6 +28,7 @@ export function DataGridPagination({
     pagination,
     setPageSize,
     goToPage,
+    loading,
   } = useDataGrid();
 
   // Set initial page size to first option if current size is not in options
@@ -90,7 +91,7 @@ export function DataGridPagination({
               variant="outline"
               size="sm"
               onClick={previousPage}
-              disabled={!canPreviousPage}
+              disabled={!canPreviousPage || loading}
               className="h-8 w-8 p-0"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -99,7 +100,7 @@ export function DataGridPagination({
               variant="outline"
               size="sm"
               onClick={nextPage}
-              disabled={!canNextPage}
+              disabled={!canNextPage || loading}
               className="h-8 w-8 p-0"
             >
               <ChevronRight className="h-4 w-4" />
@@ -137,7 +138,7 @@ export function DataGridPagination({
           variant="outline"
           size="sm"
           onClick={previousPage}
-          disabled={!canPreviousPage}
+          disabled={!canPreviousPage || loading}
           className="h-8 w-8 p-0"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -157,6 +158,7 @@ export function DataGridPagination({
                 variant={pagination.pageIndex === page ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => goToPage(page)}
+                disabled={loading}
                 className="h-8 w-8 p-0"
               >
                 {page + 1}
@@ -173,7 +175,7 @@ export function DataGridPagination({
           variant="outline"
           size="sm"
           onClick={nextPage}
-          disabled={!canNextPage}
+          disabled={!canNextPage || loading}
           className="h-8 w-8 p-0"
         >
           <ChevronRight className="h-4 w-4" />
